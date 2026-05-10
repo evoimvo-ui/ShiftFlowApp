@@ -29,10 +29,13 @@ const seedDatabase = async () => {
       });
       await admin.save();
       console.log('Admin korisnik kreiran: admin / admin123password');
-    } else if (!admin.organizationId) {
-      admin.organizationId = organization._id;
-      await admin.save();
-      console.log('Admin korisnik povezan sa organizacijom.');
+    } else {
+      // FORSIRANA NADOGRADNJA: Uvijek osiguraj da admin ima organizationId
+      await User.updateOne(
+        { _id: admin._id },
+        { $set: { organizationId: organization._id } }
+      );
+      console.log('Admin korisnik - organizationId ažuriran/provjeren.');
     }
 
     // 3. Osnovne postavke

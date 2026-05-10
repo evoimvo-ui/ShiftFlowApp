@@ -14,9 +14,10 @@ dotenv.config();
 const app = express();
 
 // MongoDB Connection
-connectDB().then(() => {
+connectDB().then(async () => {
   // Pokreni seeding automatski nakon povezivanja
-  seed();
+  await seed();
+  console.log('Seeding završen.');
 });
 
 // Middleware
