@@ -17,10 +17,15 @@ exports.getWorkers = async (req, res) => {
 
 exports.createWorker = async (req, res) => {
   try {
-    const workerData = { ...req.body, organizationId: req.user.organizationId };
+    const data = { ...req.body };
+    if (data.categoryIds) {
+      data.categoryIds = [...new Set(data.categoryIds.map(id => String(id)))];
+    }
+    const workerData = { ...data, organizationId: req.user.organizationId };
     const worker = new Worker(workerData);
     await worker.save();
-    res.status(201).json(worker);
+    const populated = await Worker.findById(worker._id).populate('categoryIds');
+    res.status(201).json(populated);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -28,7 +33,11 @@ exports.createWorker = async (req, res) => {
 
 exports.updateWorker = async (req, res) => {
   try {
-    const updatedWorker = await Worker.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (data.categoryIds) {
+      data.categoryIds = [...new Set(data.categoryIds.map(id => String(id)))];
+    }
+    const updatedWorker = await Worker.findByIdAndUpdate(req.params.id, data, { new: true }).populate('categoryIds');
     res.json(updatedWorker);
   } catch (err) {
     res.status(400).json({ message: err.message });

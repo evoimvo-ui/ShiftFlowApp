@@ -1,5 +1,15 @@
 const Setting = require('../models/Setting');
 const ShiftType = require('../models/ShiftType');
+const Organization = require('../models/Organization');
+
+exports.getOrganization = async (req, res) => {
+  try {
+    const org = await Organization.findById(req.user.organizationId);
+    res.json(org);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 exports.getSettings = async (req, res) => {
   try {

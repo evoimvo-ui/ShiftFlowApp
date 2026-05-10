@@ -71,6 +71,21 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
 
   const handleManualUpdate = async () => {
     if (!manualForm.newWorkerId || !manualForm.reason) return
+    
+    // Provjera na frontendu prije slanja
+    const targetDayOffset = manualModal.assignment ? manualModal.assignment.dayOffset : manualModal.dayOffset;
+    const isAlreadyAssigned = currentSchedule.assignments.some(a => 
+      !a.isWarning && 
+      a.dayOffset === targetDayOffset && 
+      String(a.workerId) === String(manualForm.newWorkerId) &&
+      String(a._id || a.id) !== String(manualModal.assignment?._id || manualModal.assignment?.id)
+    );
+
+    if (isAlreadyAssigned) {
+      alert('Ovaj radnik je već raspoređen u neku smjenu na ovaj dan!');
+      return;
+    }
+
     try {
       const payload = {
         scheduleId: currentSchedule.id,
@@ -95,6 +110,28 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
       setDetailModal(null)
     } catch (err) {
       alert('Greška pri ručnom ažuriranju: ' + err.message)
+    }
+  }
+
+  const handleDeleteAssignment = async (assignmentId) => {
+    if (!isAdmin || !currentSchedule) return
+    if (!confirm('Obrisati ovog radnika iz ove smjene?')) return
+
+    try {
+      const res = await scheduleApi.deleteAssignment(currentSchedule.id, assignmentId)
+      const updatedSched = { ...res.data, id: res.data._id }
+      setSchedules(ss => ss.map(s => s.id === updatedSched.id ? updatedSched : s))
+      if (refresh) refresh()
+      
+      // Ažuriraj detailModal ako je otvoren
+      if (detailModal) {
+        setDetailModal(prev => ({
+          ...prev,
+          assignments: prev.assignments.filter(a => (a._id || a.id) !== assignmentId)
+        }))
+      }
+    } catch (err) {
+      alert('Greška pri brisanju smjene: ' + err.message)
     }
   }
 
@@ -246,7 +283,6 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
                               {!currentSchedule && <div className="text-[10px] text-[--text-muted] text-center py-4 opacity-20 italic">nema podataka</div>}
                               {actual.map(a => {
                                 const worker = workers.find(w => w.id === a.workerId)
-                                const wCats = (worker?.categoryIds || []).map(id => String(id))
                                 const cat = categories.find(c => String(c.id) === String(a.categoryId))
                                 const isMe = isSameWorker(worker?.name, user?.username)
 
@@ -287,7 +323,8 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                 {workers.map(w => {
                   const hours = workerHours[w.id] || 0
-                  const firstCatId = (w.categoryIds || [])[0]
+                  const firstCatRaw = (w.categoryIds || [])[0]
+                  const firstCatId = firstCatRaw?.id || firstCatRaw?._id || firstCatRaw
                   const cat = categories.find(c => String(c.id) === String(firstCatId))
                   const isOvertime = hours > settings.maxHoursPerWeek
                   return (
@@ -393,10 +430,19 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
                   {hours > settings.maxHoursPerWeek && <Badge color="var(--amber)" size="xs">!</Badge>}
                   <Btn size="xs" variant="outline" onClick={() => setSwapModal({ assignment: a, worker })}>Zamjena</Btn>
                   {isAdmin && (
-                    <Btn size="xs" variant="ghost" onClick={() => {
-                      setManualForm({ newWorkerId: a.workerId, reason: '' });
-                      setManualModal({ assignment: a, worker });
-                    }}>Uredi</Btn>
+                    <>
+                      <Btn size="xs" variant="ghost" onClick={() => {
+                        setManualForm({ newWorkerId: a.workerId, reason: '' });
+                        setManualModal({ assignment: a, worker });
+                      }}>Uredi</Btn>
+                      <button 
+                        onClick={() => handleDeleteAssignment(a._id || a.id)}
+                        className="p-1.5 text-[--text-muted] hover:text-[--rose] transition-colors"
+                        title="Obriši iz smjene"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -435,7 +481,10 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         <div className="space-y-5">
           <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
             <p className="text-xs text-amber-200">
-              Mijenjate radnika <strong>{manualModal?.worker?.name}</strong> u smjeni <strong>{detailModal?.shift.name}</strong> ({DAYS_FULL[detailModal?.dayOffset || 0]}).
+              {manualModal?.assignment 
+                ? <>Mijenjate radnika <strong>{manualModal?.worker?.name}</strong> u smjeni <strong>{detailModal?.shift.name}</strong> ({DAYS_FULL[detailModal?.dayOffset || 0]}).</>
+                : <>Popunjavate upražnjeno mjesto u smjeni <strong>{detailModal?.shift.name}</strong> ({DAYS_FULL[detailModal?.dayOffset || 0]}).</>
+              }
             </p>
           </div>
           <Input 

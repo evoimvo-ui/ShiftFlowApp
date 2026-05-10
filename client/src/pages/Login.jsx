@@ -5,6 +5,7 @@ import { authApi } from '../api'
 
 export default function LoginPage({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true)
+  const [regType, setRegType] = useState('admin') // 'admin' ili 'worker'
   const [form, setForm] = useState({ username: '', password: '', organizationName: '' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -23,9 +24,12 @@ export default function LoginPage({ onLogin }) {
         localStorage.setItem('sf_user', JSON.stringify(res.data.user))
         onLogin(res.data.user)
       } else {
-        // Registracija organizacije i admina
-        await authApi.register(form)
-        setSuccess('Organizacija uspješno registrovana! Sada se možete prijaviti.')
+        // Registracija organizacije i admina ILI radnika
+        await authApi.register({ ...form, role: regType })
+        setSuccess(regType === 'admin' 
+          ? 'Organizacija uspješno registrovana! Sada se možete prijaviti.' 
+          : 'Uspješno ste se registrovali kao radnik! Sada se možete prijaviti.'
+        )
         setIsLogin(true)
       }
     } catch (err) {
@@ -49,18 +53,44 @@ export default function LoginPage({ onLogin }) {
             <Zap size={32} color="white" />
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">ShiftFlow Admin</h1>
-          <p className="text-[--text-muted] text-sm mt-1 font-medium">{isLogin ? 'Sistem za upravljanje rasporedom' : 'Kreiraj novi administratorski nalog'}</p>
+          <p className="text-[--text-muted] text-sm mt-1 font-medium">
+            {isLogin 
+              ? 'Sistem za upravljanje rasporedom' 
+              : regType === 'admin' 
+                ? 'Kreiraj novu firmu i admin nalog' 
+                : 'Pridruži se postojećoj firmi kao radnik'
+            }
+          </p>
         </div>
 
         <Card className="p-8 shadow-2xl border-white/5 bg-white/[0.02] backdrop-blur-xl">
+          {!isLogin && (
+            <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-xl border border-white/5">
+              <button 
+                type="button"
+                onClick={() => setRegType('admin')}
+                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'admin' ? 'bg-blue-600 text-white shadow-lg' : 'text-[--text-muted] hover:text-white'}`}
+              >
+                Nova Firma
+              </button>
+              <button 
+                type="button"
+                onClick={() => setRegType('worker')}
+                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'worker' ? 'bg-blue-600 text-white shadow-lg' : 'text-[--text-muted] hover:text-white'}`}
+              >
+                Pridruži se (Radnik)
+              </button>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="space-y-4">
               {!isLogin && (
                 <Input 
-                  label="Naziv firme / organizacije" 
+                  label={regType === 'admin' ? "Naziv firme / organizacije" : "Naziv firme kojoj se pridružujete"} 
                   value={form.organizationName} 
                   onChange={v => setForm(f => ({ ...f, organizationName: v }))} 
                   placeholder="Moja Firma d.o.o."
+                  hint={regType === 'worker' ? "Mora biti identičan nazivu koji je admin registrovao" : ""}
                 />
               )}
               <Input 

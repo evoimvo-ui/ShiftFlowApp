@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Plus, Search, Edit2, Trash2, Users } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2, Users, UserCheck, ShieldAlert } from 'lucide-react'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
-import { workerApi } from '../api'
+import { workerApi, authApi } from '../api'
 
 export default function WorkersPage({ workers, setWorkers, categories, user }) {
   const isAdmin = user?.role === 'admin'
@@ -19,9 +19,11 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
   
   const openEdit = w => { 
     setEditing(w.id); 
+    // Koristimo Set da izbjegnemo duplikate ID-ova pri inicijalizaciji forme
+    const uniqueCatIds = [...new Set((w.categoryIds || []).map(c => String(c.id || c._id || c)))]
     setForm({ 
       name: w.name, 
-      categoryIds: w.categoryIds || [], 
+      categoryIds: uniqueCatIds, 
       phone: w.phone || '', 
       email: w.email || '', 
       maxHoursPerWeek: w.maxHoursPerWeek || 40 
@@ -43,6 +45,7 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
       }
       setModal(false)
     } catch (err) {
+      console.error(err)
       alert('Greška pri spašavanju radnika: ' + err.message)
     }
   }
@@ -58,9 +61,20 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
     }
   }
 
+  const deleteUserAccount = async (username) => {
+    if (confirm(`Obrisati korisnički nalog za "${username}"? Radnik će ostati u sistemu, ali se više neće moći prijaviti.`)) {
+      try {
+        await authApi.deleteUser(username)
+        alert('Korisnički nalog uspešno obrisan.')
+      } catch (err) {
+        alert('Greška pri brisanju naloga: ' + (err.response?.data?.message || err.message))
+      }
+    }
+  }
+
   const filtered = workers.filter(w => {
     const matchSearch = w.name.toLowerCase().includes(search.toLowerCase())
-    const wCats = (w.categoryIds || []).map(id => String(id))
+    const wCats = (w.categoryIds || []).map(c => String(c.id || c._id || c))
     const matchCat = filterCat === 'all' || wCats.includes(String(filterCat))
     return matchSearch && matchCat
   })
@@ -68,9 +82,9 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
   const toggleCategory = (catId) => {
     setForm(f => {
       const current = f.categoryIds || []
-      const exists = current.includes(catId)
+      const exists = current.some(id => String(id) === String(catId))
       if (exists) {
-        return { ...f, categoryIds: current.filter(id => id !== catId) }
+        return { ...f, categoryIds: current.filter(id => String(id) !== String(catId)) }
       } else {
         return { ...f, categoryIds: [...current, catId] }
       }
@@ -128,7 +142,8 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
                   </td>
                 </tr>
               ) : filtered.map((w) => {
-                const wCats = (w.categoryIds || []).map(id => categories.find(c => String(c.id) === String(id))).filter(Boolean)
+                const uniqueIds = [...new Set((w.categoryIds || []).map(item => String(item.id || item._id || item)))]
+                const wCats = uniqueIds.map(id => categories.find(c => String(c.id) === String(id))).filter(Boolean)
                 const firstCat = wCats[0]
                 return (
                   <tr key={w.id} className="hover:bg-blue-500/5 transition-colors group">
@@ -184,7 +199,7 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
             <label className="text-[10px] font-bold text-[--text-secondary] tracking-widest uppercase mb-3 block">Kategorije radnika (odaberite jednu ili više)</label>
             <div className="flex flex-wrap gap-2">
               {categories.map(cat => {
-                const isSelected = (form.categoryIds || []).includes(cat.id)
+                const isSelected = (form.categoryIds || []).some(id => String(id) === String(cat.id))
                 return (
                   <button
                     key={cat.id}
@@ -207,6 +222,20 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
             <Input label="Email" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="email@..." />
           </div>
           <Input label="Maks. sati sedmično" type="number" value={form.maxHoursPerWeek} onChange={v => setForm(f => ({ ...f, maxHoursPerWeek: v }))} min={1} max={60} hint="Standardno 40h" />
+          
+          {editing && (
+            <div className="mt-2 p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ShieldAlert size={18} className="text-rose-500" />
+                <div>
+                  <div className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">Sigurnosna zona</div>
+                  <div className="text-xs text-[--text-muted]">Uklonite korisnički nalog ako je pogrešno kreiran</div>
+                </div>
+              </div>
+              <Btn variant="danger" size="xs" onClick={() => deleteUserAccount(form.name)}>Obriši nalog</Btn>
+            </div>
+          )}
+
           <div className="flex gap-3 justify-end mt-4">
             <Btn variant="ghost" onClick={() => setModal(false)}>Odustani</Btn>
             <Btn onClick={save} disabled={!form.name.trim() || (form.categoryIds || []).length === 0}>{editing ? 'Spremi izmjene' : 'Dodaj radnika'}</Btn>

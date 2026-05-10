@@ -75,7 +75,7 @@ export default function CategoriesPage({ categories, setCategories, shiftTypes, 
   }
 
   const remove = async id => {
-    const count = workers.filter(w => (w.categoryIds || []).map(cid => String(cid)).includes(String(id))).length
+    const count = workers.filter(w => (w.categoryIds || []).some(cid => String(cid.id || cid._id || cid) === String(id))).length
     if (count > 0 && !confirm(`Kategorija ima ${count} radnika. Brisanjem kategorije, radnici ostaju bez te kategorije. Nastaviti?`)) return
     try {
       await categoryApi.delete(id)
@@ -102,7 +102,7 @@ export default function CategoriesPage({ categories, setCategories, shiftTypes, 
           </div>
         )}
         {categories.map(cat => {
-          const catWorkers = workers.filter(w => (w.categoryIds || []).map(cid => String(cid)).includes(String(cat.id)))
+          const catWorkers = workers.filter(w => (w.categoryIds || []).some(cid => String(cid.id || cid._id || cid) === String(cat.id)))
           return (
             <Card key={cat.id} className="relative border-l-4 group" style={{ borderLeftColor: cat.color }}>
               <div className="flex justify-between items-start mb-4">

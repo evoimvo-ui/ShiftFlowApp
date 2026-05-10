@@ -164,7 +164,8 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
               ) : filtered.map((a) => {
                 const wId = a.workerId?._id || a.workerId
                 const worker = workers.find(w => String(w.id) === String(wId))
-                const firstCatId = (worker?.categoryIds || [])[0]
+                const firstCatRaw = (worker?.categoryIds || [])[0]
+                const firstCatId = firstCatRaw?.id || firstCatRaw?._id || firstCatRaw
                 const cat = categories.find(c => String(c.id) === String(firstCatId))
                 const typeInfo = absenceTypeInfo(a.type)
                 const start = new Date(a.startDate)

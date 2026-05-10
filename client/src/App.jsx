@@ -9,12 +9,24 @@ import SettingsPage from './pages/Settings'
 import LoginPage from './pages/Login'
 import { DEFAULT_SHIFTS, DEFAULT_SETTINGS } from './utils/helpers'
 import useApi from './hooks/useApi'
+import { settingApi } from './api'
 
 export default function App() {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('sf_user')
     return saved ? JSON.parse(saved) : null
   })
+
+  // Efekat za dopunjavanje naziva firme ako nedostaje
+  useEffect(() => {
+    if (user && !user.organizationName && !user.isDemo) {
+      settingApi.getOrg().then(res => {
+        const updatedUser = { ...user, organizationName: res.data.name };
+        setUser(updatedUser);
+        localStorage.setItem('sf_user', JSON.stringify(updatedUser));
+      }).catch(err => console.error("Greška pri učitavanju naziva firme:", err));
+    }
+  }, [user]);
 
   const [active, setActive] = useState('dashboard')
   const [collapsed, setCollapsed] = useState(false)

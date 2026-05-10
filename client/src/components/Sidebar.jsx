@@ -28,14 +28,23 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
       className={`min-h-screen bg-[--bg-surface] border-r border-[--border] flex flex-col transition-all duration-300 sticky top-0 z-[50] ${collapsed ? 'w-16' : 'w-[220px]'}`}
     >
       {/* Logo */}
-      <div className={`p-5 border-b border-[--border] flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
-          <Zap size={16} color="white" />
+      <div className={`p-5 border-b border-[--border] flex flex-col gap-1 ${collapsed ? 'items-center' : ''}`}>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
+            <Zap size={16} color="white" />
+          </div>
+          {!collapsed && (
+            <span className="text-lg font-extrabold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
+              ShiftFlow
+            </span>
+          )}
         </div>
-        {!collapsed && (
-          <span className="text-lg font-extrabold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
-            ShiftFlow
-          </span>
+        {!collapsed && user?.organizationName && (
+          <div className="px-1 mt-1">
+            <div className="text-[10px] font-bold text-[--text-muted] uppercase tracking-[0.15em] truncate">
+              {user.organizationName}
+            </div>
+          </div>
         )}
       </div>
 

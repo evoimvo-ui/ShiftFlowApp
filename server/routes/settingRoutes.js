@@ -4,6 +4,7 @@ const settingController = require('../controllers/settingController');
 const auth = require('../middleware/auth');
 
 router.get('/', auth, settingController.getSettings);
+router.get('/organization', auth, settingController.getOrganization);
 router.put('/', auth, settingController.updateSettings);
 
 router.get('/shifts', auth, settingController.getShiftTypes);

@@ -23,27 +23,36 @@ function shiftDurationHours(shift) {
 function isoDate(date) {
   if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(date)) return date.slice(0, 10);
   const d = new Date(date);
-  return d.getUTCFullYear() + '-' + 
-         String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + 
-         String(d.getUTCDate()).padStart(2, '0');
+  // Koristimo local metode da izbjegnemo UTC shift ako je datum kreiran lokalno
+  return d.getFullYear() + '-' + 
+         String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+         String(d.getDate()).padStart(2, '0');
 }
 
 function addDays(date, n) {
-  const d = new Date(date);
-  d.setUTCDate(d.getUTCDate() + n);
+  // Ako je string YYYY-MM-DD, parsiramo ga ručno kao lokalni datum
+  let d;
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(date)) {
+    const [y, m, day] = date.split('-').map(Number);
+    d = new Date(y, m - 1, day);
+  } else {
+    d = new Date(date);
+  }
+  d.setDate(d.getDate() + n);
   return d;
 }
 
 function isWorkerAbsent(workerId, date, absences) {
-  const iso = isoDate(date);
+  const targetIso = isoDate(date);
+  
   return absences.some(a => {
     const aWorkerId = a.workerId?._id || a.workerId;
-    const start = isoDate(a.startDate);
-    const end = isoDate(a.endDate);
-    return aWorkerId.toString() === workerId.toString() && 
-           start <= iso && 
-           end >= iso && 
-           a.status === 'approved';
+    if (aWorkerId.toString() !== workerId.toString() || a.status !== 'approved') return false;
+
+    const startIso = isoDate(a.startDate);
+    const endIso = isoDate(a.endDate);
+
+    return targetIso >= startIso && targetIso <= endIso;
   });
 }
 
@@ -101,6 +110,15 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
 
         const available = workers.filter(w => {
           const wId = w._id.toString();
+          
+          // PROVJERA: Da li je radnik već dodijeljen bilo kojoj smjeni u ovom danu?
+          const alreadyAssignedToday = assignments.some(a => 
+            !a.isWarning && 
+            a.dayOffset === dayOffset && 
+            a.workerId.toString() === wId
+          );
+          if (alreadyAssignedToday) return false;
+
           const wCats = (w.categoryIds || []).map(id => id.toString());
           if (!wCats.includes(category._id.toString())) return false;
           
@@ -169,5 +187,8 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
 module.exports = {
   generateSchedule,
   parseTime,
-  shiftDurationHours
+  shiftDurationHours,
+  isWorkerAbsent,
+  isoDate,
+  addDays
 };

@@ -1,10 +1,11 @@
+const mongoose = require('mongoose');
 const Schedule = require('../models/Schedule');
 const Worker = require('../models/Worker');
 const Category = require('../models/Category');
 const Absence = require('../models/Absence');
 const Holiday = require('../models/Holiday');
 const AuditLog = require('../models/AuditLog');
-const { generateSchedule } = require('../utils/scheduler');
+const { generateSchedule, isWorkerAbsent, isoDate, addDays } = require('../utils/scheduler');
 
 exports.getSchedules = async (req, res) => {
   try {
@@ -30,7 +31,7 @@ exports.generateNewSchedule = async (req, res) => {
     const historicalSchedules = await Schedule.find({ organizationId }).sort({ weekStart: -1 }).limit(8);
 
     const newScheduleData = generateSchedule(
-      new Date(weekStart),
+      weekStart,
       workers,
       categories,
       absences,
@@ -77,31 +78,61 @@ exports.manualUpdate = async (req, res) => {
 
     let oldWorkerId = null;
     let assignment = null;
+    let finalShiftId = shiftId;
+    let finalCategoryId = categoryId;
+    let finalDayOffset = dayOffset;
 
     if (assignmentId) {
       assignment = schedule.assignments.id(assignmentId);
       if (assignment) {
         oldWorkerId = assignment.workerId;
+        finalShiftId = assignment.shiftId;
+        finalCategoryId = assignment.categoryId;
+        finalDayOffset = assignment.dayOffset;
+      }
+    }
+
+    // 1. PROVJERA BOLOVANJA: Da li je radnik na bolovanju taj dan?
+    if (newWorkerId) {
+      const absences = await Absence.find({ organizationId: schedule.organizationId });
+      const shiftDate = addDays(schedule.weekStart, finalDayOffset);
+      
+      if (isWorkerAbsent(newWorkerId, shiftDate, absences)) {
+        return res.status(400).json({ message: 'Ovaj radnik je na odobrenom bolovanju/odsustvu na ovaj dan.' });
+      }
+
+      // 2. PROVJERA DUPLIKATA: Da li je radnik već dodijeljen bilo kojoj smjeni u ovom danu?
+      const existingInDay = schedule.assignments.find(a => 
+        !a.isWarning && 
+        a.dayOffset === finalDayOffset && 
+        String(a.workerId) === String(newWorkerId) &&
+        String(a._id) !== String(assignmentId)
+      );
+
+      if (existingInDay) {
+        return res.status(400).json({ message: 'Radnik je već dodijeljen drugoj smjeni u ovom danu.' });
+      }
+    }
+
+    if (assignmentId) {
+      if (assignment) {
         assignment.workerId = newWorkerId;
       }
-    } else if (dayOffset !== undefined && shiftId && categoryId) {
-      // Ako nema assignmentId, radi se o popunjavanju "rupe" (warning-a)
-      // Kreiramo novi assignment
+    } else if (finalDayOffset !== undefined && finalShiftId && finalCategoryId) {
       const newAssignment = {
         workerId: newWorkerId,
-        shiftId: shiftId,
-        categoryId: categoryId,
-        dayOffset: dayOffset,
+        shiftId: finalShiftId,
+        categoryId: finalCategoryId,
+        dayOffset: finalDayOffset,
         isWarning: false
       };
       schedule.assignments.push(newAssignment);
       
-      // Pokušavamo smanjiti broj potrebnih radnika u warning-u za taj dan/smjenu
       const warning = schedule.assignments.find(a => 
         a.isWarning && 
-        a.dayOffset === dayOffset && 
-        a.shiftId === shiftId && 
-        a.categoryId.toString() === categoryId.toString()
+        a.dayOffset === finalDayOffset && 
+        a.shiftId === finalShiftId && 
+        String(a.categoryId) === String(finalCategoryId)
       );
       
       if (warning) {
@@ -114,28 +145,27 @@ exports.manualUpdate = async (req, res) => {
 
     // Ažuriranje radnih sati (workerHours)
     const ShiftType = require('../models/ShiftType');
-    const shifts = await ShiftType.find();
+    const shifts = await ShiftType.find({ organizationId: schedule.organizationId });
     const { shiftDurationHours } = require('../utils/scheduler');
     
-    const targetShiftId = assignment ? assignment.shiftId : shiftId;
-    const shift = shifts.find(s => s.id === targetShiftId || s._id.toString() === targetShiftId);
+    const shift = shifts.find(s => s.id === finalShiftId || String(s._id) === String(finalShiftId));
     
-    if (shift && schedule.workerHours) {
+    if (shift) {
       const dur = shiftDurationHours(shift);
+      if (!schedule.workerHours) schedule.workerHours = new Map();
       
-      // Smanji sate starom radniku ako postoji
+      // Smanji sate starom radniku
       if (oldWorkerId) {
-        const oldWIdStr = oldWorkerId.toString();
-        if (schedule.workerHours.has(oldWIdStr)) {
-          schedule.workerHours.set(oldWIdStr, Math.max(0, schedule.workerHours.get(oldWIdStr) - dur));
-        }
+        const oldId = String(oldWorkerId);
+        const current = schedule.workerHours.get(oldId) || 0;
+        schedule.workerHours.set(oldId, Math.max(0, current - dur));
       }
       
       // Povećaj sate novom radniku
       if (newWorkerId) {
-        const newWIdStr = newWorkerId.toString();
-        const currentHours = schedule.workerHours.get(newWIdStr) || 0;
-        schedule.workerHours.set(newWIdStr, currentHours + dur);
+        const newId = String(newWorkerId);
+        const current = schedule.workerHours.get(newId) || 0;
+        schedule.workerHours.set(newId, current + dur);
       }
     }
 
@@ -143,9 +173,9 @@ exports.manualUpdate = async (req, res) => {
     schedule.markModified('workerHours');
     await schedule.save();
 
-    // Log the change
     const log = new AuditLog({
       adminId: req.user.id,
+      organizationId: schedule.organizationId,
       action: 'MANUAL_SHIFT_CHANGE',
       details: {
         scheduleId,
@@ -153,14 +183,77 @@ exports.manualUpdate = async (req, res) => {
         oldWorkerId,
         newWorkerId,
         date: schedule.weekStart,
-        dayOffset: assignment ? assignment.dayOffset : dayOffset
+        dayOffset: finalDayOffset
       },
-      reason: reason || 'Ručno popunjavanje prazne smjene'
+      reason: reason || 'Ručna izmjena'
     });
     await log.save();
 
     res.json(schedule);
   } catch (err) {
+    console.error('ManualUpdate Error:', err);
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.deleteAssignment = async (req, res) => {
+  try {
+    const { scheduleId, assignmentId } = req.params;
+    const schedule = await Schedule.findById(scheduleId);
+    if (!schedule) return res.status(404).json({ message: 'Raspored nije pronađen' });
+
+    const assignment = schedule.assignments.id(assignmentId);
+    if (!assignment) return res.status(404).json({ message: 'Smjena nije pronađena' });
+
+    const workerId = assignment.workerId;
+    const shiftId = assignment.shiftId;
+    const dayOffset = assignment.dayOffset;
+
+    // Ažuriranje radnih sati (workerHours)
+    const ShiftType = require('../models/ShiftType');
+    const shift = await ShiftType.findOne({ 
+      $or: [{ id: shiftId }, { _id: mongoose.Types.ObjectId.isValid(shiftId) ? shiftId : null }],
+      organizationId: schedule.organizationId 
+    });
+
+    if (shift && workerId && schedule.workerHours) {
+      const { shiftDurationHours } = require('../utils/scheduler');
+      const dur = shiftDurationHours(shift);
+      const wId = String(workerId);
+      const current = schedule.workerHours.get(wId) || 0;
+      schedule.workerHours.set(wId, Math.max(0, current - dur));
+    }
+
+    // Ukloni assignment
+    schedule.assignments.pull(assignmentId);
+    
+    // Provjeri da li treba dodati warning nazad (ako je kategorija zahtijevala radnika)
+    // Ovdje bismo mogli dodati logiku za vraćanje warning-a, ali za početak ćemo samo obrisati
+    // jer korisnik ručno briše duplikat.
+    
+    schedule.markModified('assignments');
+    schedule.markModified('workerHours');
+    await schedule.save();
+
+    // Log the change
+    const log = new AuditLog({
+      adminId: req.user.id,
+      organizationId: schedule.organizationId,
+      action: 'MANUAL_SHIFT_DELETE',
+      details: {
+        scheduleId,
+        assignmentId,
+        workerId,
+        date: schedule.weekStart,
+        dayOffset
+      },
+      reason: 'Ručno brisanje smjene'
+    });
+    await log.save();
+
+    res.json(schedule);
+  } catch (err) {
+    console.error('DeleteAssignment Error:', err);
     res.status(400).json({ message: err.message });
   }
 };

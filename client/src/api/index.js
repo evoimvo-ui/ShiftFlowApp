@@ -38,6 +38,7 @@ export const scheduleApi = {
   generate: (data) => api.post('/schedules/generate', data),
   delete: (weekStart) => api.delete(`/schedules/${weekStart}`),
   manualUpdate: (data) => api.put('/schedules/manual-update', data),
+  deleteAssignment: (scheduleId, assignmentId) => api.delete(`/schedules/assignment/${scheduleId}/${assignmentId}`),
 };
 
 export const holidayApi = {
@@ -59,10 +60,12 @@ export const auditApi = {
 export const authApi = {
   login: (data) => api.post('/auth/login', data),
   register: (data) => api.post('/auth/register', data),
+  deleteUser: (username) => api.delete(`/auth/user/${username}`),
 };
 
 export const settingApi = {
   get: () => api.get('/settings'),
+  getOrg: () => api.get('/settings/organization'),
   update: (data) => api.put('/settings', data),
   getShifts: () => api.get('/settings/shifts'),
   createShift: (data) => api.post('/settings/shifts', data),

@@ -211,7 +211,7 @@ export default function DashboardPage({ workers, categories, absences, schedules
           <h3 className="text-sm font-bold text-[--text-secondary] uppercase tracking-wider mb-6">Kategorije radnika</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {categories.map(cat => {
-              const catWorkers = workers.filter(w => (w.categoryIds || []).map(cid => String(cid)).includes(String(cat.id)))
+              const catWorkers = workers.filter(w => (w.categoryIds || []).some(cid => String(cid.id || cid._id || cid) === String(cat.id)))
               const catAbsent = catWorkers.filter(w => activeAbsences.some(a => {
                 const aWorkerId = a.workerId?._id || a.workerId
                 return String(aWorkerId) === String(w.id)
