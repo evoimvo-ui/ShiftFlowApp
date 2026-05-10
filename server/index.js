@@ -7,13 +7,17 @@ const path = require('path');
 
 const connectDB = require('./config/db');
 const keys = require('./config/keys');
+const seed = require('./utils/seed_logic'); // Promijenićemo seed.js da izvozi funkciju
 
 dotenv.config();
 
 const app = express();
 
 // MongoDB Connection
-connectDB();
+connectDB().then(() => {
+  // Pokreni seeding automatski nakon povezivanja
+  seed();
+});
 
 // Middleware
 app.use(cors());
