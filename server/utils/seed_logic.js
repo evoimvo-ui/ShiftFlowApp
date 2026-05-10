@@ -7,35 +7,37 @@ const seedDatabase = async () => {
   try {
     console.log('Provjera baze za seeding...');
 
-    // 1. Kreiranje podrazumijevane organizacije
-    let organization = await Organization.findOne({ slug: 'glavna-organizacija' });
-    if (!organization) {
-      organization = new Organization({
-        name: 'Glavna Organizacija',
-        slug: 'glavna-organizacija'
-      });
-      await organization.save();
-      console.log('Organizacija kreirana.');
-    }
-
-    // 2. Kreiranje admin korisnika
+    // 1. Kreiranje admin korisnika (prvo korisnik jer organizacija treba ownerId)
     let admin = await User.findOne({ username: 'admin' });
     if (!admin) {
       admin = new User({
         username: 'admin',
         password: 'admin123password',
-        role: 'admin',
-        organizationId: organization._id
+        role: 'admin'
       });
       await admin.save();
       console.log('Admin korisnik kreiran: admin / admin123password');
-    } else {
-      // FORSIRANA NADOGRADNJA: Uvijek osiguraj da admin ima organizationId
+    }
+
+    // 2. Kreiranje podrazumijevane organizacije
+    let organization = await Organization.findOne({ slug: 'glavna-organizacija' });
+    if (!organization) {
+      organization = new Organization({
+        name: 'Glavna Organizacija',
+        slug: 'glavna-organizacija',
+        ownerId: admin._id
+      });
+      await organization.save();
+      console.log('Organizacija kreirana.');
+    }
+
+    // 3. Poveži korisnika sa organizacijom ako nije povezan
+    if (!admin.organizationId) {
       await User.updateOne(
         { _id: admin._id },
         { $set: { organizationId: organization._id } }
       );
-      console.log('Admin korisnik - organizationId ažuriran/provjeren.');
+      console.log('Admin korisnik povezan sa organizacijom.');
     }
 
     // 3. Osnovne postavke
