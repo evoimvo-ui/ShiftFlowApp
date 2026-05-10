@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://vas-backend-server.onrender.com/api/:splat"
+  to = "https://shiftflowapp.onrender.com/api/:splat"
   status = 200
 
 [[redirects]]
