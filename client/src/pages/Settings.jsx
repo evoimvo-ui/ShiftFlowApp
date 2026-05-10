@@ -279,9 +279,15 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
       <Modal open={shiftModal} onClose={() => setShiftModal(false)} title={editShift ? 'Uredi smjenu' : 'Nova smjena'}>
         <div className="flex flex-col gap-5">
           <Input label="Naziv smjene" value={shiftForm.name} onChange={v => setShiftForm(f => ({ ...f, name: v }))} placeholder="npr. Prva smjena, Vikend..." required />
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Početak" type="time" value={shiftForm.start} onChange={v => setShiftForm(f => ({ ...f, start: v }))} />
-            <Input label="Kraj" type="time" value={shiftForm.end} onChange={v => setShiftForm(f => ({ ...f, end: v }))} />
+          
+          <div className="pt-2">
+            {shiftForm.isSplit && (
+              <label className="text-[10px] font-bold text-[--blue] tracking-widest uppercase mb-2 block">Prvi dio</label>
+            )}
+            <div className="grid grid-cols-2 gap-4">
+              <Input label={shiftForm.isSplit ? "Prvi dio: Početak" : "Početak"} type="time" value={shiftForm.start} onChange={v => setShiftForm(f => ({ ...f, start: v }))} />
+              <Input label={shiftForm.isSplit ? "Prvi dio: Kraj" : "Kraj"} type="time" value={shiftForm.end} onChange={v => setShiftForm(f => ({ ...f, end: v }))} />
+            </div>
           </div>
 
           <div className="pt-4 border-t border-white/5">
