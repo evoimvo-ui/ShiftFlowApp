@@ -2,6 +2,8 @@ const Absence = require('../models/Absence');
 const Worker = require('../models/Worker');
 const Schedule = require('../models/Schedule');
 const ShiftType = require('../models/ShiftType');
+const Notification = require('../models/Notification');
+const User = require('../models/User');
 const { shiftDurationHours } = require('../utils/scheduler');
 
 // Pomoćna funkcija za datume (bezbedna za vremenske zone)
@@ -111,6 +113,27 @@ exports.createAbsence = async (req, res) => {
     
     const absence = new Absence(absenceData);
     await absence.save();
+    
+    // Kreiraj notifikaciju za admin ako je status pending
+    if (absence.status === 'pending') {
+      const worker = await Worker.findById(absence.workerId);
+      if (worker) {
+        // Pronađi sve admin korisnike
+        const adminUsers = await User.find({ role: 'admin' });
+        
+        for (const adminUser of adminUsers) {
+          const notification = new Notification({
+            recipientId: adminUser._id,
+            type: 'absence_request',
+            relatedId: absence._id,
+            title: 'Zahtev za odsutnost',
+            message: `${worker.name} traži dozvolu za odsutnost od ${absence.startDate} do ${absence.endDate}.`,
+            status: 'unread'
+          });
+          await notification.save();
+        }
+      }
+    }
     
     if (absence.status === 'approved') {
       await removeWorkerFromSchedules(absence.workerId, absence.startDate, absence.endDate, req.user.organizationId);

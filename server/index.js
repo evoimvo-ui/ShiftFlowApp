@@ -1,15 +1,18 @@
+```
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
+
 const path = require('path');
 
 const connectDB = require('./config/db');
 const keys = require('./config/keys');
 const seed = require('./utils/seed_logic'); // Promijenićemo seed.js da izvozi funkciju
 
-dotenv.config();
+
 
 const app = express();
 
@@ -40,6 +43,7 @@ const settingRoutes = require('./routes/settingRoutes');
 const holidayRoutes = require('./routes/holidayRoutes');
 const swapRoutes = require('./routes/swapRoutes');
 const auditRoutes = require('./routes/auditRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 app.use('/api/workers', workerRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -50,6 +54,7 @@ app.use('/api/settings', settingRoutes);
 app.use('/api/holidays', holidayRoutes);
 app.use('/api/swaps', swapRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Posluživanje statičkih datoteka u produkciji
 if (process.env.NODE_ENV === 'production') {
@@ -68,3 +73,7 @@ const PORT = keys.port;
 app.listen(PORT, () => {
   console.log(`Server pokrenut na portu ${PORT}`);
 });
+
+
+Ovako?
+```

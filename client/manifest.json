@@ -20,6 +20,9 @@
   ],
   "start_url": ".",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#0f172a",
-  "background_color": "#0f172a"
+  "background_color": "#0f172a",
+  "scope": "/",
+  "description": "Sistem za upravljanje rasporedom radnika"
 }

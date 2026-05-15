@@ -7,6 +7,8 @@ const workerSchema = new mongoose.Schema({
   phone: String,
   email: String,
   maxHoursPerWeek: { type: Number, default: 40 },
+  weekendCycleStart: { type: Date, default: null }, // Datum od kojeg počinje ciklus rotacije
+  dayBank: { type: Number, default: 0 }, // Saldo slobodnih dana (npr. +1 ako ima dan viška)
   createdAt: { type: Date, default: Date.now }
 });
 

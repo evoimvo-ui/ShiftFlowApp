@@ -24,6 +24,9 @@ exports.generateNewSchedule = async (req, res) => {
     const { weekStart, shiftTypes, settings } = req.body;
     const organizationId = req.user.organizationId;
     
+    // Provjeri da li već postoji raspored za tu sedmicu i obriši ga ako postoji
+    await Schedule.findOneAndDelete({ weekStart, organizationId });
+
     const workers = await Worker.find({ organizationId });
     const categories = await Category.find({ organizationId });
     const absences = await Absence.find({ organizationId });
@@ -41,16 +44,14 @@ exports.generateNewSchedule = async (req, res) => {
       holidays
     );
 
-    // Save or update schedule for this week
-    let schedule = await Schedule.findOne({ weekStart: newScheduleData.weekStart, organizationId });
-    if (schedule) {
-      schedule.assignments = newScheduleData.assignments;
-      schedule.workerHours = newScheduleData.workerHours;
-      await schedule.save();
-    } else {
-      schedule = new Schedule({ ...newScheduleData, organizationId });
-      await schedule.save();
-    }
+    const schedule = new Schedule({
+      organizationId,
+      weekStart,
+      assignments: newScheduleData.assignments,
+      workerHours: newScheduleData.workerHours,
+      status: 'draft'
+    });
+    await schedule.save();
 
     res.status(201).json(schedule);
   } catch (err) {

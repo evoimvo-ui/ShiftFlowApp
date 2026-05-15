@@ -62,126 +62,206 @@ function isHoliday(date, holidays) {
   return holidays.some(h => h.date === iso || (h.isRecurring && h.date.slice(5) === monthDay));
 }
 
-function generateSchedule(weekStart, workers, categories, absences, shiftTypes, settings, historicalSchedules, holidays = []) {
+function generateSchedule(weekStart, workers, categories, absences, shiftTypes, settings, historicalSchedules = [], holidays = []) {
   const assignments = [];
-  const workerHours = {};
-  const workerLastShift = {}; 
-  const workerShiftCount = {};
+  const workerHours = new Map();
+  const workerDaysWorked = new Map(); // Broj radnih dana u sedmici po radniku
+  const workerCycleWeek = new Map(); // Izračunata sedmica ciklusa za svakog radnika
+  const workerShiftCount = new Map(); // Broj svake vrste smjene po radniku za rotaciju
 
-  historicalSchedules.slice(-8).forEach(sched => {
-    sched.assignments.forEach(a => {
-      if (a.workerId) {
-        const wId = a.workerId.toString();
-        if (!workerShiftCount[wId]) workerShiftCount[wId] = {};
-        workerShiftCount[wId][a.shiftId] = (workerShiftCount[wId][a.shiftId] || 0) + 1;
-      }
-    });
+  workers.forEach(w => {
+    workerHours.set(w._id.toString(), 0);
+    workerDaysWorked.set(w._id.toString(), 0);
+    workerShiftCount.set(w._id.toString(), {});
   });
 
-  const minRest = settings.minRestHours || 11;
-  const maxHours = settings.maxHoursPerWeek || 40;
-  const sortedShifts = [...shiftTypes].sort((a, b) => parseTime(a.start) - parseTime(b.start));
+  console.log('Categories with requiredPerShift:');
+  categories.forEach(cat => {
+    console.log(`Category: ${cat.name}, requiredPerShift:`, cat.requiredPerShift);
+    console.log(`Category _id: ${cat._id?.toString()}`);
+  });
+    
+  workers.forEach(w => {
+    // Izračunaj sedmicu ciklusa ako je rotacija uključena
+    if (settings.weekendRotationEnabled && w.weekendCycleStart) {
+      const start = new Date(w.weekendCycleStart);
+      const current = new Date(weekStart);
+      const diffTime = Math.abs(current - start);
+      const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+      const cycleWeek = (diffWeeks % settings.weekendCycleWeeks) + 1;
+      workerCycleWeek.set(w._id.toString(), cycleWeek);
+    }
+  });
 
+  // Dani u sedmici (0-6)
   for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
-    const dayDate = addDays(weekStart, dayOffset);
+    const currentDate = addDays(weekStart, dayOffset);
+    const isWeekend = dayOffset === 5 || dayOffset === 6; // Subota (5) i Nedjelja (6)
+    console.log(`DEBUG: Day ${dayOffset} (${currentDate.toISOString().split('T')[0]}), isWeekend: ${isWeekend}`);
+
+    // Sortiraj smjene po važnosti (npr. po vremenu početka)
+    const sortedShifts = [...shiftTypes].sort((a, b) => a.start.localeCompare(b.start));
 
     for (const shift of sortedShifts) {
-      for (const category of categories) {
-        let required = 0;
-        const isWknd = dayOffset === 5 || dayOffset === 6;
-        const isHldy = isHoliday(dayDate, holidays);
+      // Za svaku kategoriju u smjeni
+      for (const cat of categories) {
+        // Koliko radnika ove kategorije treba u ovoj smjeni?
+        let needed = 0;
         
-        let reqField = 'requiredPerShift';
-        if (isHldy && category.useHolidayWeights) {
-          reqField = 'requiredPerShiftHoliday';
-        } else if (isWknd && category.useWeekendWeights) {
-          reqField = 'requiredPerShiftWeekend';
-        }
-
-        if (category[reqField] instanceof Map) {
-          required = category[reqField].get(shift.id) || 0;
-        } else if (category[reqField]) {
-          required = category[reqField][shift.id] || 0;
+        // MongoDB Map - koristimo .get() metod za pristup
+        needed = 0;
+        if (cat.requiredPerShift && typeof cat.requiredPerShift.get === 'function') {
+          needed = cat.requiredPerShift.get(shift.id) || 0;
+        } else if (cat.requiredPerShift && typeof cat.requiredPerShift === 'object') {
+          // Fallback za običan objekat
+          needed = cat.requiredPerShift[shift.id] || 0;
         }
         
-        if (required === 0) continue;
-
-        const shiftDur = shiftDurationHours(shift);
-
-        const available = workers.filter(w => {
-          const wId = w._id.toString();
-          
-          // PROVJERA: Da li je radnik već dodijeljen bilo kojoj smjeni u ovom danu?
-          const alreadyAssignedToday = assignments.some(a => 
-            !a.isWarning && 
-            a.dayOffset === dayOffset && 
-            a.workerId.toString() === wId
-          );
-          if (alreadyAssignedToday) return false;
-
-          const wCats = (w.categoryIds || []).map(id => id.toString());
-          if (!wCats.includes(category._id.toString())) return false;
-          
-          // Strožija provjera odsutnosti
-          if (isWorkerAbsent(wId, dayDate, absences)) return false;
-          
-          const hoursUsed = workerHours[wId] || 0;
-          if (hoursUsed + shiftDur > maxHours + (settings.allowOvertime ? settings.maxOvertimeHours || 8 : 0)) return false;
-          
-          const lastEnd = workerLastShift[wId]; // minutes from week start
-          if (lastEnd !== undefined) {
-            const currentStart = dayOffset * 24 * 60 + parseTime(shift.start);
-            if (currentStart - lastEnd < minRest * 60) return false;
+        console.log(`DEBUG: Shift ${shift.name} (${shift.id}), Category ${cat.name}, needed = ${needed}`);
+        
+        // Fallback: samo ako requiredPerShift ne postoji ili je prazan, postavi default vrednosti
+        const hasRequiredPerShift = cat.requiredPerShift && (
+          (typeof cat.requiredPerShift.get === 'function' && cat.requiredPerShift.size > 0) ||
+          (typeof cat.requiredPerShift === 'object' && Object.keys(cat.requiredPerShift).length > 0)
+        );
+        
+        if (!hasRequiredPerShift && needed === 0) {
+          // Default vrednosti ako nije ništa postavljeno
+          if (cat.name.toLowerCase().includes('studio')) {
+            needed = 1;
+            console.log(`DEBUG: Fallback - setting needed = 1 for ${cat.name} (no requiredPerShift data)`);
+          } else if (cat.name.toLowerCase().includes('eng')) {
+            needed = 1;
+            console.log(`DEBUG: Fallback - setting needed = 1 for ${cat.name} (no requiredPerShift data)`);
           }
-          return true;
-        });
-
-        available.sort((a, b) => {
-          const aId = a._id.toString();
-          const bId = b._id.toString();
-          const aHours = workerHours[aId] || 0;
-          const bHours = workerHours[bId] || 0;
-          const aShiftCount = (workerShiftCount[aId] || {})[shift.id] || 0;
-          const bShiftCount = (workerShiftCount[bId] || {})[shift.id] || 0
-          return (aHours - bHours) * 2 + (aShiftCount - bShiftCount);
-        });
-
-        const toAssign = available.slice(0, required);
-        for (const worker of toAssign) {
-          const wId = worker._id.toString();
-          assignments.push({
-            workerId: worker._id,
-            categoryId: category._id,
-            shiftId: shift.id,
-            dayOffset,
-          });
-          workerHours[wId] = (workerHours[wId] || 0) + shiftDur;
-          
-          // Izračunaj kraj smjene (za dvokratnu koristimo kraj drugog dijela)
-          const actualEnd = (shift.isSplit && shift.end2) ? shift.end2 : shift.end;
-          const actualStart = (shift.isSplit && shift.end2) ? shift.start : shift.start; // start prvog dijela
-
-          const endsNextDay = parseTime(actualEnd) <= parseTime(shift.start);
-          const endMinutes = dayOffset * 24 * 60 + parseTime(actualEnd) + (endsNextDay ? 24 * 60 : 0);
-          workerLastShift[wId] = endMinutes;
-          if (!workerShiftCount[wId]) workerShiftCount[wId] = {};
-          workerShiftCount[wId][shift.id] = (workerShiftCount[wId][shift.id] || 0) + 1;
         }
+        
+        // Proveri specifične zahteve za vikende
+        console.log(`DEBUG: Weekend check - isWeekend: ${isWeekend}, cat.useWeekendWeights: ${cat.useWeekendWeights}`);
+        
+        // Ako je vikend i useWeekendWeights nije uključen, postavi needed = 0
+        if (isWeekend && !cat.useWeekendWeights) {
+          needed = 0;
+          console.log(`DEBUG: Weekend disabled for ${cat.name} - setting needed = 0`);
+        } else if (isWeekend && cat.useWeekendWeights) {
+          let weekendNeeded = 0;
+          if (cat.requiredPerShiftWeekend && typeof cat.requiredPerShiftWeekend.get === 'function') {
+            weekendNeeded = cat.requiredPerShiftWeekend.get(shift.id) || 0;
+          } else if (cat.requiredPerShiftWeekend && typeof cat.requiredPerShiftWeekend === 'object') {
+            weekendNeeded = cat.requiredPerShiftWeekend[shift.id] || 0;
+          }
+          // Uvek koristi weekendNeeded, ne fallback na regularne vrednosti
+          needed = weekendNeeded;
+          console.log(`DEBUG: Weekend override - ${cat.name} for ${shift.name}: weekendNeeded = ${weekendNeeded}, final needed = ${needed}`);
+        }
+        
+        // Proveri specifične zahteve za praznike
+        if (isHoliday(currentDate, holidays) && cat.useHolidayWeights) {
+          let holidayNeeded = 0;
+          if (cat.requiredPerShiftHoliday && typeof cat.requiredPerShiftHoliday.get === 'function') {
+            holidayNeeded = cat.requiredPerShiftHoliday.get(shift.id) || 0;
+          } else if (cat.requiredPerShiftHoliday && typeof cat.requiredPerShiftHoliday === 'object') {
+            holidayNeeded = cat.requiredPerShiftHoliday[shift.id] || 0;
+          }
+          needed = holidayNeeded || needed;
+          console.log(`DEBUG: Holiday override - ${cat.name} for ${shift.name}: holidayNeeded = ${holidayNeeded}, final needed = ${needed}`);
+        }
+        
+        if (needed === 0) {
+          console.log(`DEBUG: Skipping ${cat.name} for ${shift.name} - needed = 0`);
+          continue; // Preskoči ako nema potrebe za ovom kategorijom u ovoj smjeni
+        }
+        
+        for (let i = 0; i < needed; i++) {
+          const available = workers.filter(w => {
+            const wId = w._id.toString();
+            
+            // 1. PROVJERA: Da li je radnik već dodijeljen bilo kojoj smjeni u ovom danu?
+            const alreadyAssignedToday = assignments.some(a => 
+              !a.isWarning && 
+              a.dayOffset === dayOffset && 
+              a.workerId.toString() === wId
+            );
+            if (alreadyAssignedToday) return false;
 
-        if (toAssign.length < required) {
-          assignments.push({
-            isWarning: true,
-            categoryId: category._id,
-            shiftId: shift.id,
-            dayOffset,
-            needed: required - toAssign.length,
+            // 2. PROVJERA: Da li je radnik slobodan (nije na bolovanju/odmoru)?
+            if (isWorkerAbsent(wId, currentDate, absences)) return false;
+
+            // 3. PROVJERA: Da li radnik pripada traženoj kategoriji?
+            const wCats = (w.categoryIds || []).map(id => id.toString());
+            if (!wCats.includes(cat._id.toString())) return false;
+
+            // 4. PROVJERA: Ciklična rotacija vikenda
+            if (isWeekend && settings.weekendRotationEnabled && workerCycleWeek.has(wId)) {
+              const cycleWeek = workerCycleWeek.get(wId);
+              // Radna sedmica je zadnja u ciklusu (npr. 3. sedmica)
+              // Sve ostale sedmice su slobodne za vikend
+              if (cycleWeek < settings.weekendCycleWeeks) return false;
+            }
+
+            // 5. PROVJERA: Strategija odmora (Max radnih dana u sedmici)
+            const daysWorked = workerDaysWorked.get(wId);
+            const maxDays = settings.schedulingStrategy === 'accumulation' ? 6 : 5;
+            if (daysWorked >= maxDays) return false;
+
+            // 6. PROVJERA: Max sati sedmično
+            const currentHours = workerHours.get(wId);
+            const shiftHours = shiftDurationHours(shift);
+            if (currentHours + shiftHours > (w.maxHoursPerWeek || 40) + (settings.allowOvertime ? settings.maxOvertimeHours || 0 : 0)) return false;
+
+            return true;
           });
+
+          if (available.length > 0) {
+            // Biramo radnika sa najmanje sati do sada, uzimajući u obzir rotaciju smjena
+            available.sort((a, b) => {
+              const aHours = workerHours.get(a._id.toString());
+              const bHours = workerHours.get(b._id.toString());
+              const aShiftCount = (workerShiftCount.get(a._id.toString()) || {})[shift.id] || 0;
+              const bShiftCount = (workerShiftCount.get(b._id.toString()) || {})[shift.id] || 0;
+              // Prefer manje sati, zatim manje puta na ovoj smjeni (za rotaciju)
+              const score = (aHours - bHours) * 2 + (aShiftCount - bShiftCount);
+              return score;
+            });
+            const selected = available[0];
+            const sId = selected._id.toString();
+
+            assignments.push({
+              workerId: selected._id,
+              shiftId: shift._id,
+              categoryId: cat._id,
+              dayOffset,
+              isWarning: false
+            });
+
+            workerHours.set(sId, workerHours.get(sId) + shiftDurationHours(shift));
+            workerDaysWorked.set(sId, workerDaysWorked.get(sId) + 1);
+            
+            // Ažuriraj broj ove vrste smjene za rotaciju
+            const shiftCounts = workerShiftCount.get(sId) || {};
+            shiftCounts[shift.id] = (shiftCounts[shift.id] || 0) + 1;
+            workerShiftCount.set(sId, shiftCounts);
+          } else {
+            // Nema dostupnog radnika - kreiraj upozorenje
+            assignments.push({
+              shiftId: shift._id,
+              categoryId: cat._id,
+              dayOffset,
+              isWarning: true,
+              needed: 1
+            });
+          }
         }
       }
     }
   }
 
-  return { weekStart: isoDate(weekStart), assignments, workerHours };
+  try {
+    return { assignments, workerHours: Object.fromEntries(workerHours) };
+  } catch (error) {
+    console.error('SCHEDULER ERROR:', error);
+    return { assignments: [], workerHours: {} };
+  }
 }
 
 module.exports = {

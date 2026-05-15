@@ -74,6 +74,7 @@ exports.login = async (req, res) => {
     res.json({ 
       token, 
       user: { 
+        _id: user._id,
         username: user.username, 
         role: user.role, 
         organizationId: user.organizationId?._id?.toString(),

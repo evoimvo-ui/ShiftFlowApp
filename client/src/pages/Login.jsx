@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { Zap, Lock, User as UserIcon, RefreshCw, Play } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Btn, Card, Input } from '../components/UI'
+import LanguageSelector from '../components/LanguageSelector'
 import { authApi } from '../api'
 
 export default function LoginPage({ onLogin }) {
+  const { t } = useTranslation()
   const [isLogin, setIsLogin] = useState(true)
   const [regType, setRegType] = useState('admin') // 'admin' ili 'worker'
   const [form, setForm] = useState({ username: '', password: '', organizationName: '' })
@@ -27,13 +30,13 @@ export default function LoginPage({ onLogin }) {
         // Registracija organizacije i admina ILI radnika
         await authApi.register({ ...form, role: regType })
         setSuccess(regType === 'admin' 
-          ? 'Organizacija uspješno registrovana! Sada se možete prijaviti.' 
-          : 'Uspješno ste se registrovali kao radnik! Sada se možete prijaviti.'
+          ? t('login.registerSuccessAdmin') 
+          : t('login.registerSuccessWorker')
         )
         setIsLogin(true)
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Server nije dostupan. Koristite Demo Verziju ispod.')
+      setError(err.response?.data?.message || t('login.serverUnavailable'))
     } finally {
       setLoading(false)
     }
@@ -46,19 +49,22 @@ export default function LoginPage({ onLogin }) {
   }
 
   return (
-    <div className="min-h-screen bg-[--bg-surface] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[--bg-surface] flex items-center justify-center p-4 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageSelector />
+      </div>
       <div className="w-full max-w-md animate-in fade-in zoom-in duration-300">
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4 shadow-xl shadow-blue-500/20">
             <Zap size={32} color="white" />
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight">ShiftFlow Admin</h1>
+          <h1 className="text-2xl font-black text-white tracking-tight">{t('login.title')}</h1>
           <p className="text-[--text-muted] text-sm mt-1 font-medium">
             {isLogin 
-              ? 'Sistem za upravljanje rasporedom' 
+              ? t('login.subtitle') 
               : regType === 'admin' 
-                ? 'Kreiraj novu firmu i admin nalog' 
-                : 'Pridruži se postojećoj firmi kao radnik'
+                ? t('login.subtitleRegisterAdmin') 
+                : t('login.subtitleRegisterWorker')
             }
           </p>
         </div>
@@ -71,14 +77,14 @@ export default function LoginPage({ onLogin }) {
                 onClick={() => setRegType('admin')}
                 className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'admin' ? 'bg-blue-600 text-white shadow-lg' : 'text-[--text-muted] hover:text-white'}`}
               >
-                Nova Firma
+                {t('login.newCompany')}
               </button>
               <button 
                 type="button"
                 onClick={() => setRegType('worker')}
                 className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'worker' ? 'bg-blue-600 text-white shadow-lg' : 'text-[--text-muted] hover:text-white'}`}
               >
-                Pridruži se (Radnik)
+                {t('login.joinWorker')}
               </button>
             </div>
           )}
@@ -86,25 +92,25 @@ export default function LoginPage({ onLogin }) {
             <div className="space-y-4">
               {!isLogin && (
                 <Input 
-                  label={regType === 'admin' ? "Naziv firme / organizacije" : "Naziv firme kojoj se pridružujete"} 
+                  label={regType === 'admin' ? t('login.companyName') : t('login.companyNameWorker')} 
                   value={form.organizationName} 
                   onChange={v => setForm(f => ({ ...f, organizationName: v }))} 
-                  placeholder="Moja Firma d.o.o."
-                  hint={regType === 'worker' ? "Mora biti identičan nazivu koji je admin registrovao" : ""}
+                  placeholder={t('login.companyNamePlaceholder')}
+                  hint={regType === 'worker' ? t('login.companyNameHint') : ""}
                 />
               )}
               <Input 
-                label="Korisničko ime" 
+                label={t('login.username')} 
                 value={form.username} 
                 onChange={v => setForm(f => ({ ...f, username: v }))} 
-                placeholder="admin"
+                placeholder={t('login.usernamePlaceholder')}
               />
               <Input 
-                label="Lozinka" 
+                label={t('login.password')} 
                 type="password" 
                 value={form.password} 
                 onChange={v => setForm(f => ({ ...f, password: v }))} 
-                placeholder="••••••••"
+                placeholder={t('login.passwordPlaceholder')}
               />
             </div>
 
@@ -116,7 +122,7 @@ export default function LoginPage({ onLogin }) {
               disabled={loading}
               icon={loading ? <RefreshCw className="animate-spin" size={16} /> : null}
             >
-              {loading ? (isLogin ? 'Prijava...' : 'Registracija...') : (isLogin ? 'Prijavi se' : 'Registruj se')}
+              {loading ? (isLogin ? t('login.loggingIn') : t('login.registering')) : (isLogin ? t('login.loginButton') : t('login.registerButton'))}
             </Btn>
 
             <button 
@@ -124,12 +130,12 @@ export default function LoginPage({ onLogin }) {
               onClick={() => setIsLogin(!isLogin)}
               className="text-xs text-[--text-muted] hover:text-white transition-colors font-medium text-center"
             >
-              {isLogin ? 'Nemate nalog? Registrujte se' : 'Već imate nalog? Prijavite se'}
+              {isLogin ? t('login.noAccount') : t('login.hasAccount')}
             </button>
 
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"><span className="bg-[#1e293b] px-2 text-[--text-muted]">Ili</span></div>
+              <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"><span className="bg-[#1e293b] px-2 text-[--text-muted]">{t('common.or')}</span></div>
             </div>
 
             <Btn 
@@ -139,13 +145,13 @@ export default function LoginPage({ onLogin }) {
               onClick={startDemo}
               icon={<Play size={14} />}
             >
-              Pokreni Demo Verziju
+              {t('login.startDemo')}
             </Btn>
           </form>
         </Card>
         
         <p className="text-center mt-8 text-[10px] text-[--text-muted] uppercase tracking-[0.2em] font-bold opacity-50">
-          ei-apps &copy; 2026
+          {t('login.copyright')}
         </p>
       </div>
     </div>

@@ -73,4 +73,10 @@ export const settingApi = {
   deleteShift: (id) => api.delete(`/settings/shifts/${id}`),
 };
 
+export const notificationApi = {
+  getNotifications: (userId) => api.get('/notifications', { params: { userId } }),
+  markAsRead: (id) => api.put(`/notifications/${id}/read`),
+  processNotification: (id, action) => api.post(`/notifications/${id}/process`, { action }),
+};
+
 export default api;

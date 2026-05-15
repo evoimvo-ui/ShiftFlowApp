@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, Trash2, AlertTriangle, Heart, Plane, Briefcase, HelpCircle } from 'lucide-react'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
 import { absenceApi } from '../api'
@@ -13,6 +14,7 @@ export function isSameWorker(workerName, username) {
 }
 
 export default function AbsencesPage({ absences, setAbsences, workers, categories, user, refresh }) {
+  const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const isAdmin = user?.role === 'admin'
   const currentWorker = workers.find(w => isSameWorker(w.name, user?.username))
@@ -33,7 +35,7 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
   }, [currentWorker, isAdmin])
   const [filterType, setFilterType] = useState('all')
 
-  if (!absences || !workers || !categories) return <div className="p-20 text-center text-[--text-muted]">Učitavanje...</div>
+  if (!absences || !workers || !categories) return <div className="p-20 text-center text-[--text-muted]">{t('common.loading')}</div>
 
   const today = isoDate(new Date())
   const active = absences.filter(a => {
@@ -58,9 +60,9 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
         endDate: today, 
         note: '' 
       })
-      alert(isAdmin ? 'Odsutnost sačuvana' : 'Zahtjev za odsutnost poslat na odobrenje')
+      alert(isAdmin ? t('absences.saved') : t('absences.requestSent'))
     } catch (err) {
-      alert('Greška pri spašavanju odsutnosti: ' + err.message)
+      alert(t('absences.saveError', { error: err.message }))
     }
   }
 
@@ -71,17 +73,17 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
       setAbsences(as => as.map(a => a.id === updated.id ? updated : a))
       if (status === 'approved' && refresh) refresh()
     } catch (err) {
-      alert('Greška pri odobravanju: ' + err.message)
+      alert(t('absences.approveError', { error: err.message }))
     }
   }
 
   const remove = async id => {
-    if (confirm('Obrisati zapis o odsutnosti?')) {
+    if (confirm(t('absences.deleteConfirm'))) {
       try {
         await absenceApi.delete(id)
         setAbsences(as => as.filter(a => a.id !== id))
       } catch (err) {
-        alert('Greška pri brisanju odsutnosti: ' + err.message)
+        alert(t('absences.deleteError', { error: err.message }))
       }
     }
   }
@@ -94,14 +96,17 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
   })
     .sort((a, b) => b.startDate.localeCompare(a.startDate))
 
-  const absenceTypeInfo = type => ABSENCE_TYPES.find(t => t.id === type) || ABSENCE_TYPES[3]
+  const absenceTypeInfo = type => {
+    const typeDef = ABSENCE_TYPES.find(t => t.id === type) || ABSENCE_TYPES[3]
+    return { ...typeDef, label: t('absenceTypes.' + typeDef.id) }
+  }
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[--text-primary]">{isAdmin ? 'Odsutnosti' : 'Moje Odsutnosti'}</h1>
-          <p className="text-[--text-muted] text-sm mt-1 font-medium">{isAdmin ? `${active.length} radnika je trenutno na odsustvu` : 'Pregled vaših odsustava i podnošenje zahtjeva'}</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[--text-primary]">{isAdmin ? t('absences.title') : t('absences.myTitle')}</h1>
+          <p className="text-[--text-muted] text-sm mt-1 font-medium">{isAdmin ? t('absences.subtitleAdmin', { count: active.length }) : t('absences.subtitleWorker')}</p>
         </div>
         <Btn onClick={() => { 
           setForm({ 
@@ -113,7 +118,7 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
           }); 
           setModal(true) 
         }} icon={<Plus size={16} />}>
-          {isAdmin ? 'Nova odsutnost' : 'Zatraži odsutnost'}
+          {isAdmin ? t('absences.new') : t('absences.request')}
         </Btn>
       </div>
 
@@ -121,25 +126,25 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
         <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-start gap-3 shadow-lg shadow-rose-500/5 animate-pulse">
           <AlertTriangle size={18} className="text-rose-400 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-rose-200 leading-relaxed">
-            <strong className="text-rose-400 font-bold uppercase tracking-wider text-[11px] block mb-1">Trenutno odsutni</strong>
+            <strong className="text-rose-400 font-bold uppercase tracking-wider text-[11px] block mb-1">{t('absences.currentlyAbsent')}</strong>
             {active.map(a => workers.find(w => w.id === a.workerId)?.name).filter(Boolean).join(', ')}
           </div>
         </div>
       )}
 
       <div className="flex gap-2 flex-wrap bg-[--bg-card]/50 p-2 rounded-2xl border border-[--border]">
-        {[{ id: 'all', label: 'Sve', color: 'var(--blue)' }, ...ABSENCE_TYPES].map(t => (
+        {[{ id: 'all', label: t('absences.all'), color: 'var(--blue)' }, ...ABSENCE_TYPES.map(type => ({ ...type, label: t('absenceTypes.' + type.id) }))].map(type => (
           <button 
-            key={t.id} 
-            onClick={() => setFilterType(t.id)}
+            key={type.id} 
+            onClick={() => setFilterType(type.id)}
             className={`
               px-4 py-1.5 rounded-xl text-xs font-bold transition-all border
-              ${filterType === t.id 
+              ${filterType === type.id 
                 ? 'bg-white/10 border-white/20 text-white shadow-sm' 
                 : 'bg-transparent border-transparent text-[--text-muted] hover:text-[--text-primary] hover:bg-white/5'}
             `}
           >
-            {t.label}
+            {type.label}
           </button>
         ))}
       </div>
@@ -149,7 +154,7 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-white/5 border-b border-[--border]">
-                {['Radnik', 'Tip', 'Period', 'Trajanje', 'Status', 'Napomena', ''].map(h => (
+                {[t('absences.worker'), t('absences.type'), t('absences.period'), t('absences.duration'), t('absences.status'), t('absences.note'), ''].map(h => (
                   <th key={h} className="px-6 py-4 text-left text-[10px] font-bold text-[--text-muted] tracking-widest uppercase">{h}</th>
                 ))}
               </tr>
@@ -158,7 +163,7 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-20 text-center text-[--text-muted] text-sm italic opacity-50">
-                    Nema zabilježenih odsutnosti u bazi.
+                    {t('absences.noAbsences')}
                   </td>
                 </tr>
               ) : filtered.map((a) => {
@@ -184,33 +189,33 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
                         >
                           {worker?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?'}
                         </div>
-                        <span className="text-sm font-semibold text-[--text-primary]">{worker?.name || 'Nepoznat'}</span>
+                        <span className="text-sm font-semibold text-[--text-primary]">{worker?.name || t('absences.unknown')}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4"><Badge color={typeInfo.color}>{typeInfo.label}</Badge></td>
                     <td className="px-6 py-4">
                       <div className="text-[11px] font-mono text-[--text-secondary] flex items-center gap-1.5">
-                        {formatDate(start)} <span className="opacity-30">→</span> {formatDate(end)}
+                        {formatDate(start)} <span className="opacity-30">{t('absences.to')}</span> {formatDate(end)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-mono text-sm text-[--text-muted]">{days}d</td>
+                    <td className="px-6 py-4 font-mono text-sm text-[--text-muted]">{days}{t('absences.days')}</td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1.5">
                         <Badge color={isActive ? '#f43f5e' : isPast ? 'var(--text-muted)' : '#f59e0b'} size="xs">
-                          {isActive ? 'Aktivan' : isPast ? 'Završen' : 'Predstojeći'}
+                          {isActive ? t('absences.active') : isPast ? t('absences.completed') : t('absences.upcoming')}
                         </Badge>
                         <Badge color={a.status === 'approved' ? '#10b981' : a.status === 'rejected' ? '#ef4444' : '#6366f1'} size="xs">
-                          {a.status === 'approved' ? 'Odobreno' : a.status === 'rejected' ? 'Odbijeno' : 'Na čekanju'}
+                          {a.status === 'approved' ? t('absences.approved') : a.status === 'rejected' ? t('absences.rejected') : t('absences.pending')}
                         </Badge>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-[--text-muted] max-w-[150px] truncate italic">{a.note || '—'}</td>
+                    <td className="px-6 py-4 text-xs text-[--text-muted] max-w-[150px] truncate italic">{a.note || t('absences.empty')}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-1">
                         {isAdmin && a.status === 'pending' && (
                           <>
-                            <button onClick={() => approve(a.id, 'approved')} className="p-1.5 text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors" title="Odobri"><Plus size={14} /></button>
-                            <button onClick={() => approve(a.id, 'rejected')} className="p-1.5 text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors" title="Odbij"><Trash2 size={14} /></button>
+                            <button onClick={() => approve(a.id, 'approved')} className="p-1.5 text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors" title={t('absences.approve')}><Plus size={14} /></button>
+                            <button onClick={() => approve(a.id, 'rejected')} className="p-1.5 text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors" title={t('absences.reject')}><Trash2 size={14} /></button>
                           </>
                         )}
                         <button onClick={() => remove(a.id)} className="p-1.5 text-[--text-muted] hover:text-[--rose] opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={14} /></button>
@@ -224,34 +229,34 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
         </div>
       </Card>
 
-      <Modal open={modal} onClose={() => setModal(false)} title={isAdmin ? "Evidencija odsutnosti" : "Zatraži odsutnost"}>
+      <Modal open={modal} onClose={() => setModal(false)} title={isAdmin ? t('absences.record') : t('absences.request')}>
         <div className="flex flex-col gap-5">
           {isAdmin ? (
-            <Input label="Radnik" value={form.workerId} onChange={v => setForm(f => ({ ...f, workerId: v }))} type="select"
+            <Input label={t('absences.worker')} value={form.workerId} onChange={v => setForm(f => ({ ...f, workerId: v }))} type="select"
               options={workers.map(w => ({ value: w.id, label: w.name }))} required />
           ) : currentWorker ? (
             <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-              <p className="text-xs text-blue-200">Podnosite zahtjev za: <strong>{currentWorker.name}</strong></p>
+              <p className="text-xs text-blue-200">{t('absences.submittingFor')} <strong>{currentWorker.name}</strong></p>
             </div>
           ) : (
             <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-3">
               <AlertTriangle size={18} className="text-rose-400" />
               <p className="text-xs text-rose-200">
-                <strong>Profil radnika nije pronađen.</strong><br/>
-                Vaše korisničko ime ({user?.username}) se ne podudara sa imenom u listi radnika.
+                <strong>{t('absences.profileNotFound')}</strong><br/>
+                {t('absences.usernameMismatch', { username: user?.username })}
               </p>
             </div>
           )}
-          <Input label="Tip odsutnosti" value={form.type} onChange={v => setForm(f => ({ ...f, type: v }))} type="select"
-            options={ABSENCE_TYPES.map(t => ({ value: t.id, label: t.label }))} />
+          <Input label={t('absences.type')} value={form.type} onChange={v => setForm(f => ({ ...f, type: v }))} type="select"
+            options={ABSENCE_TYPES.map(type => ({ value: type.id, label: t('absenceTypes.' + type.id) }))} />
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Početak" type="date" value={form.startDate} onChange={v => setForm(f => ({ ...f, startDate: v }))} required />
-            <Input label="Kraj" type="date" value={form.endDate} onChange={v => setForm(f => ({ ...f, endDate: v }))} required />
+            <Input label={t('absences.startDate')} type="date" value={form.startDate} onChange={v => setForm(f => ({ ...f, startDate: v }))} required />
+            <Input label={t('absences.endDate')} type="date" value={form.endDate} onChange={v => setForm(f => ({ ...f, endDate: v }))} required />
           </div>
-          <Input label="Napomena" value={form.note} onChange={v => setForm(f => ({ ...f, note: v }))} placeholder="Dodatne informacije..." />
+          <Input label={t('absences.note')} value={form.note} onChange={v => setForm(f => ({ ...f, note: v }))} placeholder={t('absences.notePlaceholder')} />
           <div className="flex gap-3 justify-end mt-4">
-            <Btn variant="ghost" onClick={() => setModal(false)}>Odustani</Btn>
-            <Btn onClick={save} disabled={!form.workerId}>Spremi</Btn>
+            <Btn variant="ghost" onClick={() => setModal(false)}>{t('common.cancel')}</Btn>
+            <Btn onClick={save} disabled={!form.workerId}>{t('common.save')}</Btn>
           </div>
         </div>
       </Modal>

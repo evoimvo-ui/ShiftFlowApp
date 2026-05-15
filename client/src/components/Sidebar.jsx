@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   LayoutDashboard, Calendar, Users, Tags, 
   UserX, Settings, Zap, ChevronLeft, ChevronRight, X 
@@ -6,15 +7,16 @@ import {
 import { isoDate } from '../utils/helpers'
 
 const NAV = [
-  { id: 'dashboard', label: 'Pregled', icon: LayoutDashboard },
-  { id: 'schedule', label: 'Raspored', icon: Calendar },
-  { id: 'workers', label: 'Radnici', icon: Users },
-  { id: 'categories', label: 'Kategorije', icon: Tags },
-  { id: 'absences', label: 'Odsutnosti', icon: UserX },
-  { id: 'settings', label: 'Podešavanja', icon: Settings },
+  { id: 'dashboard', label: 'sidebar.dashboard', icon: LayoutDashboard },
+  { id: 'schedule', label: 'sidebar.schedule', icon: Calendar },
+  { id: 'workers', label: 'sidebar.workers', icon: Users },
+  { id: 'categories', label: 'sidebar.categories', icon: Tags },
+  { id: 'absences', label: 'sidebar.absences', icon: UserX },
+  { id: 'settings', label: 'sidebar.settings', icon: Settings },
 ]
 
 export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user }) {
+  const { t } = useTranslation()
   const today = isoDate(new Date())
   const activeAbsences = absences.filter(a => a.startDate <= today && a.endDate >= today).length
   
@@ -66,7 +68,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
               `}
             >
               <Icon size={18} className={isActive ? 'text-[--blue-bright]' : 'text-[--text-muted] group-hover:text-[--text-primary] transition-colors'} />
-              {!collapsed && <span className="flex-1 text-left text-[14px]">{item.id === 'schedule' && !isAdmin ? 'Moj Raspored' : item.label}</span>}
+              {!collapsed && <span className="flex-1 text-left text-[14px]">{item.id === 'schedule' && !isAdmin ? t('sidebar.mySchedule') : t(item.label)}</span>}
               {!collapsed && badge && (
                 <span className="bg-rose-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center shadow-sm">
                   {badge}
@@ -86,7 +88,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
           {!collapsed && (
             <div className="flex-1 overflow-hidden">
               <div className="text-xs font-bold text-[--text-primary] truncate">{user?.username}</div>
-              <div className="text-[10px] text-[--text-muted] uppercase tracking-wider">{user?.role}</div>
+              <div className="text-[10px] text-[--text-muted] uppercase tracking-wider">{user?.role === 'admin' ? t('sidebar.admin') : t('sidebar.worker')}</div>
             </div>
           )}
         </div>
@@ -95,7 +97,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
           className={`w-full flex items-center gap-2 p-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-all text-xs font-bold ${collapsed ? 'justify-center' : ''}`}
         >
           <X size={16} />
-          {!collapsed && <span>Odjava</span>}
+          {!collapsed && <span>{t('sidebar.logout')}</span>}
         </button>
       </div>
 
@@ -105,7 +107,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
           onClick={() => setCollapsed(!collapsed)}
           className="w-full flex items-center gap-2 p-2.5 rounded-lg text-[--text-muted] hover:text-[--text-primary] hover:bg-white/5 transition-all text-xs font-medium"
         >
-          {collapsed ? <ChevronRight size={16} className="mx-auto" /> : <><ChevronLeft size={16} /><span>Sakrij meni</span></>}
+          {collapsed ? <ChevronRight size={16} className="mx-auto" /> : <><ChevronLeft size={16} /><span>{t('sidebar.hideMenu')}</span></>}
         </button>
       </div>
     </aside>
