@@ -74,8 +74,8 @@ exports.deleteSchedule = async (req, res) => {
 exports.manualUpdate = async (req, res) => {
   try {
     const { scheduleId, assignmentId, newWorkerId, reason, dayOffset, shiftId, categoryId } = req.body;
-    const schedule = await Schedule.findById(scheduleId);
-    if (!schedule) return res.status(404).json({ message: 'Raspored nije pronađen' });
+    const schedule = await Schedule.findOne({ _id: scheduleId, organizationId: req.user.organizationId });
+    if (!schedule) return res.status(404).json({ message: 'Raspored nije pronađen ili nemate pristup.' });
 
     let oldWorkerId = null;
     let assignment = null;
@@ -200,8 +200,8 @@ exports.manualUpdate = async (req, res) => {
 exports.deleteAssignment = async (req, res) => {
   try {
     const { scheduleId, assignmentId } = req.params;
-    const schedule = await Schedule.findById(scheduleId);
-    if (!schedule) return res.status(404).json({ message: 'Raspored nije pronađen' });
+    const schedule = await Schedule.findOne({ _id: scheduleId, organizationId: req.user.organizationId });
+    if (!schedule) return res.status(404).json({ message: 'Raspored nije pronađen ili nemate pristup.' });
 
     const assignment = schedule.assignments.id(assignmentId);
     if (!assignment) return res.status(404).json({ message: 'Smjena nije pronađena' });

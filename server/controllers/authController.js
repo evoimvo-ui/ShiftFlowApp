@@ -7,6 +7,12 @@ exports.registerOrganization = async (req, res) => {
   try {
     const { username, password, organizationName, role } = req.body;
 
+    // Provjeri da li korisnik već postoji
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Korisničko ime je već zauzeto.' });
+    }
+
     if (role === 'worker') {
       // 1. Pronađi organizaciju po imenu
       const organization = await Organization.findOne({ name: organizationName });

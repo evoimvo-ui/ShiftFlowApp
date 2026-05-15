@@ -37,7 +37,15 @@ exports.updateWorker = async (req, res) => {
     if (data.categoryIds) {
       data.categoryIds = [...new Set(data.categoryIds.map(id => String(id)))];
     }
-    const updatedWorker = await Worker.findByIdAndUpdate(req.params.id, data, { new: true }).populate('categoryIds');
+    const updatedWorker = await Worker.findOneAndUpdate(
+      { _id: req.params.id, organizationId: req.user.organizationId },
+      data,
+      { new: true }
+    ).populate('categoryIds');
+    
+    if (!updatedWorker) {
+      return res.status(404).json({ message: 'Radnik nije pronađen ili nemate pristup.' });
+    }
     res.json(updatedWorker);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -46,7 +54,10 @@ exports.updateWorker = async (req, res) => {
 
 exports.deleteWorker = async (req, res) => {
   try {
-    await Worker.findByIdAndDelete(req.params.id);
+    const deleted = await Worker.findOneAndDelete({ _id: req.params.id, organizationId: req.user.organizationId });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Radnik nije pronađen ili nemate pristup.' });
+    }
     res.json({ message: 'Radnik obrisan' });
   } catch (err) {
     res.status(500).json({ message: err.message });

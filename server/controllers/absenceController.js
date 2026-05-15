@@ -150,8 +150,8 @@ exports.approveAbsence = async (req, res) => {
     const { status } = req.body;
     if (req.user.role !== 'admin') return res.status(403).json({ message: 'Samo admin može odobriti odsutnost' });
     
-    const absence = await Absence.findById(req.params.id);
-    if (!absence) return res.status(404).json({ message: 'Odsutnost nije pronađena' });
+    const absence = await Absence.findOne({ _id: req.params.id, organizationId: req.user.organizationId });
+    if (!absence) return res.status(404).json({ message: 'Odsutnost nije pronađena ili nemate pristup.' });
     
     const oldStatus = absence.status;
     absence.status = status;
@@ -159,7 +159,7 @@ exports.approveAbsence = async (req, res) => {
 
     // Ako je odsutnost odobrena, ažuriraj rasporede (ukloni radnika iz smjena u tom periodu)
     if (status === 'approved' && oldStatus !== 'approved') {
-      await removeWorkerFromSchedules(updatedAbsence.workerId, updatedAbsence.startDate, updatedAbsence.endDate);
+      await removeWorkerFromSchedules(updatedAbsence.workerId, updatedAbsence.startDate, updatedAbsence.endDate, req.user.organizationId);
     }
     
     res.json(updatedAbsence);
@@ -171,7 +171,10 @@ exports.approveAbsence = async (req, res) => {
 
 exports.deleteAbsence = async (req, res) => {
   try {
-    await Absence.findByIdAndDelete(req.params.id);
+    const deleted = await Absence.findOneAndDelete({ _id: req.params.id, organizationId: req.user.organizationId });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Odsutnost nije pronađena ili nemate pristup.' });
+    }
     res.json({ message: 'Odsutnost obrisana' });
   } catch (err) {
     res.status(500).json({ message: err.message });
