@@ -1,4 +1,3 @@
-```
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
@@ -73,7 +72,3 @@ const PORT = keys.port;
 app.listen(PORT, () => {
   console.log(`Server pokrenut na portu ${PORT}`);
 });
-
-
-Ovako?
-```
