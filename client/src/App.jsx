@@ -48,7 +48,10 @@ export default function App() {
   } = useApi(user)
 
   // Pronađi trenutnog radnika za notifikacije
-  const currentWorker = workers?.find(w => w.name?.toLowerCase() === user?.username?.toLowerCase())
+  const currentWorker = workers?.find(w => 
+    (w.username?.toLowerCase() === user?.username?.toLowerCase()) || 
+    (w.name?.toLowerCase() === user?.username?.toLowerCase())
+  )
   const currentWorkerId = currentWorker?.id || currentWorker?._id
 
   console.log('Debug - User:', user?.username, 'Role:', user?.role)

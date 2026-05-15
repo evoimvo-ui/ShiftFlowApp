@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const workerSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  username: { type: String }, // Povezano korisničko ime
   organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
   categoryIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
   phone: String,

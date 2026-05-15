@@ -20,18 +20,20 @@ exports.getSchedules = async (req, res) => {
 };
 
 exports.generateNewSchedule = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const { weekStart, shiftTypes, settings } = req.body;
     const organizationId = req.user.organizationId;
     
     // Provjeri da li već postoji raspored za tu sedmicu i obriši ga ako postoji
-    await Schedule.findOneAndDelete({ weekStart, organizationId });
+    await Schedule.findOneAndDelete({ weekStart, organizationId }, { session });
 
-    const workers = await Worker.find({ organizationId });
-    const categories = await Category.find({ organizationId });
-    const absences = await Absence.find({ organizationId });
-    const holidays = await Holiday.find({ organizationId });
-    const historicalSchedules = await Schedule.find({ organizationId }).sort({ weekStart: -1 }).limit(8);
+    const workers = await Worker.find({ organizationId }).session(session);
+    const categories = await Category.find({ organizationId }).session(session);
+    const absences = await Absence.find({ organizationId }).session(session);
+    const holidays = await Holiday.find({ organizationId }).session(session);
+    const historicalSchedules = await Schedule.find({ organizationId }).sort({ weekStart: -1 }).limit(8).session(session);
 
     const newScheduleData = generateSchedule(
       weekStart,
@@ -51,11 +53,15 @@ exports.generateNewSchedule = async (req, res) => {
       workerHours: newScheduleData.workerHours,
       status: 'draft'
     });
-    await schedule.save();
+    await schedule.save({ session });
 
+    await session.commitTransaction();
     res.status(201).json(schedule);
   } catch (err) {
+    await session.abortTransaction();
     res.status(400).json({ message: err.message });
+  } finally {
+    session.endSession();
   }
 };
 

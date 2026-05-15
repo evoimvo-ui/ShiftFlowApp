@@ -26,6 +26,7 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
     const uniqueCatIds = [...new Set((w.categoryIds || []).map(c => String(c.id || c._id || c)))]
     setForm({ 
       name: w.name, 
+      username: w.username || '',
       categoryIds: uniqueCatIds, 
       phone: w.phone || '', 
       email: w.email || '', 
@@ -244,7 +245,7 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
                   <div className="text-xs text-[--text-muted]">{t('workers.securityZoneDescription')}</div>
                 </div>
               </div>
-              <Btn variant="danger" size="xs" onClick={() => deleteUserAccount(form.name)}>{t('workers.deleteAccount')}</Btn>
+              <Btn variant="danger" size="xs" onClick={() => deleteUserAccount(form.username || form.name)}>{t('workers.deleteAccount')}</Btn>
             </div>
           )}
 

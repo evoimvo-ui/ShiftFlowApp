@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { workerApi, categoryApi, absenceApi, scheduleApi, settingApi } from '../api';
 import { 
   MOCK_WORKERS, MOCK_CATEGORIES, MOCK_ABSENCES, 
@@ -6,6 +7,7 @@ import {
 } from '../utils/mockData';
 
 export default function useApi(user) {
+  const { t } = useTranslation();
   const [workers, setWorkers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [absences, setAbsences] = useState([]);
@@ -19,7 +21,8 @@ export default function useApi(user) {
     setLoading(true);
     try {
       console.log('Fetching data for user:', user);
-      const [w, c, a, s, st, sh] = await Promise.all([
+      
+      const results = await Promise.allSettled([
         workerApi.getAll(),
         categoryApi.getAll(),
         absenceApi.getAll(),
@@ -30,25 +33,23 @@ export default function useApi(user) {
 
       const mapId = (item) => ({ ...item, id: item._id });
 
-      setWorkers(w.data.map(mapId));
-      setCategories(c.data.map(mapId));
-      setAbsences(a.data.map(mapId));
-      setSchedules(s.data.map(mapId));
-      setSettings(mapId(st.data));
-      setShiftTypes(sh.data.map(mapId));
-      setError(null);
+      if (results[0].status === 'fulfilled') setWorkers(results[0].value.data.map(mapId));
+      if (results[1].status === 'fulfilled') setCategories(results[1].value.data.map(mapId));
+      if (results[2].status === 'fulfilled') setAbsences(results[2].value.data.map(mapId));
+      if (results[3].status === 'fulfilled') setSchedules(results[3].value.data.map(mapId));
+      if (results[4].status === 'fulfilled') setSettings(mapId(results[4].value.data));
+      if (results[5].status === 'fulfilled') setShiftTypes(results[5].value.data.map(mapId));
+
+      const errors = results.filter(r => r.status === 'rejected');
+      if (errors.length > 0) {
+        console.error('Some API calls failed:', errors);
+        setError(t ? t('common.partialLoadError') : 'Neki podaci nisu učitani');
+      } else {
+        setError(null);
+      }
     } catch (err) {
       console.error('API Error Details:', err.response?.data || err.message);
       setError(err.message);
-      
-      // DODAJEMO: Ako se desi greška, a nismo u demo modu, ne učitavaj ništa
-      // Ovo će sprečiti "skakanje" u demo mod ako server vrati grešku
-      setWorkers([]);
-      setCategories([]);
-      setAbsences([]);
-      setSchedules([]);
-      setSettings(null);
-      setShiftTypes([]);
     } finally {
       setLoading(false);
     }

@@ -29,6 +29,13 @@ exports.registerOrganization = async (req, res) => {
       });
       await user.save();
 
+      // 3. Pokušaj povezati sa postojećim Worker dokumentom (ako postoji sa istim imenom)
+      const Worker = require('../models/Worker');
+      await Worker.findOneAndUpdate(
+        { name: new RegExp('^' + username + '$', 'i'), organizationId: organization._id },
+        { username: username }
+      );
+
       return res.status(201).json({ message: 'Uspješno ste se registrovali kao radnik u organizaciji ' + organizationName });
     }
 

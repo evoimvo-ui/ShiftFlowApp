@@ -84,6 +84,7 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
   }
 
   const updateGlobalSettings = async (newSettings) => {
+    const oldSettings = settings;
     // Odmah ažuriraj lokalni state za bolji UX
     setSettings(newSettings)
     try {
@@ -92,7 +93,8 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
       setSettings(updated)
     } catch (err) {
       alert(t('settings.updateError', { error: err.message }))
-      // Vrati na staro ako ne uspije (refresh će svakako povući zadnje stanje)
+      // Vrati na staro ako ne uspije
+      setSettings(oldSettings)
     }
   }
 

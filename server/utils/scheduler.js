@@ -23,22 +23,22 @@ function shiftDurationHours(shift) {
 function isoDate(date) {
   if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(date)) return date.slice(0, 10);
   const d = new Date(date);
-  // Koristimo local metode da izbjegnemo UTC shift ako je datum kreiran lokalno
-  return d.getFullYear() + '-' + 
-         String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-         String(d.getDate()).padStart(2, '0');
+  // Koristimo UTC metode da izbjegnemo timezone shift
+  return d.getUTCFullYear() + '-' + 
+         String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + 
+         String(d.getUTCDate()).padStart(2, '0');
 }
 
 function addDays(date, n) {
-  // Ako je string YYYY-MM-DD, parsiramo ga ručno kao lokalni datum
   let d;
   if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(date)) {
     const [y, m, day] = date.split('-').map(Number);
-    d = new Date(y, m - 1, day);
+    // Kreiraj kao UTC da izbjegneš pomjeranje
+    d = new Date(Date.UTC(y, m - 1, day));
   } else {
     d = new Date(date);
   }
-  d.setDate(d.getDate() + n);
+  d.setUTCDate(d.getUTCDate() + n);
   return d;
 }
 
@@ -60,6 +60,10 @@ function isHoliday(date, holidays) {
   const iso = isoDate(date);
   const monthDay = iso.slice(5); // MM-DD
   return holidays.some(h => h.date === iso || (h.isRecurring && h.date.slice(5) === monthDay));
+}
+
+function getShiftId(shift) {
+  return shift.id || (shift._id ? shift._id.toString() : null);
 }
 
 function generateSchedule(weekStart, workers, categories, absences, shiftTypes, settings, historicalSchedules = [], holidays = []) {
@@ -86,9 +90,14 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
     if (settings.weekendRotationEnabled && w.weekendCycleStart) {
       const start = new Date(w.weekendCycleStart);
       const current = new Date(weekStart);
-      const diffTime = Math.abs(current - start);
+      // Koristimo razliku u milisekundama, ali pazimo na smjer
+      const diffTime = current - start;
       const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-      const cycleWeek = (diffWeeks % settings.weekendCycleWeeks) + 1;
+      
+      // Koristimo modulo koji radi ispravno i za negativne brojeve
+      let cycleWeek = ((diffWeeks % settings.weekendCycleWeeks) + settings.weekendCycleWeeks) % settings.weekendCycleWeeks;
+      cycleWeek += 1; // Da dobijemo 1-based index (1, 2, 3...)
+      
       workerCycleWeek.set(w._id.toString(), cycleWeek);
     }
   });
@@ -103,6 +112,7 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
     const sortedShifts = [...shiftTypes].sort((a, b) => a.start.localeCompare(b.start));
 
     for (const shift of sortedShifts) {
+      const sIdForMap = getShiftId(shift);
       // Za svaku kategoriju u smjeni
       for (const cat of categories) {
         // Koliko radnika ove kategorije treba u ovoj smjeni?
@@ -111,13 +121,13 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
         // MongoDB Map - koristimo .get() metod za pristup
         needed = 0;
         if (cat.requiredPerShift && typeof cat.requiredPerShift.get === 'function') {
-          needed = cat.requiredPerShift.get(shift.id) || 0;
+          needed = cat.requiredPerShift.get(sIdForMap) || 0;
         } else if (cat.requiredPerShift && typeof cat.requiredPerShift === 'object') {
           // Fallback za običan objekat
-          needed = cat.requiredPerShift[shift.id] || 0;
+          needed = cat.requiredPerShift[sIdForMap] || 0;
         }
         
-        console.log(`DEBUG: Shift ${shift.name} (${shift.id}), Category ${cat.name}, needed = ${needed}`);
+        console.log(`DEBUG: Shift ${shift.name} (${sIdForMap}), Category ${cat.name}, needed = ${needed}`);
         
         // Fallback: samo ako requiredPerShift ne postoji ili je prazan, postavi default vrednosti
         const hasRequiredPerShift = cat.requiredPerShift && (
@@ -146,9 +156,9 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
         } else if (isWeekend && cat.useWeekendWeights) {
           let weekendNeeded = 0;
           if (cat.requiredPerShiftWeekend && typeof cat.requiredPerShiftWeekend.get === 'function') {
-            weekendNeeded = cat.requiredPerShiftWeekend.get(shift.id) || 0;
+            weekendNeeded = cat.requiredPerShiftWeekend.get(sIdForMap) || 0;
           } else if (cat.requiredPerShiftWeekend && typeof cat.requiredPerShiftWeekend === 'object') {
-            weekendNeeded = cat.requiredPerShiftWeekend[shift.id] || 0;
+            weekendNeeded = cat.requiredPerShiftWeekend[sIdForMap] || 0;
           }
           // Uvek koristi weekendNeeded, ne fallback na regularne vrednosti
           needed = weekendNeeded;
@@ -159,9 +169,9 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
         if (isHoliday(currentDate, holidays) && cat.useHolidayWeights) {
           let holidayNeeded = 0;
           if (cat.requiredPerShiftHoliday && typeof cat.requiredPerShiftHoliday.get === 'function') {
-            holidayNeeded = cat.requiredPerShiftHoliday.get(shift.id) || 0;
+            holidayNeeded = cat.requiredPerShiftHoliday.get(sIdForMap) || 0;
           } else if (cat.requiredPerShiftHoliday && typeof cat.requiredPerShiftHoliday === 'object') {
-            holidayNeeded = cat.requiredPerShiftHoliday[shift.id] || 0;
+            holidayNeeded = cat.requiredPerShiftHoliday[sIdForMap] || 0;
           }
           needed = holidayNeeded || needed;
           console.log(`DEBUG: Holiday override - ${cat.name} for ${shift.name}: holidayNeeded = ${holidayNeeded}, final needed = ${needed}`);
@@ -217,8 +227,8 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
             available.sort((a, b) => {
               const aHours = workerHours.get(a._id.toString());
               const bHours = workerHours.get(b._id.toString());
-              const aShiftCount = (workerShiftCount.get(a._id.toString()) || {})[shift.id] || 0;
-              const bShiftCount = (workerShiftCount.get(b._id.toString()) || {})[shift.id] || 0;
+              const aShiftCount = (workerShiftCount.get(a._id.toString()) || {})[sIdForMap] || 0;
+              const bShiftCount = (workerShiftCount.get(b._id.toString()) || {})[sIdForMap] || 0;
               // Prefer manje sati, zatim manje puta na ovoj smjeni (za rotaciju)
               const score = (aHours - bHours) * 2 + (aShiftCount - bShiftCount);
               return score;
@@ -228,7 +238,7 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
 
             assignments.push({
               workerId: selected._id,
-              shiftId: shift._id,
+              shiftId: sIdForMap,
               categoryId: cat._id,
               dayOffset,
               isWarning: false
@@ -239,12 +249,12 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
             
             // Ažuriraj broj ove vrste smjene za rotaciju
             const shiftCounts = workerShiftCount.get(sId) || {};
-            shiftCounts[shift.id] = (shiftCounts[shift.id] || 0) + 1;
+            shiftCounts[sIdForMap] = (shiftCounts[sIdForMap] || 0) + 1;
             workerShiftCount.set(sId, shiftCounts);
           } else {
             // Nema dostupnog radnika - kreiraj upozorenje
             assignments.push({
-              shiftId: shift._id,
+              shiftId: sIdForMap,
               categoryId: cat._id,
               dayOffset,
               isWarning: true,
