@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, Search, Edit2, Trash2, Users, UserCheck, ShieldAlert } from 'lucide-react'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
-import { workerApi, authApi } from '../api'
+import { workerApi, authApi, groupApi } from '../api'
 import { isoDate } from '../utils/helpers'
 
 export default function WorkersPage({ workers, setWorkers, categories, user }) {
@@ -10,13 +10,21 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
   const isAdmin = user?.role === 'admin'
   const [modal, setModal] = useState(false)
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ name: '', categoryIds: [], phone: '', email: '', maxHoursPerWeek: 40 })
+  const [form, setForm] = useState({ name: '', categoryIds: [], groupId: '', phone: '', email: '', maxHoursPerWeek: 40 })
   const [search, setSearch] = useState('')
   const [filterCat, setFilterCat] = useState('all')
+  const [filterGroup, setFilterGroup] = useState('all')
+  const [groups, setGroups] = useState([])
+
+  useEffect(() => {
+    groupApi.getAll().then(res => {
+      setGroups(res.data.map(g => ({ ...g, id: g._id })))
+    }).catch(err => console.error('Groups error:', err))
+  }, [])
 
   const openNew = () => { 
     setEditing(null); 
-    setForm({ name: '', categoryIds: [], phone: '', email: '', maxHoursPerWeek: 40 }); 
+    setForm({ name: '', categoryIds: [], groupId: groups[0]?.id || '', phone: '', email: '', maxHoursPerWeek: 40 }); 
     setModal(true) 
   }
   
@@ -28,6 +36,7 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
       name: w.name, 
       username: w.username || '',
       categoryIds: uniqueCatIds, 
+      groupId: w.groupId?._id || w.groupId || '',
       phone: w.phone || '', 
       email: w.email || '', 
       maxHoursPerWeek: w.maxHoursPerWeek || 40,
@@ -81,7 +90,8 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
     const matchSearch = w.name.toLowerCase().includes(search.toLowerCase())
     const wCats = (w.categoryIds || []).map(c => String(c.id || c._id || c))
     const matchCat = filterCat === 'all' || wCats.includes(String(filterCat))
-    return matchSearch && matchCat
+    const matchGroup = filterGroup === 'all' || String(w.groupId?._id || w.groupId) === String(filterGroup)
+    return matchSearch && matchCat && matchGroup
   })
 
   const toggleCategory = (catId) => {
@@ -123,6 +133,14 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
         >
           <option value="all">{t('workers.allCategories')}</option>
           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
+        <select
+          value={filterGroup}
+          onChange={e => setFilterGroup(e.target.value)}
+          className="bg-[--bg-elevated] border border-[--border] rounded-xl px-4 py-2 text-sm text-[--text-primary] outline-none focus:border-[--blue]"
+        >
+          <option value="all">{t('workers.allGroups')}</option>
+          {groups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
         </select>
       </div>
 
@@ -234,6 +252,16 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
             value={form.weekendCycleStart ? isoDate(form.weekendCycleStart) : ''} 
             onChange={v => setForm(f => ({ ...f, weekendCycleStart: v }))} 
             hint={t('workers.rotationStartHint')} 
+          />
+
+          <Input 
+            label={t('workers.group')} 
+            type="select" 
+            value={form.groupId} 
+            onChange={v => setForm(f => ({ ...f, groupId: v }))}
+            options={[
+              ...groups.map(g => ({ value: g.id, label: g.name }))
+            ]}
           />
 
           {editing && (

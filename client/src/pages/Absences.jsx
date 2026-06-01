@@ -140,8 +140,8 @@ export default function AbsencesPage({ absences, setAbsences, workers, categorie
             className={`
               px-4 py-1.5 rounded-xl text-xs font-bold transition-all border
               ${filterType === type.id 
-                ? 'bg-white/10 border-white/20 text-white shadow-sm' 
-                : 'bg-transparent border-transparent text-[--text-muted] hover:text-[--text-primary] hover:bg-white/5'}
+                ? 'bg-[var(--bg-elevated)] border-[var(--border-bright)] text-[var(--text-primary)] shadow-sm' 
+                : 'bg-transparent border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/5'}
             `}
           >
             {type.label}

@@ -5,6 +5,7 @@ const workerSchema = new mongoose.Schema({
   username: { type: String }, // Povezano korisničko ime
   organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
   categoryIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+  groupId: { type: mongoose.Schema.Types.ObjectId, ref: 'Group' },
   phone: String,
   email: String,
   maxHoursPerWeek: { type: Number, default: 40 },

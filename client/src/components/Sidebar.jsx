@@ -2,7 +2,8 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { 
   LayoutDashboard, Calendar, Users, Tags, 
-  UserX, Settings, Zap, ChevronLeft, ChevronRight, X 
+  UserX, Settings, ChevronLeft, ChevronRight, X,
+  Sun, Moon
 } from 'lucide-react'
 import { isoDate } from '../utils/helpers'
 
@@ -15,7 +16,7 @@ const NAV = [
   { id: 'settings', label: 'sidebar.settings', icon: Settings },
 ]
 
-export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user }) {
+export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user, theme, setTheme }) {
   const { t } = useTranslation()
   const today = isoDate(new Date())
   const activeAbsences = absences.filter(a => a.startDate <= today && a.endDate >= today).length
@@ -27,13 +28,16 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
 
   return (
     <aside 
-      className={`min-h-screen bg-[--bg-surface] border-r border-[--border] flex flex-col transition-all duration-300 sticky top-0 z-[50] ${collapsed ? 'w-16' : 'w-[220px]'}`}
+      className={`min-h-screen bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col transition-all duration-300 sticky top-0 z-[50] ${collapsed ? 'w-16' : 'w-[220px]'}`}
     >
       {/* Logo */}
-      <div className={`p-5 border-b border-[--border] flex flex-col gap-1 ${collapsed ? 'items-center' : ''}`}>
+      <div className={`p-5 border-b border-[var(--border)] flex flex-col gap-1 ${collapsed ? 'items-center' : ''}`}>
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
-            <Zap size={16} color="white" />
+          <div className="relative flex-shrink-0">
+            {theme === 'dark' && <div className="absolute inset-0 bg-blue-500/40 blur-xl rounded-full scale-110"></div>}
+            <div className={`w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center relative z-10 ${theme === 'dark' ? 'border border-white/10 shadow-2xl' : 'shadow-lg shadow-blue-500/10'}`}>
+              <img src="/SFicon-512.png" alt="Logo" className="w-full h-full object-cover" />
+            </div>
           </div>
           {!collapsed && (
             <span className="text-lg font-extrabold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
@@ -43,7 +47,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
         </div>
         {!collapsed && user?.organizationName && (
           <div className="px-1 mt-1">
-            <div className="text-[10px] font-bold text-[--text-muted] uppercase tracking-[0.15em] truncate">
+            <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.15em] truncate">
               {user.organizationName}
             </div>
           </div>
@@ -63,11 +67,11 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
               onClick={() => setActive(item.id)}
               className={`
                 flex items-center gap-3 p-2.5 rounded-lg transition-all duration-200 group
-                ${isActive ? 'bg-blue-500/15 text-[--blue-bright] font-semibold' : 'text-[--text-secondary] hover:bg-white/5 hover:text-[--text-primary]'}
+                ${isActive ? 'bg-blue-500/15 text-[var(--blue-bright)] font-semibold' : 'text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-primary)]'}
                 ${collapsed ? 'justify-center' : 'justify-start px-3'}
               `}
             >
-              <Icon size={18} className={isActive ? 'text-[--blue-bright]' : 'text-[--text-muted] group-hover:text-[--text-primary] transition-colors'} />
+              <Icon size={18} className={isActive ? 'text-[var(--blue-bright)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors'} />
               {!collapsed && <span className="flex-1 text-left text-[14px]">{item.id === 'schedule' && !isAdmin ? t('sidebar.mySchedule') : t(item.label)}</span>}
               {!collapsed && badge && (
                 <span className="bg-rose-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center shadow-sm">
@@ -79,19 +83,28 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
         })}
       </nav>
 
-      {/* User Info & Logout */}
-      <div className="p-2 border-t border-[--border]">
+      {/* User Info & Theme Toggle & Logout */}
+      <div className="p-2 border-t border-[var(--border)]">
         <div className={`flex items-center gap-3 p-2.5 ${collapsed ? 'justify-center' : ''}`}>
           <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/30">
             {user?.username?.[0].toUpperCase()}
           </div>
           {!collapsed && (
             <div className="flex-1 overflow-hidden">
-              <div className="text-xs font-bold text-[--text-primary] truncate">{user?.username}</div>
-              <div className="text-[10px] text-[--text-muted] uppercase tracking-wider">{user?.role === 'admin' ? t('sidebar.admin') : t('sidebar.worker')}</div>
+              <div className="text-xs font-bold text-[var(--text-primary)] truncate">{user?.username}</div>
+              <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">{user?.role === 'admin' ? t('sidebar.admin') : t('sidebar.worker')}</div>
             </div>
           )}
         </div>
+
+        <button 
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className={`w-full flex items-center gap-2 p-2.5 rounded-lg text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-primary)] transition-all text-xs font-bold mb-1 ${collapsed ? 'justify-center' : ''}`}
+        >
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          {!collapsed && <span>{theme === 'dark' ? t('sidebar.lightMode') : t('sidebar.darkMode')}</span>}
+        </button>
+
         <button 
           onClick={() => { localStorage.clear(); window.location.reload(); }}
           className={`w-full flex items-center gap-2 p-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-all text-xs font-bold ${collapsed ? 'justify-center' : ''}`}
@@ -102,10 +115,10 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
       </div>
 
       {/* Collapse btn */}
-      <div className="p-2 border-t border-[--border]">
+      <div className="p-2 border-t border-[var(--border)]">
         <button 
           onClick={() => setCollapsed(!collapsed)}
-          className="w-full flex items-center gap-2 p-2.5 rounded-lg text-[--text-muted] hover:text-[--text-primary] hover:bg-white/5 transition-all text-xs font-medium"
+          className="w-full flex items-center gap-2 p-2.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/5 transition-all text-xs font-medium"
         >
           {collapsed ? <ChevronRight size={16} className="mx-auto" /> : <><ChevronLeft size={16} /><span>{t('sidebar.hideMenu')}</span></>}
         </button>

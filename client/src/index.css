@@ -24,12 +24,27 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+[data-theme='light'] {
+  --bg-surface: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --border: #e2e8f0;
+  --border-bright: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  
+  --blue: #2563eb;
+  --blue-bright: #3b82f6;
+}
+
 body {
   background-color: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-body);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @keyframes fadeIn {

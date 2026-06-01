@@ -11,7 +11,7 @@ const Holiday = require('./models/Holiday');
 
 const check = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/pustopoljina');
+    await mongoose.connect('mongodb://127.0.0.1:27017/pustopoljina');
     console.log('--- PROVJERA BAZE PODATAKA ---');
 
     const org = await Organization.findOne({ name: /Pustopoljina/i });

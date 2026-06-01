@@ -221,10 +221,10 @@ function useLocalStorage(key, initial) {
 const Btn = ({ children, onClick, variant = 'primary', size = 'md', disabled, className = '', icon }) => {
   const variants = {
     primary: 'bg-blue-600 hover:bg-blue-500 text-white border border-blue-500',
-    ghost: 'bg-transparent hover:bg-white/5 text-[--text-secondary] hover:text-[--text-primary] border border-transparent',
+    ghost: 'bg-transparent hover:bg-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-transparent',
     danger: 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30',
     success: 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-    outline: 'bg-transparent hover:bg-white/5 text-[--text-primary] border border-[--border-bright]',
+    outline: 'bg-transparent hover:bg-white/5 text-[var(--text-primary)] border border-[var(--border-bright)]',
     cyan: 'bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/40',
   }
   const sizes = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm', lg: 'px-5 py-2.5 text-base' }

@@ -20,20 +20,33 @@ exports.getSchedules = async (req, res) => {
 };
 
 exports.generateNewSchedule = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // Pokušavamo bez transakcija ako baza nije Replica Set
+  const useTransactions = process.env.USE_TRANSACTIONS === 'true';
+  let session = null;
+  
+  if (useTransactions) {
+    session = await mongoose.startSession();
+    session.startTransaction();
+  }
+
   try {
     const { weekStart, shiftTypes, settings } = req.body;
     const organizationId = req.user.organizationId;
     
     // Provjeri da li već postoji raspored za tu sedmicu i obriši ga ako postoji
-    await Schedule.findOneAndDelete({ weekStart, organizationId }, { session });
+    if (useTransactions) {
+      await Schedule.findOneAndDelete({ weekStart, organizationId }, { session });
+    } else {
+      await Schedule.findOneAndDelete({ weekStart, organizationId });
+    }
 
-    const workers = await Worker.find({ organizationId }).session(session);
-    const categories = await Category.find({ organizationId }).session(session);
-    const absences = await Absence.find({ organizationId }).session(session);
-    const holidays = await Holiday.find({ organizationId }).session(session);
-    const historicalSchedules = await Schedule.find({ organizationId }).sort({ weekStart: -1 }).limit(8).session(session);
+    const queryOptions = useTransactions ? { session } : {};
+    
+    const workers = await Worker.find({ organizationId }, null, queryOptions);
+    const categories = await Category.find({ organizationId }, null, queryOptions);
+    const absences = await Absence.find({ organizationId }, null, queryOptions);
+    const holidays = await Holiday.find({ organizationId }, null, queryOptions);
+    const historicalSchedules = await Schedule.find({ organizationId }, null, queryOptions).sort({ weekStart: -1 }).limit(8);
 
     const newScheduleData = generateSchedule(
       weekStart,
@@ -53,15 +66,25 @@ exports.generateNewSchedule = async (req, res) => {
       workerHours: newScheduleData.workerHours,
       status: 'draft'
     });
-    await schedule.save({ session });
 
-    await session.commitTransaction();
+    if (useTransactions) {
+      await schedule.save({ session });
+      await session.commitTransaction();
+    } else {
+      await schedule.save();
+    }
+
     res.status(201).json(schedule);
   } catch (err) {
-    await session.abortTransaction();
+    if (useTransactions && session) {
+      await session.abortTransaction();
+    }
+    console.error('GENERATE ERROR:', err);
     res.status(400).json({ message: err.message });
   } finally {
-    session.endSession();
+    if (useTransactions && session) {
+      session.endSession();
+    }
   }
 };
 

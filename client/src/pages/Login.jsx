@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Zap, Lock, User as UserIcon, RefreshCw, Play } from 'lucide-react'
+import { Lock, User as UserIcon, RefreshCw, Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Btn, Card, Input } from '../components/UI'
 import LanguageSelector from '../components/LanguageSelector'
@@ -49,17 +49,20 @@ export default function LoginPage({ onLogin }) {
   }
 
   return (
-    <div className="min-h-screen bg-[--bg-surface] flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-[var(--bg-surface)] flex items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4">
         <LanguageSelector />
       </div>
       <div className="w-full max-w-md animate-in fade-in zoom-in duration-300">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4 shadow-xl shadow-blue-500/20">
-            <Zap size={32} color="white" />
+          <div className="relative mb-4">
+            <div className="absolute inset-0 bg-blue-500/30 blur-2xl rounded-full scale-110"></div>
+            <div className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center border border-white/10 relative z-10 shadow-2xl">
+              <img src="/SFicon-512.png" alt="Logo" className="w-full h-full object-cover" />
+            </div>
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">{t('login.title')}</h1>
-          <p className="text-[--text-muted] text-sm mt-1 font-medium">
+          <p className="text-[var(--text-muted)] text-sm mt-1 font-medium">
             {isLogin 
               ? t('login.subtitle') 
               : regType === 'admin' 
@@ -75,14 +78,14 @@ export default function LoginPage({ onLogin }) {
               <button 
                 type="button"
                 onClick={() => setRegType('admin')}
-                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'admin' ? 'bg-blue-600 text-white shadow-lg' : 'text-[--text-muted] hover:text-white'}`}
+                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'admin' ? 'bg-blue-600 text-white shadow-lg' : 'text-[var(--text-muted)] hover:text-white'}`}
               >
                 {t('login.newCompany')}
               </button>
               <button 
                 type="button"
                 onClick={() => setRegType('worker')}
-                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'worker' ? 'bg-blue-600 text-white shadow-lg' : 'text-[--text-muted] hover:text-white'}`}
+                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${regType === 'worker' ? 'bg-blue-600 text-white shadow-lg' : 'text-[var(--text-muted)] hover:text-white'}`}
               >
                 {t('login.joinWorker')}
               </button>
@@ -128,14 +131,14 @@ export default function LoginPage({ onLogin }) {
             <button 
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-xs text-[--text-muted] hover:text-white transition-colors font-medium text-center"
+              className="text-xs text-[var(--text-muted)] hover:text-white transition-colors font-medium text-center"
             >
               {isLogin ? t('login.noAccount') : t('login.hasAccount')}
             </button>
 
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"><span className="bg-[#1e293b] px-2 text-[--text-muted]">{t('common.or')}</span></div>
+              <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"><span className="bg-[var(--bg-surface)] px-2 text-[var(--text-muted)]">{t('common.or')}</span></div>
             </div>
 
             <Btn 
@@ -150,9 +153,16 @@ export default function LoginPage({ onLogin }) {
           </form>
         </Card>
         
-        <p className="text-center mt-8 text-[10px] text-[--text-muted] uppercase tracking-[0.2em] font-bold opacity-50">
+        <p className="text-center mt-8 text-[10px] text-[var(--text-muted)] uppercase tracking-[0.2em] font-bold opacity-50">
           {t('login.copyright')}
         </p>
+
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 opacity-40 hover:opacity-100 transition-opacity">
+          <a href="https://ei-apps.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.privacyPolicy')}</a>
+          <a href="https://ei-apps.com/tos" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.tos')}</a>
+          <a href="https://ei-apps.com/refund-policy" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.refundPolicy')}</a>
+          <a href="mailto:info@ei-apps.com" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.contact')}</a>
+        </div>
       </div>
     </div>
   )

@@ -5,6 +5,7 @@
     "demoVersion": "Demo Version",
     "demoDescription": "Use test data to preview functionality.",
     "connectionError": "Connection Error",
+    "partialLoadError": "Some data failed to load. Please try refreshing the page.",
     "serverError": "Server returned an error: {{error}}",
     "retry": "Retry",
     "save": "Save",
@@ -23,10 +24,11 @@
     "ok": "OK",
     "yes": "Yes",
     "no": "No",
-    "or": "Or"
+    "or": "Or",
+    "swap": "Swap"
   },
   "login": {
-    "title": "ShiftFlow Admin",
+    "title": "ShiftFlow",
     "subtitle": "Schedule Management System",
     "subtitleRegisterAdmin": "Create new company and admin account",
     "subtitleRegisterWorker": "Join existing company as worker",
@@ -50,7 +52,11 @@
     "registerSuccessAdmin": "Organization successfully registered! You can now login.",
     "registerSuccessWorker": "Successfully registered as a worker! You can now login.",
     "serverUnavailable": "Server unavailable. Use Demo Version below.",
-    "copyright": "ei-apps &copy; 2026"
+    "copyright": "© 2026 ei-apps. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "tos": "Terms of Service",
+    "refundPolicy": "Refund Policy",
+    "contact": "Contact"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -63,7 +69,9 @@
     "hideMenu": "Hide menu",
     "logout": "Logout",
     "admin": "Administrator",
-    "worker": "Worker"
+    "worker": "Worker",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode"
   },
   "dashboard": {
     "greeting": "Hello, {{username}}! 👋",
@@ -187,6 +195,8 @@
     "addWorker": "Add Worker",
     "searchPlaceholder": "Search by name...",
     "allCategories": "All Categories",
+    "group": "Group",
+    "allGroups": "All Groups",
     "name": "Full Name",
     "category": "Category",
     "maxHours": "Max Hours",
@@ -345,6 +355,19 @@
     "addHoliday": "Add Holiday",
     "noHolidays": "No holidays defined.",
     "everyYear": "Every Year",
+    "recurring": "Recurring",
+    "workerGroups": "Worker Groups",
+    "addGroup": "Add Group",
+    "noGroups": "No groups defined.",
+    "editGroup": "Edit Group",
+    "newGroup": "New Group",
+    "groupName": "Group Name",
+    "groupNamePlaceholder": "e.g. Kitchen, Service...",
+    "groupDescription": "Group Description",
+    "groupDescriptionPlaceholder": "Optional description...",
+    "saveGroupError": "Error saving group: {{error}}",
+    "deleteGroupConfirm": "Are you sure you want to delete this group?",
+    "deleteGroupError": "Error deleting group: {{error}}",
     "editShift": "Edit Shift",
     "newShift": "New Shift",
     "shiftName": "Shift Name",

@@ -5,6 +5,7 @@
     "demoVersion": "Demo Verzija",
     "demoDescription": "Koristite testne podatke za pregled funkcionalnosti.",
     "connectionError": "Greška u povezivanju",
+    "partialLoadError": "Neki podaci se nisu učitali. Pokušajte osvježiti stranicu.",
     "serverError": "Server je vratio grešku: {{error}}",
     "retry": "Pokušaj ponovo",
     "save": "Spremi",
@@ -23,10 +24,11 @@
     "ok": "U redu",
     "yes": "Da",
     "no": "Ne",
-    "or": "Ili"
+    "or": "Ili",
+    "swap": "Zamjena"
   },
   "login": {
-    "title": "ShiftFlow administrator",
+    "title": "ShiftFlow",
     "subtitle": "Sistem za upravljanje rasporedom",
     "subtitleRegisterAdmin": "Kreiraj novu firmu i administratorski nalog",
     "subtitleRegisterWorker": "Pridruži se postojećoj firmi kao radnik",
@@ -50,7 +52,11 @@
     "registerSuccessAdmin": "Organizacija uspješno registrovana! Sada se možete prijaviti.",
     "registerSuccessWorker": "Uspješno ste se registrovali kao radnik! Sada se možete prijaviti.",
     "serverUnavailable": "Server nije dostupan. Koristite Demo Verziju ispod.",
-    "copyright": "ei-apps &copy; 2026"
+    "copyright": "© 2026 ei-apps. All rights reserved.",
+    "privacyPolicy": "Politika privatnosti",
+    "tos": "Uslovi korištenja",
+    "refundPolicy": "Politika povrata",
+    "contact": "Kontakt"
   },
   "sidebar": {
     "dashboard": "Pregled",
@@ -63,7 +69,9 @@
     "hideMenu": "Sakrij meni",
     "logout": "Odjava",
     "admin": "Administrator",
-    "worker": "Radnik"
+    "worker": "Radnik",
+    "lightMode": "Svijetli mod",
+    "darkMode": "Tamni mod"
   },
   "dashboard": {
     "greeting": "Zdravo, {{username}}! 👋",
@@ -187,6 +195,8 @@
     "addWorker": "Dodaj radnika",
     "searchPlaceholder": "Pretraži po imenu i prezimenu...",
     "allCategories": "Sve kategorije",
+    "group": "Grupa",
+    "allGroups": "Sve grupe",
     "name": "Ime i prezime",
     "category": "Kategorija",
     "maxHours": "Maks. sati",
@@ -345,6 +355,19 @@
     "addHoliday": "Dodaj praznik",
     "noHolidays": "Nema definisanih praznika.",
     "everyYear": "Svake godine",
+    "recurring": "Ponavlja se",
+    "workerGroups": "Grupe radnika",
+    "addGroup": "Dodaj grupu",
+    "noGroups": "Nema definisanih grupa.",
+    "editGroup": "Uredi grupu",
+    "newGroup": "Nova grupa",
+    "groupName": "Naziv grupe",
+    "groupNamePlaceholder": "npr. Kuhinja, Servis...",
+    "groupDescription": "Opis grupe",
+    "groupDescriptionPlaceholder": "Opcionalni opis...",
+    "saveGroupError": "Greška pri spašavanju grupe: {{error}}",
+    "deleteGroupConfirm": "Da li ste sigurni da želite obrisati ovu grupu?",
+    "deleteGroupError": "Greška pri brisanju grupe: {{error}}",
     "editShift": "Uredi smjenu",
     "newShift": "Nova smjena",
     "shiftName": "Naziv smjene",

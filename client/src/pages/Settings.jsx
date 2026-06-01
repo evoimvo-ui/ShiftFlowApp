@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Edit2, Trash2, Sun, Sunset, Moon, Clock, Shield, TrendingUp, Zap, Calendar, RefreshCcw, Landmark } from 'lucide-react'
+import { Plus, Edit2, Trash2, Sun, Sunset, Moon, Clock, Shield, TrendingUp, Zap, Calendar, RefreshCcw, Landmark, Users } from 'lucide-react'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
-import { settingApi, holidayApi } from '../api'
+import { settingApi, holidayApi, groupApi } from '../api'
 import { CATEGORY_COLORS, shiftDurationHours, formatDate, isoDate } from '../utils/helpers'
 
 const ShiftIcon = ({ shift, size = 14 }) => {
@@ -23,10 +23,19 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
   const [holidayModal, setHolidayModal] = useState(false)
   const [holidayForm, setHolidayForm] = useState({ name: '', date: isoDate(new Date()), isRecurring: false })
 
+  const [groups, setGroups] = useState([])
+  const [groupModal, setGroupModal] = useState(false)
+  const [editGroup, setEditGroup] = useState(null)
+  const [groupForm, setGroupForm] = useState({ name: '', description: '' })
+
   useEffect(() => {
     holidayApi.getAll()
       .then(res => setHolidays(res.data.map(h => ({ ...h, id: h._id }))))
       .catch(err => console.error('Holidays error:', err))
+
+    groupApi.getAll()
+      .then(res => setGroups(res.data.map(g => ({ ...g, id: g._id }))))
+      .catch(err => console.error('Groups error:', err))
   }, [])
 
   if (!settings || !shiftTypes) {
@@ -117,6 +126,35 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
         setHolidays(hh => hh.filter(h => h.id !== id))
       } catch (err) {
         alert(t('settings.deleteHolidayError', { error: err.message }))
+      }
+    }
+  }
+
+  const saveGroup = async () => {
+    if (!groupForm.name.trim()) return
+    try {
+      if (editGroup) {
+        const res = await groupApi.update(editGroup, groupForm)
+        setGroups(gg => gg.map(g => g.id === editGroup ? { ...res.data, id: res.data._id } : g))
+      } else {
+        const res = await groupApi.create(groupForm)
+        setGroups(gg => [...gg, { ...res.data, id: res.data._id }])
+      }
+      setGroupModal(false)
+      setGroupForm({ name: '', description: '' })
+      setEditGroup(null)
+    } catch (err) {
+      alert(t('settings.saveGroupError', { error: err.message }))
+    }
+  }
+
+  const deleteGroup = async (id) => {
+    if (confirm(t('settings.deleteGroupConfirm'))) {
+      try {
+        await groupApi.delete(id)
+        setGroups(gg => gg.filter(g => g.id !== id))
+      } catch (err) {
+        alert(t('settings.deleteGroupError', { error: err.message }))
       }
     }
   }
@@ -346,6 +384,46 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
         </div>
       </Card>
 
+      <Card className="p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-xs font-bold text-[--cyan] uppercase tracking-[0.2em] flex items-center gap-2">
+            <Users size={14} />
+            {t('settings.workerGroups')}
+          </h3>
+          {isAdmin && (
+            <Btn size="sm" onClick={() => {
+              setEditGroup(null);
+              setGroupForm({ name: '', description: '' });
+              setGroupModal(true);
+            }} icon={<Plus size={14} />}>{t('settings.addGroup')}</Btn>
+          )}
+        </div>
+        
+        <div className="space-y-3">
+          {groups.length === 0 && <p className="text-center py-4 text-[--text-muted] italic text-sm">{t('settings.noGroups')}</p>}
+          {groups.map(g => (
+            <div key={g.id} className="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-[--blue]/30 transition-all">
+              <div>
+                <div className="text-sm font-bold text-[--text-primary]">{g.name}</div>
+                {g.description && <div className="text-[11px] text-[--text-muted] mt-0.5">{g.description}</div>}
+              </div>
+              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                {isAdmin && (
+                  <>
+                    <button onClick={() => {
+                      setEditGroup(g.id);
+                      setGroupForm({ name: g.name, description: g.description || '' });
+                      setGroupModal(true);
+                    }} className="p-2 text-[--text-muted] hover:text-[--text-primary] transition-colors"><Edit2 size={14} /></button>
+                    <button onClick={() => deleteGroup(g.id)} className="p-2 text-[--text-muted] hover:text-[--rose] transition-colors"><Trash2 size={14} /></button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
       <Modal open={shiftModal} onClose={() => setShiftModal(false)} title={editShift ? t('settings.editShift') : t('settings.newShift')}>
         <div className="flex flex-col gap-5">
           <Input label={t('settings.shiftName')} value={shiftForm.name} onChange={v => setShiftForm(f => ({ ...f, name: v }))} placeholder={t('settings.shiftNamePlaceholder')} required />
@@ -414,6 +492,17 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
           <div className="flex gap-3 justify-end mt-4">
             <Btn variant="ghost" onClick={() => setHolidayModal(false)}>{t('common.cancel')}</Btn>
             <Btn onClick={saveHoliday}>{t('settings.saveHoliday')}</Btn>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal open={groupModal} onClose={() => setGroupModal(false)} title={editGroup ? t('settings.editGroup') : t('settings.newGroup')}>
+        <div className="flex flex-col gap-5">
+          <Input label={t('settings.groupName')} value={groupForm.name} onChange={v => setGroupForm(f => ({ ...f, name: v }))} placeholder={t('settings.groupNamePlaceholder')} required />
+          <Input label={t('settings.groupDescription')} value={groupForm.description} onChange={v => setGroupForm(f => ({ ...f, description: v }))} placeholder={t('settings.groupDescriptionPlaceholder')} />
+          <div className="flex gap-3 justify-end mt-4">
+            <Btn variant="ghost" onClick={() => setGroupModal(false)}>{t('common.cancel')}</Btn>
+            <Btn onClick={saveGroup}>{editGroup ? t('settings.saveChanges') : t('settings.addGroup')}</Btn>
           </div>
         </div>
       </Modal>

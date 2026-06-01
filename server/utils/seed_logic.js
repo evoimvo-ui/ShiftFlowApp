@@ -1,9 +1,13 @@
 const User = require('../models/User');
 const Organization = require('../models/Organization');
+const Group = require('../models/Group');
 const Setting = require('../models/Setting');
 const ShiftType = require('../models/ShiftType');
 
 const seedDatabase = async () => {
+  // Brza provjera da li je seeding već urađen (preko varijable u memoriji)
+  if (global.isSeeded) return;
+
   try {
     console.log('Provjera baze za seeding...');
 
@@ -40,7 +44,19 @@ const seedDatabase = async () => {
       console.log('Admin korisnik povezan sa organizacijom.');
     }
 
-    // 3. Osnovne postavke
+    // 4. Kreiranje podrazumijevane grupe
+    let defaultGroup = await Group.findOne({ name: 'Main Group', organizationId: organization._id });
+    if (!defaultGroup) {
+      defaultGroup = new Group({
+        name: 'Main Group',
+        organizationId: organization._id,
+        description: 'Default group for all workers'
+      });
+      await defaultGroup.save();
+      console.log('Podrazumijevana grupa kreirana.');
+    }
+
+    // 5. Osnovne postavke
     const settingsExists = await Setting.findOne({ organizationId: organization._id });
     if (!settingsExists) {
       await Setting.create({
@@ -65,6 +81,7 @@ const seedDatabase = async () => {
     }
 
     console.log('Seeding provjera završena uspješno.');
+    global.isSeeded = true;
   } catch (err) {
     console.error('Greška pri seedingu:', err.message);
   }

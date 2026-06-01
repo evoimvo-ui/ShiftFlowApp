@@ -19,20 +19,16 @@ export function useNotifications(userId) {
 
     const fetchNotifications = async () => {
       try {
-        console.log('Debug - Fetching notifications for userId:', userId)
         const response = await notificationApi.getNotifications(userId)
         const notificationsData = response.data || []
         
-        console.log('Debug - Notifications received:', notificationsData)
         setNotifications(notificationsData)
         setUnreadCount(notificationsData.filter(n => n.status === 'unread').length)
         
         // Ako ima novih nepročitanih notifikacija, prikaži prvu
         if (notificationsData.length > 0 && !modalOpen) {
           const firstUnread = notificationsData.find(n => n.status === 'unread')
-          console.log('Debug - Modal open:', modalOpen, 'First unread:', firstUnread)
           if (firstUnread) {
-            console.log('Debug - Showing notification modal for:', firstUnread)
             setCurrentNotification(firstUnread)
             setModalOpen(true)
           }

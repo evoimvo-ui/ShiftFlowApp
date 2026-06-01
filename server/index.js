@@ -16,10 +16,8 @@ const seed = require('./utils/seed_logic'); // Promijenićemo seed.js da izvozi 
 const app = express();
 
 // MongoDB Connection
-connectDB().then(async () => {
-  // Pokreni seeding automatski nakon povezivanja
-  await seed();
-  console.log('Seeding završen.');
+connectDB().then(() => {
+  seed();
 });
 
 // Middleware
@@ -28,12 +26,17 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Routes
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
 app.get('/', (req, res) => {
   res.send('Pustopoljina API radi!');
 });
 
 // Import Routes
 const workerRoutes = require('./routes/workerRoutes');
+const groupRoutes = require('./routes/groupRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const absenceRoutes = require('./routes/absenceRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
@@ -45,6 +48,7 @@ const auditRoutes = require('./routes/auditRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 
 app.use('/api/workers', workerRoutes);
+app.use('/api/groups', groupRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/absences', absenceRoutes);
 app.use('/api/schedules', scheduleRoutes);
@@ -69,6 +73,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = keys.port;
-app.listen(PORT, () => {
-  console.log(`Server pokrenut na portu ${PORT}`);
+app.listen(PORT, '127.0.0.1', () => {
+  console.log(`Server pokrenut na http://127.0.0.1:${PORT}`);
 });

@@ -1,0 +1,9 @@
+{
+  "name": "pustopoljina-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "server": "cd server && npm run start"
+  }
+}

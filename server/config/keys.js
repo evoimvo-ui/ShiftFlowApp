@@ -10,6 +10,6 @@ if (isProduction && !process.env.MONGODB_URI) {
 
 module.exports = {
   jwtSecret: process.env.JWT_SECRET || 'dev_secret_only_for_local_testing',
-  port: process.env.PORT || 5000,
-  mongoURI: process.env.MONGODB_URI || 'mongodb://localhost:27017/pustopoljina'
+  port: process.env.PORT || 5001,
+  mongoURI: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/pustopoljina'
 };
