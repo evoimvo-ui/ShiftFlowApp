@@ -73,6 +73,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = keys.port;
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`Server pokrenut na http://127.0.0.1:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server pokrenut na portu ${PORT}`);
 });

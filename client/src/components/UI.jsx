@@ -23,11 +23,20 @@ export const Btn = ({ children, onClick, variant = 'primary', size = 'md', disab
   )
 }
 
-export const Input = ({ label, value, onChange, type = 'text', placeholder, required, min, max, options, hint }) => (
+export const Input = ({ label, value, onChange, type = 'text', placeholder, required, min, max, options, hint, name, id }) => (
   <div className="flex flex-col gap-1.5">
-    {label && <label className="text-[10px] font-bold text-[var(--text-secondary)] tracking-widest uppercase">{label}{required && <span className="text-[var(--rose)] ml-1">*</span>}</label>}
+    {label && (
+      <label 
+        htmlFor={id || name}
+        className="text-[10px] font-bold text-[var(--text-secondary)] tracking-widest uppercase"
+      >
+        {label}{required && <span className="text-[var(--rose)] ml-1">*</span>}
+      </label>
+    )}
     {type === 'select' ? (
       <select
+        id={id || name}
+        name={name}
         value={value}
         onChange={e => onChange(e.target.value)}
         className="bg-[var(--bg-elevated)] border border-[var(--border-bright)] rounded-lg px-3 py-2 text-[var(--text-primary)] text-sm outline-none w-full focus:border-[var(--blue)]"
@@ -36,6 +45,8 @@ export const Input = ({ label, value, onChange, type = 'text', placeholder, requ
       </select>
     ) : (
       <input
+        id={id || name}
+        name={name}
         type={type}
         value={value}
         onChange={e => onChange(e.target.value)}

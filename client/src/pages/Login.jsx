@@ -97,6 +97,8 @@ export default function LoginPage({ onLogin }) {
                 <Input 
                   label={regType === 'admin' ? t('login.companyName') : t('login.companyNameWorker')} 
                   value={form.organizationName} 
+                  name="organizationName"
+                  id="organizationName"
                   onChange={v => setForm(f => ({ ...f, organizationName: v }))} 
                   placeholder={t('login.companyNamePlaceholder')}
                   hint={regType === 'worker' ? t('login.companyNameHint') : ""}
@@ -105,12 +107,16 @@ export default function LoginPage({ onLogin }) {
               <Input 
                 label={t('login.username')} 
                 value={form.username} 
+                name="username"
+                id="username"
                 onChange={v => setForm(f => ({ ...f, username: v }))} 
                 placeholder={t('login.usernamePlaceholder')}
               />
               <Input 
                 label={t('login.password')} 
                 type="password" 
+                name="password"
+                id="password"
                 value={form.password} 
                 onChange={v => setForm(f => ({ ...f, password: v }))} 
                 placeholder={t('login.passwordPlaceholder')}
