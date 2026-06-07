@@ -99,6 +99,23 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate('organizationId');
+    if (!user) return res.status(404).json({ message: 'Korisnik nije pronađen' });
+    
+    res.json({
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+      organizationId: user.organizationId?._id?.toString(),
+      organizationName: user.organizationId?.name
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.deleteUserAccount = async (req, res) => {
   try {
     const { username } = req.params;

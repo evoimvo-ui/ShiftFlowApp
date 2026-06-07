@@ -166,6 +166,7 @@ export default function LoginPage({ onLogin }) {
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 opacity-40 hover:opacity-100 transition-opacity">
           <a href="https://ei-apps.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.privacyPolicy')}</a>
           <a href="https://ei-apps.com/tos" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.tos')}</a>
+          <a href="https://ei-apps.com/dpa" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.dpa')}</a>
           <a href="https://ei-apps.com/refund-policy" target="_blank" rel="noopener noreferrer" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.refundPolicy')}</a>
           <a href="mailto:info@ei-apps.com" className="text-[9px] text-[var(--text-muted)] hover:text-white transition-colors uppercase font-bold tracking-wider">{t('login.contact')}</a>
         </div>

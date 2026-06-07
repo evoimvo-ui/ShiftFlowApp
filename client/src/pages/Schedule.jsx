@@ -8,12 +8,14 @@ import { jsPDF } from 'jspdf'
 import { autoTable } from 'jspdf-autotable'
 import { registerNotoSansForJsPdf, NOTO_SANS_PDF_FAMILY } from '../utils/notoSansPdfFont'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
-import { scheduleApi, swapApi } from '../api'
+import { scheduleApi, swapApi, authApi } from '../api'
 import { isSameWorker } from './Absences'
 import { 
   isoDate, formatDate, addDays, getWeekStart, 
   DAYS_BS, DAYS_FULL, shiftDurationHours, getAbsenceOnDay, ABSENCE_TYPES 
 } from '../utils/helpers'
+
+import { Toaster, toast } from 'react-hot-toast'
 
 export default function SchedulePage({ schedules, setSchedules, workers, categories, absences, shiftTypes, settings, refresh, user }) {
   const { t, i18n } = useTranslation()
@@ -54,8 +56,9 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         return [...without, newSched]
       })
       if (refresh) refresh()
+      toast.success(t('schedule.generateSuccess'))
     } catch (err) {
-      alert(t('schedule.generateError', { error: err.message }))
+      toast.error(t('schedule.generateError', { error: err.message }))
     } finally {
       setGenerating(false)
     }
@@ -68,8 +71,9 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         await scheduleApi.delete(weekKey)
         setSchedules(ss => ss.filter(s => s.weekStart !== weekKey))
         if (refresh) refresh()
+        toast.success(t('schedule.deleteSuccess'))
       } catch (err) {
-        alert(t('schedule.deleteError', { error: err.message }))
+        toast.error(t('schedule.deleteError', { error: err.message }))
       }
     }
   }
@@ -87,11 +91,23 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
     );
 
     if (isAlreadyAssigned) {
-      alert(t('schedule.alreadyAssigned'));
+      toast.error(t('schedule.alreadyAssigned'));
       return;
     }
 
     try {
+      // Prije slanja, provjeri da li je neko drugi ažurirao raspored
+      const freshRes = await scheduleApi.getAll();
+      const freshSched = freshRes.data.find(s => s._id === currentSchedule.id || s.id === currentSchedule.id);
+      
+      if (freshSched && new Date(freshSched.updatedAt) > new Date(currentSchedule.updatedAt)) {
+        toast.error(t('schedule.versionConflict'));
+        if (refresh) refresh();
+        setManualModal(null);
+        setDetailModal(null);
+        return;
+      }
+
       const payload = {
         scheduleId: currentSchedule.id,
         newWorkerId: manualForm.newWorkerId,
@@ -113,8 +129,9 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
       if (refresh) refresh()
       setManualModal(null)
       setDetailModal(null)
+      toast.success(t('schedule.manualUpdateSuccess'))
     } catch (err) {
-      alert(t('schedule.manualUpdateError', { error: err.message }))
+      toast.error(t('schedule.manualUpdateError', { error: err.message }))
     }
   }
 
@@ -123,6 +140,16 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
     if (!confirm(t('schedule.deleteAssignmentConfirm'))) return
 
     try {
+      // Provjera verzije
+      const freshRes = await scheduleApi.getAll();
+      const freshSched = freshRes.data.find(s => s._id === currentSchedule.id || s.id === currentSchedule.id);
+      if (freshSched && new Date(freshSched.updatedAt) > new Date(currentSchedule.updatedAt)) {
+        toast.error(t('schedule.versionConflict'));
+        if (refresh) refresh();
+        setDetailModal(null);
+        return;
+      }
+
       const res = await scheduleApi.deleteAssignment(currentSchedule.id, assignmentId)
       const updatedSched = { ...res.data, id: res.data._id }
       setSchedules(ss => ss.map(s => s.id === updatedSched.id ? updatedSched : s))
@@ -135,8 +162,9 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
           assignments: prev.assignments.filter(a => (a._id || a.id) !== assignmentId)
         }))
       }
+      toast.success(t('schedule.deleteAssignmentSuccess'))
     } catch (err) {
-      alert(t('schedule.deleteAssignmentError', { error: err.message }))
+      toast.error(t('schedule.deleteAssignmentError', { error: err.message }))
     }
   }
 
@@ -151,7 +179,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
       )
 
       if (!targetAssignment) {
-        alert(t('schedule.noTargetShift'))
+        toast.error(t('schedule.noTargetShift'))
         return
       }
 
@@ -163,11 +191,11 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         targetAssignmentId: targetAssignment._id
       })
 
-      alert(t('schedule.swapSent'))
+      toast.success(t('schedule.swapSent'))
       setSwapModal(null)
       setDetailModal(null)
     } catch (err) {
-      alert(t('schedule.swapError', { error: err.message }))
+      toast.error(t('schedule.swapError', { error: err.message }))
     }
   }
 

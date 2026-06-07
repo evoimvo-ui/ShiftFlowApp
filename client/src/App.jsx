@@ -10,9 +10,10 @@ import AbsencesPage from './pages/Absences'
 import SettingsPage from './pages/Settings'
 import LoginPage from './pages/Login'
 import useApi from './hooks/useApi'
-import { settingApi } from './api'
 import { useNotifications } from './hooks/useNotifications'
 import { useTranslation } from 'react-i18next'
+import { Toaster, toast } from 'react-hot-toast'
+import { authApi, settingApi } from './api'
 
 export default function App() {
   const { t } = useTranslation()
@@ -31,15 +32,32 @@ export default function App() {
     localStorage.setItem('sf_theme', theme)
   }, [theme])
 
+  // Osvježavanje podataka o korisniku pri svakom učitavanju aplikacije
   useEffect(() => {
-    if (user && !user.organizationName && !user.isDemo) {
-      settingApi.getOrg().then(res => {
-        const updatedUser = { ...user, organizationName: res.data.name };
-        setUser(updatedUser);
-        localStorage.setItem('sf_user', JSON.stringify(updatedUser));
-      }).catch(err => console.error("Greška pri dohvaćanju organizacije:", err));
+    if (user && !user.isDemo) {
+      authApi.getMe().then(res => {
+        const updatedUser = res.data;
+        // Ako se uloga promijenila, prisilno odjavi korisnika ili osvježi state
+        if (user.role !== updatedUser.role) {
+          toast.error(t('common.roleChanged'));
+          setTimeout(() => {
+            localStorage.removeItem('sf_user');
+            localStorage.removeItem('sf_token');
+            window.location.reload();
+          }, 2000);
+        } else {
+          setUser(updatedUser);
+          localStorage.setItem('sf_user', JSON.stringify(updatedUser));
+        }
+      }).catch(err => {
+        if (err.response?.status === 401) {
+          localStorage.removeItem('sf_user');
+          localStorage.removeItem('sf_token');
+          setUser(null);
+        }
+      });
     }
-  }, [user]);
+  }, []);
 
   const [active, setActive] = useState('dashboard')
   const [collapsed, setCollapsed] = useState(false)
@@ -104,6 +122,7 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-surface)] text-[var(--text-primary)]">
+      <Toaster position="top-right" />
       <Sidebar 
         active={active} 
         setActive={setActive} 
