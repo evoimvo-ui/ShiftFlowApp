@@ -530,6 +530,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
             categories={categories}
             shiftTypes={shiftTypes}
             user={user}
+            onWorkerClick={(data) => setSwapModal(data)}
           />
 
           <Card className="hidden md:block p-0 overflow-hidden shadow-2xl border-white/5">

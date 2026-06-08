@@ -10,7 +10,8 @@ export default function ScheduleMobileView({
   workers, 
   categories, 
   shiftTypes, 
-  user 
+  user,
+  onWorkerClick
 }) {
   const { t, i18n } = useTranslation()
   const [selectedDayOffset, setSelectedDayOffset] = useState(() => {
@@ -107,7 +108,8 @@ export default function ScheduleMobileView({
                     return (
                       <div 
                         key={a.id || a._id} 
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${isMe ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[var(--bg-card)]' : ''}`}
+                        onClick={() => onWorkerClick && onWorkerClick({ assignment: a, worker })}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer hover:opacity-80 active:opacity-60 ${isMe ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[var(--bg-card)]' : ''}`}
                         style={{ 
                           background: (cat?.color || shift.color) + '15', 
                           borderColor: (cat?.color || shift.color) + '30', 
