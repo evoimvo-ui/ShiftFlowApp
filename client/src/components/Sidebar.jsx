@@ -28,7 +28,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
 
   return (
     <aside 
-      className={`min-h-screen bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col transition-all duration-300 sticky top-0 z-[50] ${collapsed ? 'w-16' : 'w-[220px]'}`}
+      className={`hidden md:flex min-h-screen bg-[var(--bg-surface)] border-r border-[var(--border)] flex-col transition-all duration-300 sticky top-0 z-[50] ${collapsed ? 'w-16' : 'w-[220px]'}`}
     >
       {/* Logo */}
       <div className={`p-5 border-b border-[var(--border)] flex flex-col gap-1 ${collapsed ? 'items-center' : ''}`}>

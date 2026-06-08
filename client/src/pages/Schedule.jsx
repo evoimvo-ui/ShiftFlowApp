@@ -8,6 +8,7 @@ import { jsPDF } from 'jspdf'
 import { autoTable } from 'jspdf-autotable'
 import { registerNotoSansForJsPdf, NOTO_SANS_PDF_FAMILY } from '../utils/notoSansPdfFont'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
+import ScheduleMobileView from '../components/ScheduleMobileView'
 import { scheduleApi, swapApi, authApi } from '../api'
 import { isSameWorker } from './Absences'
 import { 
@@ -522,7 +523,16 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         </Card>
       ) : (
         <>
-          <Card className="p-0 overflow-hidden shadow-2xl border-white/5">
+          <ScheduleMobileView 
+            currentWeekStart={currentWeekStart}
+            currentSchedule={currentSchedule}
+            workers={workers}
+            categories={categories}
+            shiftTypes={shiftTypes}
+            user={user}
+          />
+
+          <Card className="hidden md:block p-0 overflow-hidden shadow-2xl border-white/5">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse min-w-[900px]">
                 <thead>

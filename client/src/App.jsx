@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Sidebar from './components/Sidebar'
+import BottomNav from './components/BottomNav'
 import NotificationModal from './components/NotificationModal'
 import LanguageSelector from './components/LanguageSelector'
 import DashboardPage from './pages/Dashboard'
@@ -134,7 +135,7 @@ export default function App() {
         theme={theme}
         setTheme={setTheme}
       />
-      <main className="flex-1 p-8 overflow-y-auto max-w-full">
+      <main className="flex-1 p-8 overflow-y-auto max-w-full pb-24 md:pb-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-end mb-4">
             <LanguageSelector />
@@ -169,6 +170,12 @@ export default function App() {
           {pages[active]}
         </div>
       </main>
+      <BottomNav 
+        active={active} 
+        setActive={setActive} 
+        user={user} 
+        isAdmin={user?.role === 'admin'} 
+      />
       <NotificationModal 
         open={modalOpen} 
         onClose={closeModal} 
