@@ -175,7 +175,7 @@
     "manualUpdateSuccess": "Change successfully saved!",
     "deleteAssignmentSuccess": "Worker removed from shift!",
     "versionConflict": "The data has been changed in the meantime. The page will be refreshed.",
-    "absencesThisWeek": "Absences this week",This Week",
+    "absencesThisWeek": "Absences this week",
     "myAbsencesThisWeek": "My Absences This Week",
     "workersNeeded": "{{count}} workers",
     "dash": "–",
