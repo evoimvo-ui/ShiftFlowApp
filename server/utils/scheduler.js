@@ -67,6 +67,25 @@ function getShiftId(shift) {
 }
 
 function generateSchedule(weekStart, workers, categories, absences, shiftTypes, settings, historicalSchedules = [], holidays = []) {
+  // Fix 1 — Shuffle workers array
+  workers = [...workers].sort(() => Math.random() - 0.5);
+
+  // Fix 3 — Build shift history map from historicalSchedules
+  const shiftHistory = {};
+  if (historicalSchedules && historicalSchedules.length > 0) {
+    const lastSchedule = historicalSchedules[0]; // most recent
+    if (lastSchedule.assignments) {
+      lastSchedule.assignments.forEach(a => {
+        if (a.workerId && !a.isWarning) {
+          const wId = a.workerId.toString();
+          if (!shiftHistory[wId]) shiftHistory[wId] = {};
+          const key = a.shiftId.toString();
+          shiftHistory[wId][key] = (shiftHistory[wId][key] || 0) + 1;
+        }
+      });
+    }
+  }
+
   const assignments = [];
   const workerHours = new Map();
   const workerDaysWorked = new Map(); // Broj radnih dana u sedmici po radniku
@@ -229,9 +248,23 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
               const bHours = workerHours.get(b._id.toString());
               const aShiftCount = (workerShiftCount.get(a._id.toString()) || {})[sIdForMap] || 0;
               const bShiftCount = (workerShiftCount.get(b._id.toString()) || {})[sIdForMap] || 0;
+              
+              // Fix 2 — Tie-breaker randomness
               // Prefer manje sati, zatim manje puta na ovoj smjeni (za rotaciju)
-              const score = (aHours - bHours) * 2 + (aShiftCount - bShiftCount);
-              return score;
+              let scoreA = aHours * 2 + aShiftCount;
+              let scoreB = bHours * 2 + bShiftCount;
+              
+              // Fix 3 — Penalty for repeating same shift type from last week
+              const lastWeekCountA = shiftHistory[a._id.toString()]?.[sIdForMap] || 0;
+              const lastWeekCountB = shiftHistory[b._id.toString()]?.[sIdForMap] || 0;
+              scoreA += lastWeekCountA * 10; // Penalty adds to score (higher score = lower priority)
+              scoreB += lastWeekCountB * 10;
+              
+              // Add a small random component to break ties
+              scoreA += Math.random() * 0.5;
+              scoreB += Math.random() * 0.5;
+              
+              return scoreA - scoreB;
             });
             const selected = available[0];
             const sId = selected._id.toString();
