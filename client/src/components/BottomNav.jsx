@@ -22,7 +22,7 @@ export default function BottomNav({ active, setActive, user, isAdmin }) {
     : NAV.filter(item => ['dashboard', 'schedule', 'absences'].includes(item.id))
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden h-16 bg-[var(--bg-surface)] border-t border-[var(--border)] flex items-center justify-around px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden h-16 bg-[var(--bg-surface)] border-t border-[var(--border)] flex items-center justify-around px-2 w-full overflow-hidden">
       {navItems.map(item => {
         const Icon = item.icon
         const isActive = active === item.id
@@ -32,7 +32,7 @@ export default function BottomNav({ active, setActive, user, isAdmin }) {
             key={item.id} 
             onClick={() => setActive(item.id)}
             className={`
-              flex flex-col items-center justify-center gap-1 flex-1 h-full transition-all duration-200
+              flex flex-col items-center justify-center gap-1 flex-1 min-w-0 h-full transition-all duration-200
               ${isActive ? 'text-[var(--blue-bright)]' : 'text-[var(--text-muted)]'}
             `}
           >

@@ -160,15 +160,15 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
   }
 
   const SettingRow = ({ label, hint, icon: Icon, children }) => (
-    <div className="flex justify-between items-center py-5 border-b border-white/5 last:border-0 group">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-5 border-b border-white/5 last:border-0 group gap-4">
       <div className="flex gap-4">
-        {Icon && <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[--text-muted] group-hover:text-[--blue-bright] transition-colors"><Icon size={18} /></div>}
+        {Icon && <div className="w-10 h-10 rounded-xl bg-white/5 flex-shrink-0 flex items-center justify-center text-[--text-muted] group-hover:text-[--blue-bright] transition-colors"><Icon size={18} /></div>}
         <div>
           <div className="text-sm font-bold text-[--text-primary] tracking-tight">{label}</div>
           {hint && <div className="text-[11px] text-[--text-muted] mt-0.5 max-w-xs">{hint}</div>}
         </div>
       </div>
-      <div className={`flex-shrink-0 ${!isAdmin ? 'opacity-50 pointer-events-none' : ''}`}>{children}</div>
+      <div className={`flex-shrink-0 flex items-center ${!isAdmin ? 'opacity-50 pointer-events-none' : ''}`}>{children}</div>
     </div>
   )
 
@@ -230,7 +230,7 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
           )}
 
           <SettingRow label={t('settings.breakPolicy')} hint={t('settings.breakPolicyHint')} icon={Sun}>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-2 bg-[--bg-card] border border-[--border] rounded-xl p-1 pr-3">
                 <input 
                   type="number" value={settings.breakAfterHours} min={4} max={12}

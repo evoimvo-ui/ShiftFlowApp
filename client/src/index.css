@@ -38,6 +38,15 @@
   --blue-bright: #3b82f6;
 }
 
+html, body { 
+  overflow-x: hidden; 
+  max-width: 100vw; 
+} 
+
+* { 
+  box-sizing: border-box; 
+}
+
 body {
   background-color: var(--bg-surface);
   color: var(--text-primary);
