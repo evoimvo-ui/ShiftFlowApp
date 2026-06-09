@@ -1253,7 +1253,7 @@ function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences
         <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #3b82f6, #06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Zap size={16} color="white" />
         </div>
-        {!collapsed && <span style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 800, background: 'linear-gradient(90deg, #60a5fa, #22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ShiftFlow</span>}
+        {!collapsed && <span style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 800, background: 'linear-gradient(90deg, #60a5fa, #22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ShiftForge</span>}
       </div>
 
       {/* Nav */}

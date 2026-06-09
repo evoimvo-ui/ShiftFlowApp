@@ -29,7 +29,7 @@
     "roleChanged": "Your role has been changed. You will be logged out for security reasons."
   },
   "login": {
-    "title": "ShiftFlow",
+    "title": "ShiftForge",
     "subtitle": "Schedule Management System",
     "subtitleRegisterAdmin": "Create new company and admin account",
     "subtitleRegisterWorker": "Join existing company as worker",

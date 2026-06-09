@@ -41,7 +41,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
           </div>
           {!collapsed && (
             <span className="text-lg font-extrabold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
-              ShiftFlow
+              ShiftForge
             </span>
           )}
         </div>

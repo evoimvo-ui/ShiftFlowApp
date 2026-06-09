@@ -4,7 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import './i18n'
 
-console.log('--- ShiftFlow: Inicijalizacija ---')
+console.log('--- ShiftForge: Inicijalizacija ---')
 
 try {
   const rootElement = document.getElementById('root')
@@ -15,10 +15,10 @@ try {
         <App />
       </React.StrictMode>
     )
-    console.log('--- ShiftFlow: Render uspješan ---')
+    console.log('--- ShiftForge: Render uspješan ---')
   } else {
-    console.error('--- ShiftFlow: Greška - Root element nije pronađen ---')
+    console.error('--- ShiftForge: Greška - Root element nije pronađen ---')
   }
 } catch (error) {
-  console.error('--- ShiftFlow: Kritična greška pri pokretanju ---', error)
+  console.error('--- ShiftForge: Kritična greška pri pokretanju ---', error)
 }

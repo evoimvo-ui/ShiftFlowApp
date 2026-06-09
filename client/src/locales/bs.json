@@ -29,7 +29,7 @@
     "roleChanged": "Vaša uloga je promijenjena. Bićete odjavljeni radi sigurnosti."
   },
   "login": {
-    "title": "ShiftFlow",
+    "title": "ShiftForge",
     "subtitle": "Sistem za upravljanje rasporedom",
     "subtitleRegisterAdmin": "Kreiraj novu firmu i administratorski nalog",
     "subtitleRegisterWorker": "Pridruži se postojećoj firmi kao radnik",
