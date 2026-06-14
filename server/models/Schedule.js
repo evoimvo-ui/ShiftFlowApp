@@ -12,6 +12,7 @@ const assignmentSchema = new mongoose.Schema({
 const scheduleSchema = new mongoose.Schema({
   weekStart: { type: String, required: true }, // ISO Date YYYY-MM-DD
   organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
+  groupId: { type: mongoose.Schema.Types.ObjectId, ref: 'Group', default: null },
   assignments: [assignmentSchema],
   workerHours: {
     type: Map,

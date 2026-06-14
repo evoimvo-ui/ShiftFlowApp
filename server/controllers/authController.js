@@ -2,10 +2,11 @@ const User = require('../models/User');
 const Organization = require('../models/Organization');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
+const { sendVerificationEmail } = require('../utils/emailService');
 
 exports.registerOrganization = async (req, res) => {
   try {
-    const { username, password, organizationName, role } = req.body;
+    const { username, password, organizationName, role, email } = req.body;
 
     // Provjeri da li korisnik već postoji
     const existingUser = await User.findOne({ username });
@@ -25,7 +26,8 @@ exports.registerOrganization = async (req, res) => {
         username,
         password,
         role: 'worker',
-        organizationId: organization._id
+        organizationId: organization._id,
+        isVerified: true // Radnici ne trebaju verifikaciju
       });
       await user.save();
 
@@ -39,12 +41,19 @@ exports.registerOrganization = async (req, res) => {
       return res.status(201).json({ message: 'Uspješno ste se registrovali kao radnik u organizaciji ' + organizationName });
     }
 
-    // Originalna logika za admina
+    // Originalna logika za admina/owner-a
     // 1. Kreiraj admin korisnika
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationCodeExpiry = new Date(Date.now() + 15 * 60 * 1000);
+
     const user = new User({
       username,
+      email,
       password,
-      role: 'admin'
+      role: role || 'admin',
+      isVerified: false,
+      verificationCode,
+      verificationCodeExpiry
     });
     await user.save();
 
@@ -61,9 +70,67 @@ exports.registerOrganization = async (req, res) => {
     user.organizationId = organization._id;
     await user.save();
 
-    res.status(201).json({ message: 'Organizacija i administrator uspešno registrovani' });
+    // 4. Pošalji verifikacioni email
+    if (email) {
+      await sendVerificationEmail(email, verificationCode);
+    }
+
+    res.status(201).json({ 
+      message: 'Organizacija i administrator uspješno registrovani. Molimo verifikujte svoj email.',
+      requireVerification: true,
+      email
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+     
+     const user = await User.findOne({
+       email,
+       verificationCode: code,
+       verificationCodeExpiry: { $gt: new Date() }
+     });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Neispravan ili istekao kod za verifikaciju.' });
+    }
+
+    user.isVerified = true;
+    user.verificationCode = undefined;
+    user.verificationCodeExpiry = undefined;
+    await user.save();
+
+    res.json({ message: 'Email uspješno verifikovan! Sada se možete prijaviti.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'Korisnik sa tim emailom nije pronađen.' });
+    }
+
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationCodeExpiry = new Date(Date.now() + 15 * 60 * 1000);
+
+    user.verificationCode = verificationCode;
+    user.verificationCodeExpiry = verificationCodeExpiry;
+    await user.save();
+
+    await sendVerificationEmail(email, verificationCode);
+
+    res.json({ message: 'Novi kod je poslat na vaš email.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -71,9 +138,16 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username }).populate('organizationId');
+    
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Neispravno korisničko ime ili lozinka' });
     }
+
+    // Blokiraj login ako nije verifikovan (samo za admin/manager)
+    if ((user.role === 'admin' || user.role === 'manager') && user.isVerified === false) {
+      return res.status(403).json({ message: 'Molimo verifikujte svoj email prije prijave.' });
+    }
+
     const token = jwt.sign(
       { 
         id: user._id, 
@@ -91,9 +165,31 @@ exports.login = async (req, res) => {
         username: user.username, 
         role: user.role, 
         organizationId: user.organizationId?._id?.toString(),
-        organizationName: user.organizationId?.name
+        organizationName: user.organizationId?.name,
+        mustChangePassword: user.mustChangePassword,
+        tosAcceptedAt: user.tosAcceptedAt,
+        tosVersion: user.tosVersion
       } 
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (!user || !(await user.comparePassword(currentPassword))) {
+      return res.status(401).json({ message: 'Trenutna lozinka nije ispravna' });
+    }
+
+    user.password = newPassword;
+    user.mustChangePassword = false;
+    await user.save();
+
+    res.json({ message: 'Lozinka uspješno promijenjena' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -109,7 +205,35 @@ exports.getMe = async (req, res) => {
       username: user.username,
       role: user.role,
       organizationId: user.organizationId?._id?.toString(),
-      organizationName: user.organizationId?.name
+      organizationName: user.organizationId?.name,
+      mustChangePassword: user.mustChangePassword,
+      tosAcceptedAt: user.tosAcceptedAt,
+      tosVersion: user.tosVersion
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.acceptTos = async (req, res) => {
+  try {
+    const { tosVersion = '1.0' } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: 'Korisnik nije pronađen' });
+
+    user.tosAcceptedAt = new Date();
+    user.tosVersion = tosVersion;
+    await user.save();
+
+    res.json({
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+      organizationId: user.organizationId?._id?.toString(),
+      organizationName: user.organizationId?.name,
+      mustChangePassword: user.mustChangePassword,
+      tosAcceptedAt: user.tosAcceptedAt,
+      tosVersion: user.tosVersion
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -5,6 +5,8 @@ const Category = require('../models/Category');
 const Absence = require('../models/Absence');
 const Holiday = require('../models/Holiday');
 const AuditLog = require('../models/AuditLog');
+const Organization = require('../models/Organization');
+const PLAN_FEATURES = require('../config/planFeatures');
 const { generateSchedule, isWorkerAbsent, isoDate, addDays } = require('../utils/scheduler');
 
 exports.getSchedules = async (req, res) => {
@@ -30,23 +32,46 @@ exports.generateNewSchedule = async (req, res) => {
   }
 
   try {
-    const { weekStart, shiftTypes, settings } = req.body;
+    const { weekStart, shiftTypes, settings, groupId } = req.body;
     const organizationId = req.user.organizationId;
+
+    // Provjera groups feature
+    if (groupId) {
+      const org = await Organization.findById(organizationId);
+      if (!org) {
+        return res.status(404).json({ message: 'Organizacija nije pronađena' });
+      }
+      const plan = org.settings?.subscriptionPlan || 'basic';
+      if (!PLAN_FEATURES[plan].groups) {
+        return res.status(403).json({ error: 'groups_not_available', requiredPlan: 'premium' });
+      }
+    }
     
-    // Provjeri da li već postoji raspored za tu sedmicu i obriši ga ako postoji
+    // Provjeri da li već postoji raspored za tu sedmicu i grupu, obriši ga ako postoji
+    const deleteQuery = { weekStart, organizationId, groupId: groupId || null };
     if (useTransactions) {
-      await Schedule.findOneAndDelete({ weekStart, organizationId }, { session });
+      await Schedule.findOneAndDelete(deleteQuery, { session });
     } else {
-      await Schedule.findOneAndDelete({ weekStart, organizationId });
+      await Schedule.findOneAndDelete(deleteQuery);
     }
 
     const queryOptions = useTransactions ? { session } : {};
     
-    const workers = await Worker.find({ organizationId }, null, queryOptions);
+    // Filtriraj radnike samo iz odabrane grupe (ili sve ako nema grupe)
+    const workerQuery = { organizationId };
+    if (groupId) {
+      workerQuery.groupId = groupId;
+    }
+    const workers = await Worker.find(workerQuery, null, queryOptions);
     const categories = await Category.find({ organizationId }, null, queryOptions);
     const absences = await Absence.find({ organizationId }, null, queryOptions);
     const holidays = await Holiday.find({ organizationId }, null, queryOptions);
-    const historicalSchedules = await Schedule.find({ organizationId }, null, queryOptions).sort({ weekStart: -1 }).limit(8);
+    // Filtriraj historijske rasporede za istu grupu
+    const historyQuery = { organizationId };
+    if (groupId) {
+      historyQuery.groupId = groupId;
+    }
+    const historicalSchedules = await Schedule.find(historyQuery, null, queryOptions).sort({ weekStart: -1 }).limit(8);
 
     const newScheduleData = generateSchedule(
       weekStart,
@@ -62,6 +87,7 @@ exports.generateNewSchedule = async (req, res) => {
     const schedule = new Schedule({
       organizationId,
       weekStart,
+      groupId: groupId || null,
       assignments: newScheduleData.assignments,
       workerHours: newScheduleData.workerHours,
       status: 'draft'
@@ -90,10 +116,14 @@ exports.generateNewSchedule = async (req, res) => {
 
 exports.deleteSchedule = async (req, res) => {
   try {
-    await Schedule.findOneAndDelete({ 
-      weekStart: req.params.weekStart, 
-      organizationId: req.user.organizationId 
-    });
+    const { weekStart } = req.params;
+    const { groupId } = req.body; // groupId can be sent in body or query
+    const deleteQuery = { 
+      weekStart, 
+      organizationId: req.user.organizationId,
+      groupId: groupId || null 
+    };
+    await Schedule.findOneAndDelete(deleteQuery);
     res.json({ message: 'Raspored obrisan' });
   } catch (err) {
     res.status(500).json({ message: err.message });

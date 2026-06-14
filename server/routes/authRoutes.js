@@ -27,8 +27,12 @@ const validateRegister = [
 ];
 
 router.post('/register', authLimiter, validateRegister, authController.registerOrganization);
+router.post('/verify-email', authController.verifyEmail);
+router.post('/resend-verification', authController.resendVerification);
 router.post('/login', authLimiter, authController.login);
+router.post('/change-password', auth, authController.changePassword);
 router.get('/me', auth, authController.getMe);
+router.post('/accept-tos', auth, authController.acceptTos);
 router.delete('/user/:username', auth, authController.deleteUserAccount);
 
 module.exports = router;

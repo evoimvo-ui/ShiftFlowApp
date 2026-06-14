@@ -19,14 +19,18 @@ const organizationSchema = new mongoose.Schema({
     required: true
   },
   settings: {
-    maxWorkers: { type: Number, default: 20 },
-    subscriptionPlan: { type: String, enum: ['free', 'basic', 'pro'], default: 'free' },
-    subscriptionStatus: { type: String, enum: ['active', 'inactive', 'trial'], default: 'trial' }
+    maxWorkers: { type: Number, default: 15 },
+    subscriptionPlan: { type: String, enum: ['basic', 'premium', 'business'], default: 'basic' },
+    subscriptionStatus: { type: String, enum: ['trial', 'active', 'past_due', 'canceled', 'paused'], default: 'trial' },
+    trialEndsAt: { type: Date, default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
   },
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  paddleCustomerId: { type: String, default: null },
+  paddleSubscriptionId: { type: String, default: null },
+  currentPeriodEnd: { type: Date, default: null }
 });
 
 module.exports = mongoose.model('Organization', organizationSchema);

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { 
   Plus, Trash2, Download, FileText, Zap, RefreshCw, ChevronLeft, 
-  ChevronRight, AlertTriangle, Clock, UserX 
+  ChevronRight, AlertTriangle, Clock, UserX, Users 
 } from 'lucide-react'
 import { jsPDF } from 'jspdf'
 import { autoTable } from 'jspdf-autotable'
 import { registerNotoSansForJsPdf, NOTO_SANS_PDF_FAMILY } from '../utils/notoSansPdfFont'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
 import ScheduleMobileView from '../components/ScheduleMobileView'
-import { scheduleApi, swapApi, authApi } from '../api'
+import { scheduleApi, swapApi, authApi, groupApi } from '../api'
 import { isSameWorker } from './Absences'
 import { 
   isoDate, formatDate, addDays, getWeekStart, 
@@ -27,14 +27,34 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
   const [swapModal, setSwapModal] = useState(null)
   const [manualForm, setManualForm] = useState({ newWorkerId: '', reason: '' })
   const [swapForm, setSwapForm] = useState({ targetWorkerId: '' })
+  const [groups, setGroups] = useState([])
+  const [selectedGroupId, setSelectedGroupId] = useState(null) // null = "svi / bez grupe"
 
   const isAdmin = user?.role === 'admin'
   const weekKey = isoDate(currentWeekStart)
-  const currentSchedule = schedules.find(s => s.weekStart === weekKey)
+  
+  // Pronađi raspored za trenutni tjedan I izabranu grupu
+  const currentSchedule = schedules.find(s => 
+    s.weekStart === weekKey && (s.groupId || null) === selectedGroupId
+  )
+
+  // Filtriraj radnike za izabranu grupu (ili sve)
+  const filteredWorkers = selectedGroupId 
+    ? workers.filter(w => String(w.groupId || w.groupId?._id) === String(selectedGroupId))
+    : workers
 
   const prevWeek = () => setCurrentWeekStart(d => addDays(d, -7))
   const nextWeek = () => setCurrentWeekStart(d => addDays(d, 7))
   const goToday = () => setCurrentWeekStart(getWeekStart(new Date()))
+
+  // Učitaj grupe na početku
+  useEffect(() => {
+    if (isAdmin) {
+      groupApi.getAll().then(res => {
+        setGroups(res.data.map(g => ({ ...g, id: g._id })))
+      }).catch(err => console.error('Grupa error:', err))
+    }
+  }, [isAdmin])
 
   const generate = async () => {
     if (!isAdmin) return;
@@ -42,18 +62,19 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
     try {
       const res = await scheduleApi.generate({
         weekStart: weekKey,
-        workers,
+        groupId: selectedGroupId,
+        workers: filteredWorkers,
         categories,
         absences,
         shiftTypes,
         settings,
-        historicalSchedules: schedules
+        historicalSchedules: schedules.filter(s => (s.groupId || null) === selectedGroupId)
       })
       
       const newSched = { ...res.data, id: res.data._id }
       
       setSchedules(ss => {
-        const without = ss.filter(s => s.weekStart !== weekKey)
+        const without = ss.filter(s => !(s.weekStart === weekKey && (s.groupId || null) === selectedGroupId))
         return [...without, newSched]
       })
       if (refresh) refresh()
@@ -69,8 +90,8 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
     if (!isAdmin) return;
     if (confirm(t('schedule.deleteScheduleConfirm'))) {
       try {
-        await scheduleApi.delete(weekKey)
-        setSchedules(ss => ss.filter(s => s.weekStart !== weekKey))
+        await scheduleApi.delete(weekKey, { groupId: selectedGroupId })
+        setSchedules(ss => ss.filter(s => !(s.weekStart === weekKey && (s.groupId || null) === selectedGroupId)))
         if (refresh) refresh()
         toast.success(t('schedule.deleteSuccess'))
       } catch (err) {
@@ -220,7 +241,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
     ]
     const body = []
     currentSchedule.assignments.filter(a => !a.isWarning).forEach(a => {
-      const worker = workers.find(w => w.id === a.workerId)
+      const worker = filteredWorkers.find(w => w.id === a.workerId)
       const cat = categories.find(c => c.id === a.categoryId)
       const shift = shiftTypes.find(s => s.id === a.shiftId)
       const day = i18n.getResource(i18n.language, 'translation', 'days.full')[a.dayOffset]
@@ -333,7 +354,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
       t('schedule.hoursExport'),
       t('schedule.pdfHoursStatus'),
     ]
-    const hoursBody = workers.map(w => {
+    const hoursBody = filteredWorkers.map(w => {
       const hours = workerHours[w.id] || 0
       const firstCatRaw = (w.categoryIds || [])[0]
       const firstCatId = firstCatRaw?.id || firstCatRaw?._id || firstCatRaw
@@ -508,13 +529,32 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         )}
       </div>
 
-      <div className="flex items-center gap-2 bg-[--bg-card]/50 p-1.5 rounded-xl border border-[--border] w-fit">
-        <button onClick={prevWeek} className="p-2 hover:bg-white/10 rounded-lg text-[--text-secondary] transition-all"><ChevronLeft size={18} /></button>
-        <button onClick={goToday} className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[--text-muted] hover:text-[--text-primary] transition-all">{t('schedule.today')}</button>
-        <button onClick={nextWeek} className="p-2 hover:bg-white/10 rounded-lg text-[--text-secondary] transition-all"><ChevronRight size={18} /></button>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2 bg-[--bg-card]/50 p-1.5 rounded-xl border border-[--border] w-fit">
+          <button onClick={prevWeek} className="p-2 hover:bg-white/10 rounded-lg text-[--text-secondary] transition-all"><ChevronLeft size={18} /></button>
+          <button onClick={goToday} className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[--text-muted] hover:text-[--text-primary] transition-all">{t('schedule.today')}</button>
+          <button onClick={nextWeek} className="p-2 hover:bg-white/10 rounded-lg text-[--text-secondary] transition-all"><ChevronRight size={18} /></button>
+        </div>
+
+        {/* Odabir grupe */}
+        {isAdmin && groups.length > 0 && (
+          <div className="flex items-center gap-2 bg-[--bg-card]/50 p-2 rounded-xl border border-[--border]">
+            <Users size={16} className="text-[--text-muted]" />
+            <select 
+              value={selectedGroupId || ''}
+              onChange={(e) => setSelectedGroupId(e.target.value ? e.target.value : null)}
+              className="bg-transparent border-none text-sm text-[--text-primary] focus:ring-0 outline-none"
+            >
+              <option value="">Svi radnici / Bez grupe</option>
+              {groups.map(g => (
+                <option key={g.id} value={g.id}>{g.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
-      {workers.length === 0 || categories.length === 0 ? (
+      {filteredWorkers.length === 0 || categories.length === 0 ? (
         <Card className="flex flex-col items-center justify-center py-20 text-center gap-4 border-dashed border-2">
           <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
             <AlertTriangle size={32} />
@@ -526,7 +566,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
           <ScheduleMobileView 
             currentWeekStart={currentWeekStart}
             currentSchedule={currentSchedule}
-            workers={workers}
+            workers={filteredWorkers}
             categories={categories}
             shiftTypes={shiftTypes}
             user={user}
@@ -620,25 +660,25 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
                 </h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-                {workers.map(w => {
-                  const hours = workerHours[w.id] || 0
-                  const firstCatRaw = (w.categoryIds || [])[0]
-                  const firstCatId = firstCatRaw?.id || firstCatRaw?._id || firstCatRaw
-                  const cat = categories.find(c => String(c.id) === String(firstCatId))
-                  const isOvertime = hours > settings.maxHoursPerWeek
-                  return (
-                    <div key={w.id} className={`p-3 rounded-xl bg-white/5 border transition-all hover:bg-white/10 ${isOvertime ? 'border-amber-500/40' : 'border-white/5'}`}>
-                      <div className="flex justify-between items-start mb-1">
-                        <div className="text-[10px] font-bold text-[--text-primary] truncate pr-2">{w.name}</div>
-                        {isOvertime && <Badge color="#f59e0b" size="xs">!</Badge>}
-                      </div>
-                      <div className="flex items-end justify-between">
-                        <div className="text-lg font-black text-[--text-primary] leading-none">{hours}<span className="text-[10px] font-normal ml-0.5 text-[--text-muted]">{t('schedule.hours')}</span></div>
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ background: cat?.color || 'var(--blue)' }} />
-                      </div>
+                {filteredWorkers.map(w => {
+                const hours = workerHours[w.id] || 0
+                const firstCatRaw = (w.categoryIds || [])[0]
+                const firstCatId = firstCatRaw?.id || firstCatRaw?._id || firstCatRaw
+                const cat = categories.find(c => String(c.id) === String(firstCatId))
+                const isOvertime = hours > settings.maxHoursPerWeek
+                return (
+                  <div key={w.id} className={`p-3 rounded-xl bg-white/5 border transition-all hover:bg-white/10 ${isOvertime ? 'border-amber-500/40' : 'border-white/5'}`}>
+                    <div className="flex justify-between items-start mb-1">
+                      <div className="text-[10px] font-bold text-[--text-primary] truncate pr-2">{w.name}</div>
+                      {isOvertime && <Badge color="var(--amber)" size="xs">!</Badge>}
                     </div>
-                  )
-                })}
+                    <div className="flex items-end justify-between">
+                      <div className="text-lg font-black text-[--text-primary] leading-none">{hours}<span className="text-[10px] font-normal ml-0.5 text-[--text-muted]">{t('schedule.hours')}</span></div>
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ background: cat?.color || 'var(--blue)' }} />
+                    </div>
+                  </div>
+                )
+              })}
               </div>
             </Card>
           )}
@@ -794,7 +834,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
             onChange={v => setManualForm(f => ({ ...f, newWorkerId: v }))}
             options={[
               { value: '', label: t('schedule.selectWorker') },
-              ...workers
+              ...filteredWorkers
                 .map(w => ({ 
                   value: w.id, 
                   label: `${w.name} (${(w.categoryIds || []).map(id => categories.find(c => String(c.id) === String(id))?.name).filter(Boolean).join(', ') || t('schedule.noCategory')})` 
@@ -826,7 +866,7 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
             onChange={v => setSwapForm(f => ({ ...f, targetWorkerId: v }))}
             options={[
               { value: '', label: t('schedule.selectWorker') },
-              ...workers
+              ...filteredWorkers
                 .filter(w => String(w.id) !== String(swapModal?.worker?.id))
                 .map(w => ({ 
                   value: w.id, 

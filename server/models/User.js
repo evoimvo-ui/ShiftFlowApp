@@ -3,9 +3,16 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
+  email: { type: String },
   password: { type: String, required: true },
   role: { type: String, enum: ['admin', 'manager', 'worker'], default: 'admin' },
-  organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization' }
+  organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization' },
+  mustChangePassword: { type: Boolean, default: false },
+  isVerified: { type: Boolean, default: false },
+  verificationCode: { type: String },
+  verificationCodeExpiry: { type: Date },
+  tosAcceptedAt: { type: Date, default: null },
+  tosVersion: { type: String, default: null }
 });
 
 userSchema.pre('save', async function(next) {

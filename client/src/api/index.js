@@ -5,8 +5,28 @@ const api = axios.create({
   timeout: 10000, // Smanjujemo timeout na 10 sekundi
 });
 
+// Custom event for 402 errors
+export const emit402Error = (errorCode, organizationId) => {
+  const event = new CustomEvent('paddle-402-error', {
+    detail: { errorCode, organizationId }
+  });
+  window.dispatchEvent(event);
+};
+
 // Retry logika za mrežne greške
 api.interceptors.response.use(null, async (error) => {
+  // Handle 402 Payment Required
+  if (error.response?.status === 402) {
+    const errorCode = error.response.data?.code || 'unknown';
+    // Get organizationId from localStorage user
+    let organizationId = null;
+    try {
+      const user = JSON.parse(localStorage.getItem('sf_user'));
+      organizationId = user?.organizationId;
+    } catch (e) {}
+    emit402Error(errorCode, organizationId);
+  }
+
   const { config } = error;
   if (!config || !config.retry) {
     return Promise.reject(error);
@@ -67,7 +87,7 @@ export const absenceApi = {
 export const scheduleApi = {
   getAll: (config = {}) => api.get('/schedules', config),
   generate: (data) => api.post('/schedules/generate', data),
-  delete: (weekStart) => api.delete(`/schedules/${weekStart}`),
+  delete: (weekStart, data = {}) => api.delete(`/schedules/${weekStart}`, { data }),
   manualUpdate: (data) => api.put('/schedules/manual-update', data),
   deleteAssignment: (scheduleId, assignmentId) => api.delete(`/schedules/assignment/${scheduleId}/${assignmentId}`),
 };
@@ -91,8 +111,12 @@ export const auditApi = {
 export const authApi = {
   login: (data) => api.post('/auth/login', data),
   register: (data) => api.post('/auth/register', data),
+  verifyEmail: (data) => api.post('/auth/verify-email', data),
+  resendVerification: (data) => api.post('/auth/resend-verification', data),
   getMe: () => api.get('/auth/me'),
-  deleteUser: (username) => api.delete(`/auth/user/${username}`),
+  changePassword: (data) => api.post('/auth/change-password', data),
+  acceptTos: (data) => api.post('/auth/accept-tos', data),
+  deleteUser: (username) => api.delete(`/auth/user/${username}`)
 };
 
 export const settingApi = {

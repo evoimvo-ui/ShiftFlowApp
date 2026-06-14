@@ -3,6 +3,8 @@ import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import NotificationModal from './components/NotificationModal'
 import LanguageSelector from './components/LanguageSelector'
+import UpgradeModal from './components/UpgradeModal'
+import ConsentModal from './components/ConsentModal'
 import DashboardPage from './pages/Dashboard'
 import SchedulePage from './pages/Schedule'
 import WorkersPage from './pages/Workers'
@@ -10,11 +12,13 @@ import CategoriesPage from './pages/Categories'
 import AbsencesPage from './pages/Absences'
 import SettingsPage from './pages/Settings'
 import LoginPage from './pages/Login'
+import ChangePasswordPage from './pages/ChangePassword'
 import useApi from './hooks/useApi'
 import { useNotifications } from './hooks/useNotifications'
 import { useTranslation } from 'react-i18next'
 import { Toaster, toast } from 'react-hot-toast'
 import { authApi, settingApi } from './api'
+import { initializePaddle } from '@paddle/paddle-js'
 
 export default function App() {
   const { t } = useTranslation()
@@ -28,10 +32,46 @@ export default function App() {
     }
   })
 
+  // Upgrade Modal state
+  const [upgradeModal, setUpgradeModal] = useState({
+    isOpen: false,
+    errorCode: null,
+    organizationId: null
+  })
+  // Consent Modal state
+  const [showConsentModal, setShowConsentModal] = useState(false)
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('sf_theme', theme)
   }, [theme])
+
+  // Initialize Paddle on mount
+useEffect(() => {
+  initializePaddle({
+    environment: 'sandbox',
+    token: import.meta.env.VITE_PADDLE_CLIENT_TOKEN
+  }).then((paddle) => {
+    if (paddle) {
+      window.Paddle = paddle;
+    }
+  });
+}, []);
+  // Listen for 402 events
+  useEffect(() => {
+    const handle402Error = (event) => {
+      setUpgradeModal({
+        isOpen: true,
+        errorCode: event.detail.errorCode,
+        organizationId: event.detail.organizationId
+      });
+    };
+
+    window.addEventListener('paddle-402-error', handle402Error);
+    return () => {
+      window.removeEventListener('paddle-402-error', handle402Error);
+    };
+  }, []);
 
   // Osvježavanje podataka o korisniku pri svakom učitavanju aplikacije
   useEffect(() => {
@@ -49,6 +89,10 @@ export default function App() {
         } else {
           setUser(updatedUser);
           localStorage.setItem('sf_user', JSON.stringify(updatedUser));
+          // Provjeri da li je korisnik prihvatio ToS
+          if (!updatedUser.tosAcceptedAt) {
+            setShowConsentModal(true);
+          }
         }
       }).catch(err => {
         if (err.response?.status === 401) {
@@ -59,6 +103,15 @@ export default function App() {
       });
     }
   }, []);
+
+  // Funkcija za prihvat ToS-a
+  const handleAcceptTos = async () => {
+    const res = await authApi.acceptTos({ tosVersion: '1.0' });
+    const updatedUser = res.data;
+    setUser(updatedUser);
+    localStorage.setItem('sf_user', JSON.stringify(updatedUser));
+    setShowConsentModal(false);
+  };
 
   const [active, setActive] = useState('dashboard')
   const [collapsed, setCollapsed] = useState(false)
@@ -89,6 +142,16 @@ export default function App() {
 
   if (!user) {
     return <LoginPage onLogin={setUser} />
+  }
+
+  if (user.mustChangePassword) {
+    return <ChangePasswordPage onPasswordChanged={() => {
+      // Osvježi korisničke podatke nakon promjene lozinke
+      authApi.getMe().then(res => {
+        setUser(res.data)
+        localStorage.setItem('sf_user', JSON.stringify(res.data))
+      })
+    }} />
   }
 
   if (loading) {
@@ -181,6 +244,16 @@ export default function App() {
         onClose={closeModal} 
         notification={currentNotification}
         workers={workers}
+      />
+      <UpgradeModal
+        isOpen={upgradeModal.isOpen}
+        errorCode={upgradeModal.errorCode}
+        organizationId={upgradeModal.organizationId}
+        onClose={() => setUpgradeModal({ ...upgradeModal, isOpen: false })}
+      />
+      <ConsentModal
+        isOpen={showConsentModal}
+        onAccept={handleAcceptTos}
       />
     </div>
   )

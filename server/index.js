@@ -9,9 +9,7 @@ const path = require('path');
 
 const connectDB = require('./config/db');
 const keys = require('./config/keys');
-const seed = require('./utils/seed_logic'); // Promijenićemo seed.js da izvozi funkciju
-
-
+const seed = require('./utils/seed_logic');
 
 const app = express();
 
@@ -22,6 +20,11 @@ connectDB().then(() => {
 
 // Middleware
 app.use(cors());
+
+// Payment routes (must come BEFORE express.json()!)
+const paymentRoutes = require('./routes/paymentRoutes');
+app.use('/api/payments', paymentRoutes);
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(morgan('dev'));
@@ -47,18 +50,20 @@ const holidayRoutes = require('./routes/holidayRoutes');
 const swapRoutes = require('./routes/swapRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const auth = require('./middleware/auth');
+const checkSubscription = require('./middleware/checkSubscription');
 
-app.use('/api/workers', workerRoutes);
-app.use('/api/groups', groupRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/absences', absenceRoutes);
-app.use('/api/schedules', scheduleRoutes);
+app.use('/api/workers', auth, checkSubscription, workerRoutes);
+app.use('/api/groups', auth, checkSubscription, groupRoutes);
+app.use('/api/categories', auth, checkSubscription, categoryRoutes);
+app.use('/api/absences', auth, checkSubscription, absenceRoutes);
+app.use('/api/schedules', auth, checkSubscription, scheduleRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/settings', settingRoutes);
-app.use('/api/holidays', holidayRoutes);
-app.use('/api/swaps', swapRoutes);
-app.use('/api/audit', auditRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/api/settings', auth, checkSubscription, settingRoutes);
+app.use('/api/holidays', auth, checkSubscription, holidayRoutes);
+app.use('/api/swaps', auth, checkSubscription, swapRoutes);
+app.use('/api/audit', auth, checkSubscription, auditRoutes);
+app.use('/api/notifications', auth, checkSubscription, notificationRoutes);
 
 // Posluživanje statičkih datoteka u produkciji
 if (process.env.NODE_ENV === 'production') {

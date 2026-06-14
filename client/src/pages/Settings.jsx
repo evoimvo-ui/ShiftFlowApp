@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Edit2, Trash2, Sun, Sunset, Moon, Clock, Shield, TrendingUp, Zap, Calendar, RefreshCcw, Landmark, Users } from 'lucide-react'
+import { Plus, Edit2, Trash2, Sun, Sunset, Moon, Clock, Shield, TrendingUp, Zap, Calendar, RefreshCcw, Landmark, Users, CreditCard } from 'lucide-react'
 import { Card, Btn, Badge, Modal, Input } from '../components/UI'
+import UpgradeModal from '../components/UpgradeModal'
 import { settingApi, holidayApi, groupApi } from '../api'
 import { CATEGORY_COLORS, shiftDurationHours, formatDate, isoDate } from '../utils/helpers'
 
@@ -28,14 +29,21 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
   const [editGroup, setEditGroup] = useState(null)
   const [groupForm, setGroupForm] = useState({ name: '', description: '' })
 
+  const [organization, setOrganization] = useState(null)
+  const [upgradeModal, setUpgradeModal] = useState({ isOpen: false, errorCode: null, organizationId: null })
+
   useEffect(() => {
     holidayApi.getAll()
-      .then(res => setHolidays(res.data.map(h => ({ ...h, id: h._id }))))
+      .then(res => setHolidays(res.data.map(h => ({ ...h, id: h._id })))
       .catch(err => console.error('Holidays error:', err))
 
     groupApi.getAll()
-      .then(res => setGroups(res.data.map(g => ({ ...g, id: g._id }))))
+      .then(res => setGroups(res.data.map(g => ({ ...g, id: g._id })))
       .catch(err => console.error('Groups error:', err))
+
+    settingApi.getOrg()
+      .then(res => setOrganization(res.data))
+      .catch(err => console.error('Organization error:', err))
   }, [])
 
   if (!settings || !shiftTypes) {
@@ -178,6 +186,68 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
         <h1 className="text-3xl font-extrabold tracking-tight text-[--text-primary]">{t('settings.title')}</h1>
         <p className="text-[--text-muted] text-sm mt-1 font-medium">{t('settings.subtitle')}</p>
       </div>
+
+      {organization && (
+        <Card className="p-8">
+          <h3 className="text-xs font-bold text-[--cyan] uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+            <CreditCard size={14} />
+            {t('settings.subscription')}
+          </h3>
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div>
+                <div className="text-sm font-bold text-[--text-primary]">{t('settings.currentPlan')}</div>
+                <div className="text-lg font-extrabold text-[--blue] mt-1">
+                  {organization.settings?.subscriptionPlan ? organization.settings.subscriptionPlan.charAt(0).toUpperCase() + organization.settings.subscriptionPlan.slice(1) : 'Basic'}
+                </div>
+              </div>
+              <Btn 
+                onClick={() => setUpgradeModal({ 
+                  isOpen: true, 
+                  errorCode: 'trial_expired', 
+                  organizationId: organization._id 
+                })}
+              >
+                {t('settings.upgradePlan')}
+              </Btn>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-4 border-t border-white/5">
+              <div>
+                <div className="text-sm font-bold text-[--text-primary]">{t('settings.subscriptionStatus')}</div>
+                <div className="mt-1">
+                  <Badge color={
+                    organization.settings?.subscriptionStatus === 'active' ? 'var(--emerald)' :
+                    organization.settings?.subscriptionStatus === 'trial' ? 'var(--blue)' :
+                    organization.settings?.subscriptionStatus === 'past_due' ? 'var(--amber)' :
+                    organization.settings?.subscriptionStatus === 'paused' ? 'var(--yellow)' : 'var(--rose)'
+                  }>
+                    {organization.settings?.subscriptionStatus ? organization.settings.subscriptionStatus.charAt(0).toUpperCase() + organization.settings.subscriptionStatus.slice(1).replace('_', ' ') : 'Trial'}
+                  </Badge>
+                </div>
+              </div>
+
+              {(organization.settings?.subscriptionStatus === 'trial' && organization.settings?.trialEndsAt) && (
+                <div className="text-right">
+                  <div className="text-sm font-bold text-[--text-primary]">{t('settings.trialEndsOn')}</div>
+                  <div className="text-[13px] text-[--text-muted] mt-1 font-medium">
+                    {formatDate(new Date(organization.settings.trialEndsAt))}
+                  </div>
+                </div>
+              )}
+
+              {(organization.settings?.subscriptionStatus === 'active' && organization.currentPeriodEnd) && (
+                <div className="text-right">
+                  <div className="text-sm font-bold text-[--text-primary]">{t('settings.nextBillingDate')}</div>
+                  <div className="text-[13px] text-[--text-muted] mt-1 font-medium">
+                    {formatDate(new Date(organization.currentPeriodEnd))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
 
       <Card className="p-8">
         <h3 className="text-xs font-bold text-[--cyan] uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
@@ -506,6 +576,13 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
           </div>
         </div>
       </Modal>
+
+      <UpgradeModal
+        isOpen={upgradeModal.isOpen}
+        errorCode={upgradeModal.errorCode}
+        organizationId={upgradeModal.organizationId}
+        onClose={() => setUpgradeModal({ ...upgradeModal, isOpen: false })}
+      />
     </div>
   )
 }

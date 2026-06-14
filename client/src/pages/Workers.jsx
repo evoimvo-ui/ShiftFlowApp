@@ -15,6 +15,11 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
   const [filterCat, setFilterCat] = useState('all')
   const [filterGroup, setFilterGroup] = useState('all')
   const [groups, setGroups] = useState([])
+  
+  // Za prikaz generisane lozinke
+  const [passwordModal, setPasswordModal] = useState(false)
+  const [generatedPassword, setGeneratedPassword] = useState('')
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     groupApi.getAll().then(res => {
@@ -52,12 +57,19 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
         const res = await workerApi.update(editing, form)
         const updated = { ...res.data, id: res.data._id }
         setWorkers(ws => ws.map(w => w.id === editing ? updated : w))
+        setModal(false)
       } else {
         const res = await workerApi.create(form)
         const created = { ...res.data, id: res.data._id }
         setWorkers(ws => [...ws, created])
+        
+        // Prikaži modal sa lozinkom samo pri kreiranju
+        if (res.data.generatedPassword) {
+          setGeneratedPassword(res.data.generatedPassword)
+          setPasswordModal(true)
+        }
+        setModal(false)
       }
-      setModal(false)
     } catch (err) {
       console.error(err)
       alert(t('workers.saveError', { error: err.message }))
@@ -281,6 +293,42 @@ export default function WorkersPage({ workers, setWorkers, categories, user }) {
             <Btn variant="ghost" onClick={() => setModal(false)}>{t('common.cancel')}</Btn>
             <Btn onClick={save} disabled={!form.name.trim() || (form.categoryIds || []).length === 0}>{editing ? t('workers.saveChanges') : t('workers.add')}</Btn>
           </div>
+        </div>
+      </Modal>
+
+      {/* Modal za prikaz generisane lozinke */}
+      <Modal 
+        open={passwordModal} 
+        onClose={() => setPasswordModal(false)} 
+        title={t('workers.generatedPasswordTitle')}
+      >
+        <div className="flex flex-col gap-6 py-2">
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6 flex flex-col items-center gap-4">
+            <div className="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em]">{t('login.password')}</div>
+            <div className="text-3xl font-black text-white tracking-wider font-mono bg-black/20 px-6 py-3 rounded-xl border border-white/5">
+              {generatedPassword}
+            </div>
+            <button 
+              onClick={() => {
+                navigator.clipboard.writeText(generatedPassword)
+                setCopied(true)
+                setTimeout(() => setCopied(false), 2000)
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                copied ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              {copied ? t('workers.copied') : t('workers.copyToClipboard')}
+            </button>
+          </div>
+          
+          <p className="text-sm text-[--text-muted] text-center px-4 leading-relaxed">
+            {t('workers.generatedPasswordNote')}
+          </p>
+
+          <Btn className="w-full justify-center py-3" onClick={() => setPasswordModal(false)}>
+            {t('common.ok')}
+          </Btn>
         </div>
       </Modal>
     </div>
