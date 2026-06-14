@@ -34,11 +34,11 @@ export default function SettingsPage({ settings, setSettings, shiftTypes, setShi
 
   useEffect(() => {
     holidayApi.getAll()
-      .then(res => setHolidays(res.data.map(h => ({ ...h, id: h._id })))
+      .then(res => setHolidays(res.data.map(h => ({ ...h, id: h._id }))))
       .catch(err => console.error('Holidays error:', err))
 
     groupApi.getAll()
-      .then(res => setGroups(res.data.map(g => ({ ...g, id: g._id })))
+      .then(res => setGroups(res.data.map(g => ({ ...g, id: g._id }))))
       .catch(err => console.error('Groups error:', err))
 
     settingApi.getOrg()
