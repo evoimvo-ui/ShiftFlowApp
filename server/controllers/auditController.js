@@ -2,7 +2,7 @@ const AuditLog = require('../models/AuditLog');
 
 exports.getAuditLogs = async (req, res) => {
   try {
-    const logs = await AuditLog.find()
+    const logs = await AuditLog.find({ organizationId: req.user.organizationId })
       .populate('adminId', 'username')
       .sort({ timestamp: -1 })
       .limit(50);
