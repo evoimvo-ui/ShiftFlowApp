@@ -1,3 +1,6 @@
+import * as Sentry from '@sentry/react';
+Sentry.init({ dsn: 'https://2bcbbe47126383c214a163e5fde58af4@o4511571182485504.ingest.de.sentry.io/4511571277185104' });
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
