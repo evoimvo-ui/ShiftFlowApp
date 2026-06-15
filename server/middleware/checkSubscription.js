@@ -13,8 +13,9 @@ module.exports = async (req, res, next) => {
     }
 
     const { subscriptionStatus, trialEndsAt } = org.settings;
+    const status = subscriptionStatus || 'trial';
 
-    switch (subscriptionStatus) {
+    switch (status) {
       case 'trial': {
         if (new Date() < new Date(trialEndsAt)) {
           req.organization = org;

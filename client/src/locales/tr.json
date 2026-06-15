@@ -523,5 +523,30 @@
     "vacation": "Yıllık İzin",
     "business": "İş Seyahati",
     "other": "Diğer"
+  },
+  "consentModal": {
+    "title": "Kullanım Koşullarını Kabul Et",
+    "subtitle": "Lütfen devam etmek için aşağıdaki koşulları okuyun ve kabul edin.",
+    "required": "Gerekli",
+    "termsOfService": "Kullanım Koşulları",
+    "privacyPolicy": "Gizlilik Politikası",
+    "dataProcessing": "Veri İşleme",
+    "refundPolicy": "İade Politikası",
+    "accept": "Kabul Et ve Devam Et"
+  },
+  "upgradeModal": {
+    "title": "Planı Güncelle",
+    "description": "İhtiyaçlarınıza uygun bir plan seçin.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Şimdi Yükselt",
+    "subscribed": "Abone Olundu",
+    "cancel": "İptal Et",
+    "processing": "İşleniyor...",
+    "error": "Ödeme işlenirken bir hata oluştu. Lütfen tekrar deneyin."
+  },
+  "months": {
+    "full": ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
   }
 }

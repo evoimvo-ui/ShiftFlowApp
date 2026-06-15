@@ -523,5 +523,30 @@
     "vacation": "Congé annuel",
     "business": "Voyage d'affaires",
     "other": "Autre"
+  },
+  "consentModal": {
+    "title": "Accepter les conditions d'utilisation",
+    "subtitle": "Veuillez lire et accepter les conditions suivantes pour continuer.",
+    "required": "Requis",
+    "termsOfService": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "dataProcessing": "Traitement des données",
+    "refundPolicy": "Politique de remboursement",
+    "accept": "Accepter et continuer"
+  },
+  "upgradeModal": {
+    "title": "Mettre à jour le plan",
+    "description": "Choisissez un plan adapté à vos besoins.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Mettre à niveau maintenant",
+    "subscribed": "Abonné",
+    "cancel": "Annuler",
+    "processing": "Traitement en cours...",
+    "error": "Erreur lors du traitement du paiement. Veuillez réessayer."
+  },
+  "months": {
+    "full": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
   }
 }

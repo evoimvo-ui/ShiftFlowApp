@@ -523,5 +523,30 @@
     "vacation": "Jahresurlaub",
     "business": "Dienstreise",
     "other": "Sonstiges"
+  },
+  "consentModal": {
+    "title": "Nutzungsbedingungen akzeptieren",
+    "subtitle": "Bitte lesen und akzeptieren Sie die folgenden Bedingungen, um fortzufahren.",
+    "required": "Erforderlich",
+    "termsOfService": "Nutzungsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "dataProcessing": "Datenverarbeitung",
+    "refundPolicy": "Rückerstattungsrichtlinie",
+    "accept": "Akzeptieren und fortfahren"
+  },
+  "upgradeModal": {
+    "title": "Plan aktualisieren",
+    "description": "Wählen Sie einen Plan, der Ihren Anforderungen entspricht.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Jetzt upgraden",
+    "subscribed": "Abonniert",
+    "cancel": "Abbrechen",
+    "processing": "Wird verarbeitet...",
+    "error": "Fehler bei der Verarbeitung der Zahlung. Bitte versuchen Sie es erneut."
+  },
+  "months": {
+    "full": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
   }
 }

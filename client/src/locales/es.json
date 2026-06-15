@@ -523,5 +523,30 @@
     "vacation": "Vacaciones anuales",
     "business": "Viaje de negocios",
     "other": "Otro"
+  },
+  "consentModal": {
+    "title": "Aceptar términos de servicio",
+    "subtitle": "Por favor, lea y acepte los siguientes términos para continuar.",
+    "required": "Requerido",
+    "termsOfService": "Términos de servicio",
+    "privacyPolicy": "Política de privacidad",
+    "dataProcessing": "Tratamiento de datos",
+    "refundPolicy": "Política de reembolso",
+    "accept": "Aceptar y continuar"
+  },
+  "upgradeModal": {
+    "title": "Actualizar plan",
+    "description": "Elija un plan que se adapte a sus necesidades.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Actualizar ahora",
+    "subscribed": "Suscripto",
+    "cancel": "Cancelar",
+    "processing": "Procesando...",
+    "error": "Error al procesar el pago. Por favor, inténtelo de nuevo."
+  },
+  "months": {
+    "full": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
   }
 }

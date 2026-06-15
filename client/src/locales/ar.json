@@ -522,5 +522,30 @@
     "vacation": "إجازة سنوية",
     "business": "سفر عمل",
     "other": "أخرى"
+  },
+  "consentModal": {
+    "title": "قبول شروط الخدمة",
+    "subtitle": "يرجى قراءة وقبول الشروط التالية للمتابعة.",
+    "required": "مطلوب",
+    "termsOfService": "شروط الخدمة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "dataProcessing": "معالجة البيانات",
+    "refundPolicy": "سياسة الاسترداد",
+    "accept": "قبول والمتابعة"
+  },
+  "upgradeModal": {
+    "title": "ترقية الخطة",
+    "description": "اختر خطة تناسب احتياجاتك.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "ترقية الآن",
+    "subscribed": "مشترك",
+    "cancel": "إلغاء",
+    "processing": "جاري المعالجة...",
+    "error": "حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى."
+  },
+  "months": {
+    "full": ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
   }
 }

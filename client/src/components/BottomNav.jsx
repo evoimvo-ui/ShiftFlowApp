@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { 
   LayoutDashboard, Calendar, Users, Tags, 
-  UserX, Settings 
+  UserX, Settings, X
 } from 'lucide-react'
 
 const NAV = [
@@ -14,7 +14,7 @@ const NAV = [
   { id: 'settings', label: 'sidebar.settings', icon: Settings },
 ]
 
-export default function BottomNav({ active, setActive, user, isAdmin }) {
+export default function BottomNav({ active, setActive, user, isAdmin, onLogout }) {
   const { t } = useTranslation()
   
   const navItems = isAdmin 
@@ -43,6 +43,17 @@ export default function BottomNav({ active, setActive, user, isAdmin }) {
           </button>
         )
       })}
+      
+      {/* Logout button */}
+      <button 
+        onClick={onLogout}
+        className="flex flex-col items-center justify-center gap-1 flex-1 min-w-0 h-full transition-all duration-200 text-rose-400 hover:text-rose-300"
+      >
+        <X size={20} />
+        <span className="text-[10px] font-bold uppercase tracking-tight truncate w-full text-center px-1">
+          {t('sidebar.logout')}
+        </span>
+      </button>
     </nav>
   )
 }

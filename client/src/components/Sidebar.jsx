@@ -16,7 +16,7 @@ const NAV = [
   { id: 'settings', label: 'sidebar.settings', icon: Settings },
 ]
 
-export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user, theme, setTheme }) {
+export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user, theme, setTheme, onLogout }) {
   const { t } = useTranslation()
   const today = isoDate(new Date())
   const activeAbsences = absences.filter(a => a.startDate <= today && a.endDate >= today).length
@@ -106,7 +106,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
         </button>
 
         <button 
-          onClick={() => { localStorage.clear(); window.location.reload(); }}
+          onClick={onLogout}
           className={`w-full flex items-center gap-2 p-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-all text-xs font-bold ${collapsed ? 'justify-center' : ''}`}
         >
           <X size={16} />

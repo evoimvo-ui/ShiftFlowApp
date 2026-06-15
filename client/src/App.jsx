@@ -49,7 +49,7 @@ export default function App() {
   // Initialize Paddle on mount
 useEffect(() => {
   initializePaddle({
-    environment: 'sandbox',
+    environment: 'production',
     token: import.meta.env.VITE_PADDLE_CLIENT_TOKEN
   }).then((paddle) => {
     if (paddle) {
@@ -113,6 +113,12 @@ useEffect(() => {
     setShowConsentModal(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('sf_token');
+    localStorage.removeItem('sf_user');
+    setUser(null);
+  };
+
   const [active, setActive] = useState('dashboard')
   const [collapsed, setCollapsed] = useState(false)
 
@@ -152,6 +158,17 @@ useEffect(() => {
         localStorage.setItem('sf_user', JSON.stringify(res.data))
       })
     }} />
+  }
+
+  if (showConsentModal) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-surface)] flex items-center justify-center p-6">
+        <ConsentModal
+          isOpen={showConsentModal}
+          onAccept={handleAcceptTos}
+        />
+      </div>
+    )
   }
 
   if (loading) {
@@ -197,6 +214,7 @@ useEffect(() => {
         user={user}
         theme={theme}
         setTheme={setTheme}
+        onLogout={handleLogout}
       />
       <main className="flex-1 p-8 overflow-y-auto max-w-full pb-24 md:pb-8">
         <div className="max-w-7xl mx-auto">
@@ -238,6 +256,7 @@ useEffect(() => {
         setActive={setActive} 
         user={user} 
         isAdmin={user?.role === 'admin'} 
+        onLogout={handleLogout}
       />
       <NotificationModal 
         open={modalOpen} 
@@ -250,10 +269,6 @@ useEffect(() => {
         errorCode={upgradeModal.errorCode}
         organizationId={upgradeModal.organizationId}
         onClose={() => setUpgradeModal({ ...upgradeModal, isOpen: false })}
-      />
-      <ConsentModal
-        isOpen={showConsentModal}
-        onAccept={handleAcceptTos}
       />
     </div>
   )

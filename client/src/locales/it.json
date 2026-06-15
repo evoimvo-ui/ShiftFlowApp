@@ -523,5 +523,30 @@
     "vacation": "Ferie annuali",
     "business": "Viaggio di lavoro",
     "other": "Altro"
+  },
+  "consentModal": {
+    "title": "Accetta i termini di servizio",
+    "subtitle": "Per favore, leggi e accetta i seguenti termini per continuare.",
+    "required": "Richiesto",
+    "termsOfService": "Termini di servizio",
+    "privacyPolicy": "Informativa sulla privacy",
+    "dataProcessing": "Trattamento dei dati",
+    "refundPolicy": "Politica di rimborso",
+    "accept": "Accetta e continua"
+  },
+  "upgradeModal": {
+    "title": "Aggiorna il piano",
+    "description": "Scegli un piano adatto alle tue esigenze.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Aggiorna ora",
+    "subscribed": "Iscritto",
+    "cancel": "Annulla",
+    "processing": "In elaborazione...",
+    "error": "Errore durante l'elaborazione del pagamento. Per favore, riprova."
+  },
+  "months": {
+    "full": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
   }
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { workerApi, categoryApi, absenceApi, scheduleApi, settingApi, healthApi } from '../api';
+import { MOCK_WORKERS, MOCK_CATEGORIES, MOCK_ABSENCES, MOCK_SCHEDULES, MOCK_SETTINGS, MOCK_SHIFTS } from '../utils/mockData';
 
 export default function useApi(user) {
   const { t } = useTranslation();
@@ -17,6 +18,20 @@ export default function useApi(user) {
     setLoading(true);
     try {
       console.log('Fetching data for user:', user);
+      
+      // Ako je demo korisnik, koristi mock podatke
+      if (user?.isDemo) {
+        console.log('Demo mode - using mock data');
+        setWorkers(MOCK_WORKERS);
+        setCategories(MOCK_CATEGORIES);
+        setAbsences(MOCK_ABSENCES);
+        setSchedules(MOCK_SCHEDULES);
+        setSettings(MOCK_SETTINGS);
+        setShiftTypes(MOCK_SHIFTS);
+        setError(null);
+        setLoading(false);
+        return;
+      }
       
       // Prvo "ping" da probudimo server ako spava
       try {
