@@ -510,11 +510,40 @@
     }
   },
   "days": {
-    "short": ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
-    "full": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+    "short": [
+      "Lun",
+      "Mar",
+      "Mer",
+      "Jeu",
+      "Ven",
+      "Sam",
+      "Dim"
+    ],
+    "full": [
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi",
+      "Dimanche"
+    ]
   },
   "months": {
-    "full": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+    "full": [
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre"
+    ]
   },
   "shifts": {
     "morning": "Matin",
@@ -552,41 +581,171 @@
   },
   "userManual": {
     "title": "Manuel d'utilisation",
+    "subtitle": "ShiftForge — gestion des quarts et des plannings",
+    "badgeAdmin": "Administrateurs uniquement",
+    "badgeWorker": "Pour les employés",
     "tabs": {
-      "login": "Connexion / Inscription",
-      "admin": "Configuration administrateur",
+      "login": "Connexion",
+      "admin": "Configuration admin",
       "workers": "Employés",
-      "schedule": "Horaire"
+      "schedule": "Planning"
     },
-    "badgeAdmin": "🛡 Réservé aux administrateurs",
-    "badgeWorker": "👤 Pour les employés",
     "login": {
-      "title": "Connexion et Inscription",
-      "intro": "Cette section explique comment se connecter, s'inscrire en tant qu'administrateur ou rejoindre une organisation en tant qu'employé.",
-      "step1": {
-        "title": "Mode Démo (sans inscription)",
-        "desc": "Explorez rapidement l'application avec des données de test préremplies.",
-        "content1": "Sur la page de connexion, cliquez sur \"Version Démo\" pour accéder à l'application avec des données de test préparées sans inscription.",
-        "info1": "Données de test utilisées ; aucune inscription requise."
+      "demoCard": {
+        "title": "Mode démo",
+        "step1": "Ouvrir l'application",
+        "step2pre": "Cliquer sur",
+        "step2btn": "\"Version démo\"",
+        "step3": "L'application utilise des données de test préchargées — aucune inscription requise"
       },
-      "step2": {
-        "title": "Connexion/Inscription réelle",
-        "desc": "Pour une fonctionnalité complète, créez une organisation (administrateur) ou rejoignez-la en tant qu'employé.",
-        "content1": "Pour vous inscrire en tant qu'administrateur, cliquez sur \"Nouvelle entreprise\", saisissez le nom de l'entreprise, le nom d'utilisateur et le mot de passe. Pour rejoindre en tant qu'employé, cliquez sur \"Rejoindre (Employé)\", saisissez le nom exact de l'entreprise (tel qu'enregistré par l'administrateur), le nom d'utilisateur et le mot de passe. Vous recevrez un mot de passe temporaire de votre administrateur.",
-        "warning1": "Pour les employés : Après la première connexion avec le mot de passe temporaire fourni par votre administrateur, il vous sera demandé de le modifier pour des raisons de sécurité."
-      }
+      "orgCard": {
+        "title": "Nouvelle organisation (Admin)",
+        "step1pre": "Cliquer sur",
+        "step1btn": "\"Nouvelle entreprise\"",
+        "step2": "Saisir le nom de l'entreprise, le nom d'utilisateur et le mot de passe",
+        "step3": "Confirmer l'inscription"
+      },
+      "workerCard": {
+        "title": "Connexion en tant qu'employé",
+        "step1pre": "Cliquer sur",
+        "step1btn": "\"Rejoindre (Employé)\"",
+        "step2": "Saisir le nom exact de l'entreprise (tel qu'entré par l'admin), le nom d'utilisateur et le mot de passe",
+        "step3pre": "Cliquer sur",
+        "step3btn": "\"Se connecter\""
+      },
+      "tosInfo": "Après la première connexion, une fenêtre de consentement aux Conditions d'utilisation apparaîtra — cliquez sur \"Accepter et continuer\"."
     },
     "admin": {
-      "title": "Configuration administrateur (après connexion)",
-      "intro": "En tant qu'administrateur, vous devrez configurer votre organisation et ajouter des employés. Acceptez d'abord les Conditions d'utilisation."
+      "step1": {
+        "title": "Ajouter des employés",
+        "desc": "Menu → Employés → Ajouter un employé",
+        "item1label": "Nom et prénom",
+        "item1text": "— devient le nom d'utilisateur de l'employé. Le système génère automatiquement un mot de passe temporaire au format",
+        "item1format": "mot-mot-chiffre",
+        "item1example": "ex.",
+        "item2label": "Optionnel :",
+        "item2text": "Téléphone, e-mail, catégories, heures max par semaine (défaut 40), début du cycle de rotation"
+      },
+      "step2": {
+        "title": "Créer des catégories d'employés",
+        "desc": "Les catégories définissent les groupes d'employés et le nombre requis par quart (ex. \"Cuisine\", \"Service\")",
+        "item1pre": "Aller à",
+        "item1btn": "Catégories → Nouvelle catégorie",
+        "item2pre": "Saisir le nom et (optionnellement) la",
+        "item2val": "couleur de la catégorie",
+        "item3pre": "Définir le",
+        "item3val": "nombre d'employés par quart",
+        "item4pre": "Optionnel : activer le",
+        "item4val1": "Mode week-end",
+        "item4and": "et/ou le",
+        "item4val2": "Mode jours fériés",
+        "item5pre": "Cliquer sur",
+        "item5btn": "Enregistrer",
+        "item5suf": ", puis retourner aux Employés et assigner les catégories"
+      },
+      "step3": {
+        "title": "Créer des secteurs — optionnel",
+        "desc": "À utiliser si vous avez plusieurs équipes/départements et créez des plannings séparément",
+        "item1pre": "Aller à",
+        "item1path": "Paramètres → Secteurs d'employés",
+        "item2pre": "Cliquer sur",
+        "item2btn": "Ajouter un secteur",
+        "item2suf": ", saisir le nom et une description optionnelle"
+      },
+      "step4": {
+        "title": "Configurer les paramètres globaux",
+        "desc": "Menu → Paramètres",
+        "item1label": "Repos minimum",
+        "item1text": "— heures entre deux quarts du même employé",
+        "item2label": "Plafond d'heures maximum",
+        "item2text": "— à partir de quand les heures supplémentaires commencent",
+        "item3label": "Autoriser les heures supplémentaires",
+        "item3text": "— si l'algorithme peut attribuer des heures supplémentaires",
+        "item4label": "Limite d'heures supplémentaires",
+        "item4text": "— max. heures supplémentaires par employé",
+        "item5label": "Politique de pauses",
+        "item5text": "— combien d'heures de travail nécessitent une pause et quelle en est la durée",
+        "item6label": "Stratégie de rotation",
+        "item6text": "— distribution des jours de repos (fixe ou cumulatif)",
+        "item7label": "Rotation du week-end",
+        "item7text": "— système 2 jours de repos / 1 week-end travaillé"
+      },
+      "step5": {
+        "title": "Ajouter des jours fériés — optionnel",
+        "desc": "L'algorithme adapte automatiquement le planning aux jours fériés saisis",
+        "item1pre": "Aller à",
+        "item1path": "Paramètres → Jours fériés → Ajouter un jour férié",
+        "item2pre": "Saisir le nom, la date et cocher optionnellement",
+        "item2val": "\"Se répète chaque année\""
+      }
     },
     "workers": {
-      "title": "Gérer les employés",
-      "intro": "Ajoutez de nouveaux employés, gérez leurs catégories et définissez leurs paramètres de travail."
+      "infoBox": {
+        "pre": "L'administrateur doit communiquer à l'employé son",
+        "passwordLabel": "mot de passe temporaire",
+        "example": "ex.",
+        "and": "et son",
+        "usernameLabel": "nom d'utilisateur",
+        "suf": "(nom et prénom tels que saisis par l'admin)."
+      },
+      "warningBox": {
+        "pre": "Après la première connexion, le système exige obligatoirement un",
+        "bold": "changement de mot de passe",
+        "suf": ". Ce n'est qu'après cela que l'employé devient un membre actif de l'organisation."
+      },
+      "sectionLabel": "Étapes pour les employés",
+      "step1": {
+        "title": "Se connecter et accepter les conditions d'utilisation"
+      },
+      "step2": {
+        "title": "Consulter votre planning",
+        "desc": "Menu → Planning (ou \"Mon planning\" sur mobile)"
+      },
+      "step3": {
+        "title": "Demander une absence",
+        "item1pre": "Cliquer sur",
+        "item1btn": "Absences → Demander une absence",
+        "item2": "Choisir le type d'absence (arrêt maladie, congé, déplacement professionnel…)",
+        "item3": "Saisir la date de début, la date de fin et une note optionnelle",
+        "item4pre": "Cliquer sur",
+        "item4btn": "Envoyer la demande"
+      },
+      "step4": {
+        "title": "Demander un échange de quart",
+        "item1pre": "Dans le planning, cliquer sur votre quart →",
+        "item1btn": "Demander un échange",
+        "item2": "Sélectionner l'employé avec qui vous souhaitez échanger",
+        "item3pre": "Cliquer sur",
+        "item3btn": "Envoyer la demande",
+        "item4pre": "L'employé destinataire doit",
+        "item4bold1": "confirmer",
+        "item4mid": "l'échange, puis l'",
+        "item4bold2": "admin approuve",
+        "item4suf": "— après approbation, le quart est automatiquement mis à jour dans le planning"
+      }
     },
     "schedule": {
-      "title": "Création et gestion des horaires",
-      "intro": "Apprenez à générer des horaires, à gérer les quarts de travail et à gérer les absences."
+      "sectionLabel": "Génération du planning",
+      "step1": {
+        "title": "Aller dans le menu → \"Planning\""
+      },
+      "step2": {
+        "title": "Sélectionner la semaine pour laquelle générer le planning"
+      },
+      "step3": {
+        "title": "Sélectionner un secteur — optionnel, si vous utilisez des secteurs"
+      },
+      "step4": {
+        "title": "Cliquer sur \"Générer le planning\"",
+        "desc": "L'algorithme peut prendre quelques secondes"
+      },
+      "step5": {
+        "title": "Ajuster manuellement les quarts si nécessaire",
+        "item1": "Cliquer sur le quart à modifier",
+        "item2": "Sélectionner un nouvel employé",
+        "item3pre": "Saisir obligatoirement une",
+        "item3bold": "raison de modification"
+      }
     }
   }
 }

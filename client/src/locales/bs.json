@@ -537,11 +537,40 @@
     "error": "Došlo je do greške tokom obrade plaćanja. Molimo pokušajte ponovo."
   },
   "days": {
-    "short": ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"],
-    "full": ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"]
+    "short": [
+      "Pon",
+      "Uto",
+      "Sri",
+      "Čet",
+      "Pet",
+      "Sub",
+      "Ned"
+    ],
+    "full": [
+      "Ponedjeljak",
+      "Utorak",
+      "Srijeda",
+      "Četvrtak",
+      "Petak",
+      "Subota",
+      "Nedjelja"
+    ]
   },
   "months": {
-    "full": ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"]
+    "full": [
+      "Januar",
+      "Februar",
+      "Mart",
+      "April",
+      "Maj",
+      "Jun",
+      "Jul",
+      "Avgust",
+      "Septembar",
+      "Oktobar",
+      "Novembar",
+      "Decembar"
+    ]
   },
   "shifts": {
     "morning": "Jutarnja",
@@ -556,42 +585,172 @@
     "other": "Ostalo"
   },
   "userManual": {
-    "title": "Korisnički vodič",
+    "title": "Uputstvo za korišćenje",
+    "subtitle": "ShiftForge — upravljanje smjenama i rasporedima",
+    "badgeAdmin": "Samo za admina",
+    "badgeWorker": "Za radnike",
     "tabs": {
-      "login": "Prijava / Registracija",
-      "admin": "Postavke administratora",
+      "login": "Prijava",
+      "admin": "Admin postavljanje",
       "workers": "Radnici",
-      "schedule": "Smjene"
+      "schedule": "Raspored"
     },
-    "badgeAdmin": "🛡 Samo za administratore",
-    "badgeWorker": "👤 Za radnike",
     "login": {
-      "title": "Prijava i registracija",
-      "intro": "Ovaj odjeljak objašnjava kako se prijaviti, registrovati kao administrator ili pridružiti organizaciji kao radnik.",
-      "step1": {
-        "title": "Demo režim (bez registracije)",
-        "desc": "Brzo istražite aplikaciju koristeći unaprijed popunjene test podatke.",
-        "content1": "Na stranici za prijavu, kliknite na \"Demo verzija\" da biste pristupili aplikaciji sa pripremljenim test podacima bez registracije.",
-        "info1": "Koriste se test podaci; registracija nije potrebna."
+      "demoCard": {
+        "title": "Demo način",
+        "step1": "Otvorite aplikaciju",
+        "step2pre": "Kliknite",
+        "step2btn": "\"Demo verzija\"",
+        "step3": "Aplikacija koristi unaprijed pripremljene test podatke — registracija nije potrebna"
       },
-      "step2": {
-        "title": "Stvarna prijava/registracija",
-        "desc": "Za potpune funkcionalnosti, kreirajte organizaciju (administrator) ili se pridružite kao radnik.",
-        "content1": "Da biste se registrovali kao administrator, kliknite na \"Nova kompanija\", unesite naziv kompanije, korisničko ime i šifru. Da biste se pridružili kao radnik, kliknite na \"Pridruži se (radnik)\", unesite tačan naziv kompanije (kao što ga je uneo administrator), korisničko ime i šifru. Dobićete privremenu šifru od svog administratora.",
-        "warning1": "Za radnike: nakon prve prijave sa privremenom šifrom koju vam je dao administrator, tražit će vam se da je promijenite iz sigurnosnih razloga."
-      }
+      "orgCard": {
+        "title": "Nova organizacija (Admin)",
+        "step1pre": "Kliknite",
+        "step1btn": "\"Nova firma\"",
+        "step2": "Unesite ime firme, korisničko ime i lozinku",
+        "step3": "Potvrdite registraciju"
+      },
+      "workerCard": {
+        "title": "Prijava kao radnik",
+        "step1pre": "Kliknite",
+        "step1btn": "\"Pridruži se (Radnik)\"",
+        "step2": "Unesite tačno ime firme (onako kako je admin unio), korisničko ime i lozinku",
+        "step3pre": "Kliknite",
+        "step3btn": "\"Prijavi se\""
+      },
+      "tosInfo": "Nakon prve prijave prikazat će se modal za prihvatanje Uvjeta korišćenja — kliknite \"Prihvatam i nastavi\" da nastavite."
     },
     "admin": {
-      "title": "Postavke administratora (nakon prijave)",
-      "intro": "Kao administrator, moraćete da podesite svoju organizaciju i dodate radnike. Prvo, prihvatite uslove korištenja."
+      "step1": {
+        "title": "Dodajte radnike",
+        "desc": "Meni → Radnici → Dodaj radnika",
+        "item1label": "Ime i prezime",
+        "item1text": "— postaje korisničko ime radnika. Sistem automatski generiše privremenu lozinku u formatu",
+        "item1format": "riječ-riječ-broj",
+        "item1example": "npr.",
+        "item2label": "Opcionalno:",
+        "item2text": "Telefon, email, kategorije, maks. sati sedmično (podrazumijevano 40), početak rotacionog ciklusa"
+      },
+      "step2": {
+        "title": "Kreirajte kategorije radnika",
+        "desc": "Kategorije definišu grupe radnika i broj potrebnih po smjeni (npr. \"Kuhinja\", \"Servis\")",
+        "item1pre": "Idite na",
+        "item1btn": "Kategorije → Nova kategorija",
+        "item2pre": "Unesite ime i (opcionalno)",
+        "item2val": "boju kategorije",
+        "item3pre": "Podesite",
+        "item3val": "broj radnika po smjeni",
+        "item4pre": "Opcionalno: aktivirajte",
+        "item4val1": "Vikend mod",
+        "item4and": "i/ili",
+        "item4val2": "Praznični mod",
+        "item5pre": "Kliknite",
+        "item5btn": "Sačuvaj",
+        "item5suf": ", pa se vratite na Radnici i dodijelite kategorije"
+      },
+      "step3": {
+        "title": "Kreirajte sektore — opcionalno",
+        "desc": "Koristite ako imate više timova/odjeljenja i rasporede pravite odvojeno",
+        "item1pre": "Idite na",
+        "item1path": "Podešavanja → Sektori radnika",
+        "item2pre": "Kliknite",
+        "item2btn": "Dodaj sektor",
+        "item2suf": ", unesite ime i opcioni opis"
+      },
+      "step4": {
+        "title": "Podesite globalne postavke",
+        "desc": "Meni → Podešavanja",
+        "item1label": "Minimalan odmor",
+        "item1text": "— sati između dvije smjene istog radnika",
+        "item2label": "Maksimalan fond sati",
+        "item2text": "— od kada počinju prekovremeni",
+        "item3label": "Dozvoli prekovremene",
+        "item3text": "— da li algoritam može dodjeljivati prekovremene",
+        "item4label": "Limit prekovremenih",
+        "item4text": "— maks. sati prekovremenih po radniku",
+        "item5label": "Politika pauza",
+        "item5text": "— koliko sati rada zahtijeva pauzu i koliko traje",
+        "item6label": "Rotaciona strategija",
+        "item6text": "— raspoređivanje slobodnih dana (fiksno ili akumulirajuće)",
+        "item7label": "Rotacija vikenda",
+        "item7text": "— sistem 2 slobodna / 1 radni vikend"
+      },
+      "step5": {
+        "title": "Dodajte praznike — opcionalno",
+        "desc": "Algoritam automatski prilagođava raspored oko unesenih praznika",
+        "item1pre": "Idite na",
+        "item1path": "Podešavanja → Praznici → Dodaj praznik",
+        "item2pre": "Unesite ime, datum i opciono označite",
+        "item2val": "\"Ponavlja se svake godine\""
+      }
     },
     "workers": {
-      "title": "Upravljanje radnicima",
-      "intro": "Dodajte nove radnike, upravljajte njihovim kategorijama i podesite radne parametre."
+      "infoBox": {
+        "pre": "Administrator treba da saopšti radniku",
+        "passwordLabel": "privremenu lozinku",
+        "example": "npr.",
+        "and": "i",
+        "usernameLabel": "korisničko ime",
+        "suf": "(ime i prezime koje je admin unio)."
+      },
+      "warningBox": {
+        "pre": "Nakon prve prijave sistem obavezno zahtijeva",
+        "bold": "promjenu privremene lozinke",
+        "suf": ". Tek nakon toga radnik postaje aktivan član organizacije."
+      },
+      "sectionLabel": "Koraci za radnika",
+      "step1": {
+        "title": "Prijavite se i prihvatite uvjete korišćenja"
+      },
+      "step2": {
+        "title": "Pogledajte svoj raspored",
+        "desc": "Meni → Raspored (ili \"Moj raspored\" na telefonu)"
+      },
+      "step3": {
+        "title": "Zatražite odsustvo",
+        "item1pre": "Kliknite",
+        "item1btn": "Odsustva → Zatraži odsustvo",
+        "item2": "Izaberite tip odsustva (bolovanje, godišnji, put za posao…)",
+        "item3": "Unesite početni i završni datum i opcionu napomenu",
+        "item4pre": "Kliknite",
+        "item4btn": "Pošalji zahtjev"
+      },
+      "step4": {
+        "title": "Zatražite zamjenu smjene",
+        "item1pre": "U rasporedu kliknite na svoju smjenu →",
+        "item1btn": "Zatraži zamjenu",
+        "item2": "Izaberite radnika s kojim se želite zamijeniti",
+        "item3pre": "Kliknite",
+        "item3btn": "Pošalji zahtjev",
+        "item4pre": "Radnik kojemu ste poslali zahtjev",
+        "item4bold1": "treba potvrditi",
+        "item4mid": "zamjenu, a zatim je",
+        "item4bold2": "admin odobrava",
+        "item4suf": "— nakon odobrenja smjena se automatski mijenja u rasporedu"
+      }
     },
     "schedule": {
-      "title": "Kreiranje i upravljanje smjenama",
-      "intro": "Naučite kako kreirati smjene, upravljati smjenama i rukovati odsustvima."
+      "sectionLabel": "Generisanje rasporeda",
+      "step1": {
+        "title": "Idite na meni → \"Raspored\""
+      },
+      "step2": {
+        "title": "Izaberite sedmicu za koju generišete raspored"
+      },
+      "step3": {
+        "title": "Izaberite sektor — opcionalno, ako koristite sektore"
+      },
+      "step4": {
+        "title": "Kliknite \"Generiši raspored\"",
+        "desc": "Algoritam može potrajati nekoliko sekundi"
+      },
+      "step5": {
+        "title": "Ručno izmijenite smjene po potrebi",
+        "item1": "Kliknite na smjenu koju želite promijeniti",
+        "item2": "Izaberite novog radnika",
+        "item3pre": "Obavezno unesite",
+        "item3bold": "razlog promjene"
+      }
     }
   }
 }

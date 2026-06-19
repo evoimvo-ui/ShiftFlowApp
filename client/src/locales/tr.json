@@ -537,11 +537,40 @@
     "error": "Ödeme işlenirken bir hata oluştu. Lütfen tekrar deneyin."
   },
   "days": {
-    "short": ["Paz", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"],
-    "full": ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+    "short": [
+      "Paz",
+      "Sal",
+      "Çar",
+      "Per",
+      "Cum",
+      "Cmt",
+      "Paz"
+    ],
+    "full": [
+      "Pazartesi",
+      "Salı",
+      "Çarşamba",
+      "Perşembe",
+      "Cuma",
+      "Cumartesi",
+      "Pazar"
+    ]
   },
   "months": {
-    "full": ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+    "full": [
+      "Ocak",
+      "Şubat",
+      "Mart",
+      "Nisan",
+      "Mayıs",
+      "Haziran",
+      "Temmuz",
+      "Ağustos",
+      "Eylül",
+      "Ekim",
+      "Kasım",
+      "Aralık"
+    ]
   },
   "shifts": {
     "morning": "Sabah",
@@ -557,41 +586,171 @@
   },
   "userManual": {
     "title": "Kullanım Kılavuzu",
+    "subtitle": "ShiftForge — vardiya ve program yönetimi",
+    "badgeAdmin": "Yalnızca yöneticiler",
+    "badgeWorker": "Çalışanlar için",
     "tabs": {
-      "login": "Giriş / Kayıt",
-      "admin": "Yönetici Kurulumu",
+      "login": "Giriş",
+      "admin": "Yönetici kurulumu",
       "workers": "Çalışanlar",
-      "schedule": "Vardiya"
+      "schedule": "Program"
     },
-    "badgeAdmin": "🛡 Sadece Yöneticiler İçin",
-    "badgeWorker": "👤 Çalışanlar İçin",
     "login": {
-      "title": "Giriş ve Kayıt",
-      "intro": "Bu bölüm nasıl giriş yapacağınızı, yönetici olarak kaydolacağınızı veya bir kuruluşa çalışan olarak katılacağınızı açıklar.",
-      "step1": {
-        "title": "Demo Modu (kayıt yok)",
-        "desc": "Önceden doldurulmuş test verileriyle uygulamayı hızlıca keşfedin.",
-        "content1": "Giriş sayfasında, kayıt olmadan hazırlanmış test verileriyle uygulamaya erişmek için \"Demo Sürümü\"ne tıklayın.",
-        "info1": "Test verileri kullanılır; kayıt gerekmez."
+      "demoCard": {
+        "title": "Demo modu",
+        "step1": "Uygulamayı açın",
+        "step2pre": "Tıklayın",
+        "step2btn": "\"Demo sürümü\"",
+        "step3": "Uygulama önceden yüklenmiş test verilerini kullanır — kayıt gerekmez"
       },
-      "step2": {
-        "title": "Gerçek Giriş/Kayıt",
-        "desc": "Tam işlevsellik için bir kuruluş (yönetici) oluşturun veya çalışan olarak katılın.",
-        "content1": "Yönetici olarak kaydolmak için \"Yeni Şirket\"ne tıklayın, şirket adını, kullanıcı adını ve şifreyi girin. Çalışan olarak katılmak için \"Katıl (Çalışan)\"a tıklayın, tam şirket adını (yöneticinin kaydettiği gibi), kullanıcı adını ve şifreyi girin. Yöneticinizden geçici bir şifre alacaksınız.",
-        "warning1": "Çalışanlar için: Yöneticiniz tarafından sağlanan geçici şifreyle ilk girişte, güvenlik nedeniyle şifrenizi değiştirmeniz istenecek."
-      }
+      "orgCard": {
+        "title": "Yeni organizasyon (Yönetici)",
+        "step1pre": "Tıklayın",
+        "step1btn": "\"Yeni şirket\"",
+        "step2": "Şirket adı, kullanıcı adı ve şifre girin",
+        "step3": "Kaydı onaylayın"
+      },
+      "workerCard": {
+        "title": "Çalışan olarak giriş",
+        "step1pre": "Tıklayın",
+        "step1btn": "\"Katıl (Çalışan)\"",
+        "step2": "Şirketin tam adını (yöneticinin girdiği gibi), kullanıcı adını ve şifreyi girin",
+        "step3pre": "Tıklayın",
+        "step3btn": "\"Giriş yap\""
+      },
+      "tosInfo": "İlk girişten sonra Kullanım Koşulları onay modalı görünecektir — devam etmek için \"Kabul ediyorum\" seçeneğine tıklayın."
     },
     "admin": {
-      "title": "Yönetici Kurulumu (Giriş Sonrası)",
-      "intro": "Yönetici olarak, kuruluşunuzu ayarlamanız ve çalışan eklemeniz gerekecek. Önce Kullanım Koşullarını kabul edin."
+      "step1": {
+        "title": "Çalışan ekleyin",
+        "desc": "Menü → Çalışanlar → Çalışan ekle",
+        "item1label": "Ad ve soyad",
+        "item1text": "— çalışanın kullanıcı adı olur. Sistem otomatik olarak şu formatta geçici bir şifre oluşturur:",
+        "item1format": "kelime-kelime-sayı",
+        "item1example": "örn.",
+        "item2label": "İsteğe bağlı:",
+        "item2text": "Telefon, e-posta, kategoriler, haftalık maks. saat (varsayılan 40), rotasyon döngüsü başlangıcı"
+      },
+      "step2": {
+        "title": "Çalışan kategorileri oluşturun",
+        "desc": "Kategoriler çalışan gruplarını ve vardiya başına kaç kişi gerektiğini tanımlar (örn. \"Mutfak\", \"Servis\")",
+        "item1pre": "Şuraya gidin:",
+        "item1btn": "Kategoriler → Yeni kategori",
+        "item2pre": "Ad ve (isteğe bağlı) kategori",
+        "item2val": "rengini girin",
+        "item3pre": "Vardiya başına",
+        "item3val": "çalışan sayısını ayarlayın",
+        "item4pre": "İsteğe bağlı: etkinleştirin",
+        "item4val1": "Hafta sonu modu",
+        "item4and": "ve/veya",
+        "item4val2": "Tatil modu",
+        "item5pre": "Tıklayın",
+        "item5btn": "Kaydet",
+        "item5suf": ", ardından Çalışanlara dönün ve kategorileri atayın"
+      },
+      "step3": {
+        "title": "Sektörler oluşturun — isteğe bağlı",
+        "desc": "Birden fazla ekibiniz/departmanınız varsa ve programları ayrı ayrı oluşturuyorsanız kullanın",
+        "item1pre": "Şuraya gidin:",
+        "item1path": "Ayarlar → Çalışan sektörleri",
+        "item2pre": "Tıklayın",
+        "item2btn": "Sektör ekle",
+        "item2suf": ", ad ve isteğe bağlı açıklama girin"
+      },
+      "step4": {
+        "title": "Genel ayarları yapılandırın",
+        "desc": "Menü → Ayarlar",
+        "item1label": "Minimum dinlenme",
+        "item1text": "— aynı çalışanın iki vardiyası arasındaki saat",
+        "item2label": "Maksimum saat fonu",
+        "item2text": "— fazla mesainin ne zaman başladığı",
+        "item3label": "Fazla mesaiye izin ver",
+        "item3text": "— algoritmanın fazla mesai atayıp atayamayacağı",
+        "item4label": "Fazla mesai limiti",
+        "item4text": "— çalışan başına maks. fazla mesai saati",
+        "item5label": "Mola politikası",
+        "item5text": "— kaç saatlik çalışma mola gerektirir ve ne kadar sürer",
+        "item6label": "Rotasyon stratejisi",
+        "item6text": "— izin günlerinin dağıtımı (sabit veya birikimli)",
+        "item7label": "Hafta sonu rotasyonu",
+        "item7text": "— 2 gün izin / 1 çalışma hafta sonu sistemi"
+      },
+      "step5": {
+        "title": "Tatil günleri ekleyin — isteğe bağlı",
+        "desc": "Algoritma programı girilen tatil günlerine göre otomatik olarak ayarlar",
+        "item1pre": "Şuraya gidin:",
+        "item1path": "Ayarlar → Tatil günleri → Tatil ekle",
+        "item2pre": "Ad, tarih girin ve isteğe bağlı olarak işaretleyin",
+        "item2val": "\"Her yıl tekrarlanır\""
+      }
     },
     "workers": {
-      "title": "Çalışanları Yönetme",
-      "intro": "Yeni çalışanlar ekleyin, kategorilerini yönetin ve çalışma parametrelerini ayarlayın."
+      "infoBox": {
+        "pre": "Yönetici çalışana",
+        "passwordLabel": "geçici şifreyi",
+        "example": "örn.",
+        "and": "ve",
+        "usernameLabel": "kullanıcı adını",
+        "suf": "(yöneticinin girdiği ad ve soyad) iletmelidir."
+      },
+      "warningBox": {
+        "pre": "İlk girişten sonra sistem zorunlu olarak",
+        "bold": "şifre değişikliği",
+        "suf": " talep eder. Ancak bundan sonra çalışan organizasyonun aktif üyesi olur."
+      },
+      "sectionLabel": "Çalışanlar için adımlar",
+      "step1": {
+        "title": "Giriş yapın ve kullanım koşullarını kabul edin"
+      },
+      "step2": {
+        "title": "Programınızı görüntüleyin",
+        "desc": "Menü → Program (veya mobilde \"Programım\")"
+      },
+      "step3": {
+        "title": "İzin talep edin",
+        "item1pre": "Tıklayın",
+        "item1btn": "İzinler → İzin talep et",
+        "item2": "İzin türünü seçin (hastalık izni, yıllık izin, iş seyahati…)",
+        "item3": "Başlangıç ve bitiş tarihini ve isteğe bağlı notu girin",
+        "item4pre": "Tıklayın",
+        "item4btn": "Talep gönder"
+      },
+      "step4": {
+        "title": "Vardiya değişimi talep edin",
+        "item1pre": "Programda vardiyaya tıklayın →",
+        "item1btn": "Değişim talep et",
+        "item2": "Değişmek istediğiniz çalışanı seçin",
+        "item3pre": "Tıklayın",
+        "item3btn": "Talep gönder",
+        "item4pre": "Talebi gönderdiğiniz çalışanın",
+        "item4bold1": "onaylaması",
+        "item4mid": "gerekir, ardından",
+        "item4bold2": "yönetici onaylar",
+        "item4suf": "— onaydan sonra vardiya programda otomatik olarak güncellenir"
+      }
     },
     "schedule": {
-      "title": "Vardiya Oluşturma ve Yönetme",
-      "intro": "Vardiyaları nasıl oluşturacağınızı, vardiyaları nasıl yöneteceğinizi ve izinleri nasıl ele alacağınızı öğrenin."
+      "sectionLabel": "Program oluşturma",
+      "step1": {
+        "title": "Menü → \"Program\" bölümüne gidin"
+      },
+      "step2": {
+        "title": "Program oluşturmak istediğiniz haftayı seçin"
+      },
+      "step3": {
+        "title": "Sektör seçin — isteğe bağlı, sektör kullanıyorsanız"
+      },
+      "step4": {
+        "title": "\"Program oluştur\" seçeneğine tıklayın",
+        "desc": "Algoritma birkaç saniye sürebilir"
+      },
+      "step5": {
+        "title": "Gerekirse vardiyaları manuel olarak düzenleyin",
+        "item1": "Değiştirmek istediğiniz vardiyaya tıklayın",
+        "item2": "Yeni bir çalışan seçin",
+        "item3pre": "Zorunlu olarak bir",
+        "item3bold": "değişiklik nedeni girin"
+      }
     }
   }
 }

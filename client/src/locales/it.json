@@ -537,11 +537,40 @@
     "error": "Si è verificato un errore durante l'elaborazione del pagamento. Per favore riprova."
   },
   "days": {
-    "short": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
-    "full": ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"]
+    "short": [
+      "Lun",
+      "Mar",
+      "Mer",
+      "Gio",
+      "Ven",
+      "Sab",
+      "Dom"
+    ],
+    "full": [
+      "Lunedì",
+      "Martedì",
+      "Mercoledì",
+      "Giovedì",
+      "Venerdì",
+      "Sabato",
+      "Domenica"
+    ]
   },
   "months": {
-    "full": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
+    "full": [
+      "Gennaio",
+      "Febbraio",
+      "Marzo",
+      "Aprile",
+      "Maggio",
+      "Giugno",
+      "Luglio",
+      "Agosto",
+      "Settembre",
+      "Ottobre",
+      "Novembre",
+      "Dicembre"
+    ]
   },
   "shifts": {
     "morning": "Mattina",
@@ -556,42 +585,172 @@
     "other": "Altro"
   },
   "userManual": {
-    "title": "Manuale Utente",
+    "title": "Manuale utente",
+    "subtitle": "ShiftForge — gestione turni e orari",
+    "badgeAdmin": "Solo amministratori",
+    "badgeWorker": "Per i dipendenti",
     "tabs": {
-      "login": "Accesso / Registrazione",
-      "admin": "Configurazione Admin",
-      "workers": "Lavoratori",
-      "schedule": "Turni"
+      "login": "Accesso",
+      "admin": "Configurazione admin",
+      "workers": "Dipendenti",
+      "schedule": "Orario"
     },
-    "badgeAdmin": "🛡 Solo per Admin",
-    "badgeWorker": "👤 Per Lavoratori",
     "login": {
-      "title": "Accesso e Registrazione",
-      "intro": "Questa sezione spiega come accedere, registrarsi come amministratore o unirsi a un'organizzazione come lavoratore.",
-      "step1": {
-        "title": "Modalità Demo (senza registrazione)",
-        "desc": "Esplora velocemente l'applicazione con dati di test precompilati.",
-        "content1": "Nella pagina di accesso, clicca su \"Versione Demo\" per accedere all'applicazione con dati di test preparati senza registrazione.",
-        "info1": "Vengono utilizzati dati di test; non è richiesta registrazione."
+      "demoCard": {
+        "title": "Modalità demo",
+        "step1": "Aprire l'applicazione",
+        "step2pre": "Fare clic su",
+        "step2btn": "\"Versione demo\"",
+        "step3": "L'app utilizza dati di test precaricati — nessuna registrazione richiesta"
       },
-      "step2": {
-        "title": "Accesso/Registrazione reale",
-        "desc": "Per la funzionalità completa, crea un'organizzazione (amministratore) o unisciti come lavoratore.",
-        "content1": "Per registrarti come amministratore, clicca su \"Nuova Azienda\", inserisci il nome dell'azienda, il nome utente e la password. Per unirti come lavoratore, clicca su \"Unisciti (Lavoratore)\", inserisci il nome esatto dell'azienda (come registrato dall'amministratore), il nome utente e la password. Riceverai una password temporanea dal tuo amministratore.",
-        "warning1": "Per i lavoratori: Dopo il primo accesso con la password temporanea fornita dal tuo amministratore, ti verrà chiesto di cambiarla per motivi di sicurezza."
-      }
+      "orgCard": {
+        "title": "Nuova organizzazione (Admin)",
+        "step1pre": "Fare clic su",
+        "step1btn": "\"Nuova azienda\"",
+        "step2": "Inserire nome azienda, nome utente e password",
+        "step3": "Confermare la registrazione"
+      },
+      "workerCard": {
+        "title": "Accesso come dipendente",
+        "step1pre": "Fare clic su",
+        "step1btn": "\"Unisciti (Dipendente)\"",
+        "step2": "Inserire il nome esatto dell'azienda (come inserito dall'admin), nome utente e password",
+        "step3pre": "Fare clic su",
+        "step3btn": "\"Accedi\""
+      },
+      "tosInfo": "Dopo il primo accesso apparirà un modal di consenso ai Termini di utilizzo — fare clic su \"Accetto e continuo\"."
     },
     "admin": {
-      "title": "Configurazione Admin (dopo l'accesso)",
-      "intro": "Come amministratore, dovrai configurare la tua organizzazione e aggiungere lavoratori. Prima, accetta i Termini di Servizio."
+      "step1": {
+        "title": "Aggiungi dipendenti",
+        "desc": "Menu → Dipendenti → Aggiungi dipendente",
+        "item1label": "Nome e cognome",
+        "item1text": "— diventa il nome utente del dipendente. Il sistema genera automaticamente una password temporanea nel formato",
+        "item1format": "parola-parola-numero",
+        "item1example": "es.",
+        "item2label": "Opzionale:",
+        "item2text": "Telefono, email, categorie, ore max settimanali (predefinite 40), inizio del ciclo di rotazione"
+      },
+      "step2": {
+        "title": "Crea categorie di dipendenti",
+        "desc": "Le categorie definiscono i gruppi di dipendenti e quanti sono necessari per turno (es. \"Cucina\", \"Servizio\")",
+        "item1pre": "Vai a",
+        "item1btn": "Categorie → Nuova categoria",
+        "item2pre": "Inserisci nome e (opzionalmente) il",
+        "item2val": "colore della categoria",
+        "item3pre": "Imposta il",
+        "item3val": "numero di dipendenti per turno",
+        "item4pre": "Opzionale: attiva la",
+        "item4val1": "Modalità weekend",
+        "item4and": "e/o la",
+        "item4val2": "Modalità festivi",
+        "item5pre": "Fai clic su",
+        "item5btn": "Salva",
+        "item5suf": ", poi torna a Dipendenti e assegna le categorie"
+      },
+      "step3": {
+        "title": "Crea settori — opzionale",
+        "desc": "Da usare se hai più team/reparti e crei orari separatamente",
+        "item1pre": "Vai a",
+        "item1path": "Impostazioni → Settori dipendenti",
+        "item2pre": "Fai clic su",
+        "item2btn": "Aggiungi settore",
+        "item2suf": ", inserisci nome e descrizione opzionale"
+      },
+      "step4": {
+        "title": "Configura le impostazioni globali",
+        "desc": "Menu → Impostazioni",
+        "item1label": "Riposo minimo",
+        "item1text": "— ore tra due turni dello stesso dipendente",
+        "item2label": "Monte ore massimo",
+        "item2text": "— da quando iniziano gli straordinari",
+        "item3label": "Consenti straordinari",
+        "item3text": "— se l'algoritmo può assegnare straordinari",
+        "item4label": "Limite straordinari",
+        "item4text": "— ore straordinarie massime per dipendente",
+        "item5label": "Politica pause",
+        "item5text": "— quante ore di lavoro richiedono una pausa e quanto dura",
+        "item6label": "Strategia di rotazione",
+        "item6text": "— distribuzione dei giorni liberi (fisso o cumulativo)",
+        "item7label": "Rotazione weekend",
+        "item7text": "— sistema 2 giorni liberi / 1 weekend lavorativo"
+      },
+      "step5": {
+        "title": "Aggiungi festività — opzionale",
+        "desc": "L'algoritmo adatta automaticamente l'orario alle festività inserite",
+        "item1pre": "Vai a",
+        "item1path": "Impostazioni → Festività → Aggiungi festività",
+        "item2pre": "Inserisci nome, data e opzionalmente spunta",
+        "item2val": "\"Si ripete ogni anno\""
+      }
     },
     "workers": {
-      "title": "Gestione Lavoratori",
-      "intro": "Aggiungi nuovi lavoratori, gestisci le loro categorie e imposta i loro parametri di lavoro."
+      "infoBox": {
+        "pre": "L'amministratore deve comunicare al dipendente la",
+        "passwordLabel": "password temporanea",
+        "example": "es.",
+        "and": "e il",
+        "usernameLabel": "nome utente",
+        "suf": "(nome e cognome come inseriti dall'admin)."
+      },
+      "warningBox": {
+        "pre": "Dopo il primo accesso il sistema richiede obbligatoriamente il",
+        "bold": "cambio password",
+        "suf": ". Solo dopo il dipendente diventa membro attivo dell'organizzazione."
+      },
+      "sectionLabel": "Passi per i dipendenti",
+      "step1": {
+        "title": "Accedi e accetta i termini di utilizzo"
+      },
+      "step2": {
+        "title": "Visualizza il tuo orario",
+        "desc": "Menu → Orario (o \"Il mio orario\" su mobile)"
+      },
+      "step3": {
+        "title": "Richiedi un'assenza",
+        "item1pre": "Fai clic su",
+        "item1btn": "Assenze → Richiedi assenza",
+        "item2": "Scegli il tipo di assenza (malattia, ferie, trasferta…)",
+        "item3": "Inserisci data inizio, data fine e nota opzionale",
+        "item4pre": "Fai clic su",
+        "item4btn": "Invia richiesta"
+      },
+      "step4": {
+        "title": "Richiedi uno scambio di turno",
+        "item1pre": "Nell'orario, fai clic sul tuo turno →",
+        "item1btn": "Richiedi scambio",
+        "item2": "Seleziona il dipendente con cui vuoi scambiarti",
+        "item3pre": "Fai clic su",
+        "item3btn": "Invia richiesta",
+        "item4pre": "Il dipendente destinatario deve",
+        "item4bold1": "confermare",
+        "item4mid": "lo scambio, poi l'",
+        "item4bold2": "admin approva",
+        "item4suf": "— dopo l'approvazione il turno viene aggiornato automaticamente nell'orario"
+      }
     },
     "schedule": {
-      "title": "Creazione e Gestione Turni",
-      "intro": "Scopri come generare i turni, gestire i turni e gestire le assenze."
+      "sectionLabel": "Generazione dell'orario",
+      "step1": {
+        "title": "Vai al menu → \"Orario\""
+      },
+      "step2": {
+        "title": "Seleziona la settimana per cui generare l'orario"
+      },
+      "step3": {
+        "title": "Seleziona un settore — opzionale, se usi i settori"
+      },
+      "step4": {
+        "title": "Fai clic su \"Genera orario\"",
+        "desc": "L'algoritmo potrebbe richiedere alcuni secondi"
+      },
+      "step5": {
+        "title": "Modifica manualmente i turni se necessario",
+        "item1": "Fai clic sul turno che vuoi modificare",
+        "item2": "Seleziona un nuovo dipendente",
+        "item3pre": "Inserisci obbligatoriamente un",
+        "item3bold": "motivo della modifica"
+      }
     }
   }
 }

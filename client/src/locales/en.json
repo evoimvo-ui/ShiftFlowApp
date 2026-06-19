@@ -432,7 +432,6 @@
     "holidayName": "Holiday Name",
     "holidayNamePlaceholder": "e.g. New Year, Labor Day...",
     "date": "Date",
-    "recurring": "Recurring",
     "recurringYearly": "Recurring every year",
     "saveHoliday": "Save Holiday",
     "saveHolidayError": "Error saving holiday: {{error}}",
@@ -538,11 +537,40 @@
     "error": "An error occurred while processing payment. Please try again."
   },
   "days": {
-    "short": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    "full": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    "short": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "full": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ]
   },
   "months": {
-    "full": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    "full": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
   },
   "shifts": {
     "morning": "Morning",
@@ -550,49 +578,179 @@
     "night": "Night"
   },
   "absenceTypes": {
-      "label": "Absence type",
-      "sick": "Sick Leave",
-      "vacation": "Annual Leave",
-      "business": "Business Trip",
-      "other": "Other"
-    },
+    "label": "Absence type",
+    "sick": "Sick Leave",
+    "vacation": "Annual Leave",
+    "business": "Business Trip",
+    "other": "Other"
+  },
   "userManual": {
     "title": "User Manual",
+    "subtitle": "ShiftForge — shift and schedule management",
+    "badgeAdmin": "Admin only",
+    "badgeWorker": "For workers",
     "tabs": {
-      "login": "Login / Registration",
-      "admin": "Admin Setup",
+      "login": "Login",
+      "admin": "Admin setup",
       "workers": "Workers",
       "schedule": "Schedule"
     },
-    "badgeAdmin": "🛡 Admin Only",
-    "badgeWorker": "👤 For Workers",
     "login": {
-      "title": "Login and Registration",
-      "intro": "This section explains how to log in, register as an admin, or join an organization as a worker.",
-      "step1": {
-        "title": "Demo Mode (no registration)",
-        "desc": "Quickly explore the application with pre-filled test data.",
-        "content1": "On the login page, click \"Demo Version\" to access the application with prepared test data without registration.",
-        "info1": "Test data is used; no registration required."
+      "demoCard": {
+        "title": "Demo mode",
+        "step1": "Open the application",
+        "step2pre": "Click",
+        "step2btn": "\"Demo version\"",
+        "step3": "The app uses pre-loaded test data — no registration required"
       },
-      "step2": {
-        "title": "Real Login/Registration",
-        "desc": "For full functionality, create an organization (admin) or join as a worker.",
-        "content1": "To register as an admin, click \"New Company\", enter company name, username, and password. To join as a worker, click \"Join (Worker)\", enter the exact company name (as registered by admin), username, and password. You will receive a temporary password from your admin.",
-        "warning1": "For workers: After first login with the temporary password provided by your admin, you will be prompted to change it for security reasons."
-      }
+      "orgCard": {
+        "title": "New organization (Admin)",
+        "step1pre": "Click",
+        "step1btn": "\"New company\"",
+        "step2": "Enter company name, username and password",
+        "step3": "Confirm registration"
+      },
+      "workerCard": {
+        "title": "Login as worker",
+        "step1pre": "Click",
+        "step1btn": "\"Join (Worker)\"",
+        "step2": "Enter the exact company name (as entered by admin), username and password",
+        "step3pre": "Click",
+        "step3btn": "\"Sign in\""
+      },
+      "tosInfo": "After your first login, a Terms of Service consent modal will appear — click \"Accept and continue\" to proceed."
     },
     "admin": {
-      "title": "Admin Setup (After Login)",
-      "intro": "As an admin, you'll need to set up your organization and add workers. First, accept the Terms of Service."
+      "step1": {
+        "title": "Add workers",
+        "desc": "Menu → Workers → Add worker",
+        "item1label": "Full name",
+        "item1text": "— becomes the worker's username. The system automatically generates a temporary password in the format",
+        "item1format": "word-word-number",
+        "item1example": "e.g.",
+        "item2label": "Optional:",
+        "item2text": "Phone, email, categories, max weekly hours (default 40), rotation cycle start"
+      },
+      "step2": {
+        "title": "Create worker categories",
+        "desc": "Categories define worker groups and how many are needed per shift (e.g. \"Kitchen\", \"Service\")",
+        "item1pre": "Go to",
+        "item1btn": "Categories → New category",
+        "item2pre": "Enter name and (optionally)",
+        "item2val": "category colour",
+        "item3pre": "Set the",
+        "item3val": "number of workers per shift",
+        "item4pre": "Optional: enable",
+        "item4val1": "Weekend mode",
+        "item4and": "and/or",
+        "item4val2": "Holiday mode",
+        "item5pre": "Click",
+        "item5btn": "Save",
+        "item5suf": ", then go back to Workers and assign categories"
+      },
+      "step3": {
+        "title": "Create sectors — optional",
+        "desc": "Use if you have multiple teams/departments and create schedules separately",
+        "item1pre": "Go to",
+        "item1path": "Settings → Worker sectors",
+        "item2pre": "Click",
+        "item2btn": "Add sector",
+        "item2suf": ", enter name and optional description"
+      },
+      "step4": {
+        "title": "Configure global settings",
+        "desc": "Menu → Settings",
+        "item1label": "Minimum rest",
+        "item1text": "— hours between two shifts for the same worker",
+        "item2label": "Maximum hours fund",
+        "item2text": "— when overtime starts",
+        "item3label": "Allow overtime",
+        "item3text": "— whether the algorithm can assign overtime",
+        "item4label": "Overtime limit",
+        "item4text": "— max overtime hours per worker",
+        "item5label": "Break policy",
+        "item5text": "— how many work hours require a break and how long it lasts",
+        "item6label": "Rotation strategy",
+        "item6text": "— how days off are distributed (fixed or accumulating)",
+        "item7label": "Weekend rotation",
+        "item7text": "— system of 2 days off / 1 working weekend"
+      },
+      "step5": {
+        "title": "Add holidays — optional",
+        "desc": "The algorithm automatically adjusts the schedule around entered holidays",
+        "item1pre": "Go to",
+        "item1path": "Settings → Holidays → Add holiday",
+        "item2pre": "Enter name, date and optionally check",
+        "item2val": "\"Repeats every year\""
+      }
     },
     "workers": {
-      "title": "Managing Workers",
-      "intro": "Add new workers, manage their categories, and set their working parameters."
+      "infoBox": {
+        "pre": "The administrator must share the worker's",
+        "passwordLabel": "temporary password",
+        "example": "e.g.",
+        "and": "and",
+        "usernameLabel": "username",
+        "suf": "(full name as entered by the admin)."
+      },
+      "warningBox": {
+        "pre": "After the first login, the system requires a mandatory",
+        "bold": "password change",
+        "suf": ". Only after that does the worker become an active member of the organisation."
+      },
+      "sectionLabel": "Steps for workers",
+      "step1": {
+        "title": "Log in and accept the Terms of Service"
+      },
+      "step2": {
+        "title": "View your schedule",
+        "desc": "Menu → Schedule (or \"My schedule\" on mobile)"
+      },
+      "step3": {
+        "title": "Request absence",
+        "item1pre": "Click",
+        "item1btn": "Absences → Request absence",
+        "item2": "Choose the type of absence (sick leave, vacation, business trip…)",
+        "item3": "Enter the start and end date and an optional note",
+        "item4pre": "Click",
+        "item4btn": "Send request"
+      },
+      "step4": {
+        "title": "Request a shift swap",
+        "item1pre": "In the schedule, click on your shift →",
+        "item1btn": "Request swap",
+        "item2": "Select the worker you want to swap with",
+        "item3pre": "Click",
+        "item3btn": "Send request",
+        "item4pre": "The worker you sent the request to must",
+        "item4bold1": "confirm",
+        "item4mid": "the swap, and then the",
+        "item4bold2": "admin approves",
+        "item4suf": "— after approval the shift is automatically updated in the schedule"
+      }
     },
     "schedule": {
-      "title": "Creating and Managing Schedules",
-      "intro": "Learn how to generate schedules, manage shifts, and handle absences."
+      "sectionLabel": "Generating the schedule",
+      "step1": {
+        "title": "Go to menu → \"Schedule\""
+      },
+      "step2": {
+        "title": "Select the week for which you want to generate a schedule"
+      },
+      "step3": {
+        "title": "Select a sector — optional, if you use sectors"
+      },
+      "step4": {
+        "title": "Click \"Generate schedule\"",
+        "desc": "The algorithm may take a few seconds"
+      },
+      "step5": {
+        "title": "Manually adjust shifts if needed",
+        "item1": "Click on the shift you want to change",
+        "item2": "Select a new worker",
+        "item3pre": "You must enter a",
+        "item3bold": "reason for the change"
+      }
     }
   }
 }

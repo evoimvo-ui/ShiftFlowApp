@@ -537,11 +537,40 @@
     "error": "Fehler bei der Verarbeitung der Zahlung. Bitte versuchen Sie es erneut."
   },
   "days": {
-    "short": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
-    "full": ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+    "short": [
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa",
+      "So"
+    ],
+    "full": [
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag",
+      "Sonntag"
+    ]
   },
   "months": {
-    "full": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+    "full": [
+      "Januar",
+      "Februar",
+      "März",
+      "April",
+      "Mai",
+      "Juni",
+      "Juli",
+      "August",
+      "September",
+      "Oktober",
+      "November",
+      "Dezember"
+    ]
   },
   "shifts": {
     "morning": "Morgenschicht",
@@ -557,41 +586,171 @@
   },
   "userManual": {
     "title": "Benutzerhandbuch",
+    "subtitle": "ShiftForge — Schicht- und Dienstplanverwaltung",
+    "badgeAdmin": "Nur für Admins",
+    "badgeWorker": "Für Mitarbeiter",
     "tabs": {
-      "login": "Anmeldung / Registrierung",
+      "login": "Anmeldung",
       "admin": "Admin-Einrichtung",
       "workers": "Mitarbeiter",
-      "schedule": "Zeitplan"
+      "schedule": "Dienstplan"
     },
-    "badgeAdmin": "🛡 Nur für Admins",
-    "badgeWorker": "👤 Für Mitarbeiter",
     "login": {
-      "title": "Anmeldung und Registrierung",
-      "intro": "Dieser Abschnitt erklärt, wie Sie sich anmelden, sich als Administrator registrieren oder einer Organisation als Mitarbeiter beitreten.",
-      "step1": {
-        "title": "Demo-Modus (ohne Registrierung)",
-        "desc": "Erkunden Sie die Anwendung schnell mit vorausgefüllten Testdaten.",
-        "content1": "Klicken Sie auf der Anmeldeseite auf \"Demo-Version\", um ohne Registrierung mit vorbereiteten Testdaten auf die Anwendung zuzugreifen.",
-        "info1": "Es werden Testdaten verwendet; keine Registrierung erforderlich."
+      "demoCard": {
+        "title": "Demo-Modus",
+        "step1": "Anwendung öffnen",
+        "step2pre": "Klicken Sie auf",
+        "step2btn": "\"Demo-Version\"",
+        "step3": "Die App verwendet vorgefertigte Testdaten — keine Registrierung erforderlich"
       },
-      "step2": {
-        "title": "Echte Anmeldung/Registrierung",
-        "desc": "Für die volle Funktionalität erstellen Sie eine Organisation (Admin) oder treten Sie als Mitarbeiter bei.",
-        "content1": "Um sich als Admin zu registrieren, klicken Sie auf \"Neue Firma\", geben Sie Firmennamen, Benutzernamen und Passwort ein. Um als Mitarbeiter beizutreten, klicken Sie auf \"Beitreten (Mitarbeiter)\", geben Sie den genauen Firmennamen (wie vom Admin registriert), Benutzernamen und Passwort ein. Sie erhalten ein temporäres Passwort von Ihrem Admin.",
-        "warning1": "Für Mitarbeiter: Nach der ersten Anmeldung mit dem von Ihrem Admin bereitgestellten temporären Passwort werden Sie aus Sicherheitsgründen aufgefordert, es zu ändern."
-      }
+      "orgCard": {
+        "title": "Neue Organisation (Admin)",
+        "step1pre": "Klicken Sie auf",
+        "step1btn": "\"Neue Firma\"",
+        "step2": "Firmenname, Benutzername und Passwort eingeben",
+        "step3": "Registrierung bestätigen"
+      },
+      "workerCard": {
+        "title": "Als Mitarbeiter anmelden",
+        "step1pre": "Klicken Sie auf",
+        "step1btn": "\"Beitreten (Mitarbeiter)\"",
+        "step2": "Genauen Firmennamen (wie vom Admin eingegeben), Benutzername und Passwort eingeben",
+        "step3pre": "Klicken Sie auf",
+        "step3btn": "\"Anmelden\""
+      },
+      "tosInfo": "Nach der ersten Anmeldung erscheint ein Modal zur Zustimmung zu den Nutzungsbedingungen — klicken Sie auf \"Akzeptieren und fortfahren\"."
     },
     "admin": {
-      "title": "Admin-Einrichtung (nach Anmeldung)",
-      "intro": "Als Admin müssen Sie Ihre Organisation einrichten und Mitarbeiter hinzufügen. Akzeptieren Sie zuerst die Nutzungsbedingungen."
+      "step1": {
+        "title": "Mitarbeiter hinzufügen",
+        "desc": "Menü → Mitarbeiter → Mitarbeiter hinzufügen",
+        "item1label": "Vor- und Nachname",
+        "item1text": "— wird zum Benutzernamen des Mitarbeiters. Das System generiert automatisch ein temporäres Passwort im Format",
+        "item1format": "wort-wort-zahl",
+        "item1example": "z.B.",
+        "item2label": "Optional:",
+        "item2text": "Telefon, E-Mail, Kategorien, max. Wochenstunden (Standard 40), Beginn des Rotationszyklus"
+      },
+      "step2": {
+        "title": "Mitarbeiterkategorien erstellen",
+        "desc": "Kategorien definieren Mitarbeitergruppen und wie viele pro Schicht benötigt werden (z.B. \"Küche\", \"Service\")",
+        "item1pre": "Gehen Sie zu",
+        "item1btn": "Kategorien → Neue Kategorie",
+        "item2pre": "Name und (optional)",
+        "item2val": "Kategoriefarbe eingeben",
+        "item3pre": "Anzahl der",
+        "item3val": "Mitarbeiter pro Schicht festlegen",
+        "item4pre": "Optional: aktivieren Sie",
+        "item4val1": "Wochenend-Modus",
+        "item4and": "und/oder",
+        "item4val2": "Feiertagsmodus",
+        "item5pre": "Klicken Sie auf",
+        "item5btn": "Speichern",
+        "item5suf": ", dann zurück zu Mitarbeiter und Kategorien zuweisen"
+      },
+      "step3": {
+        "title": "Sektoren erstellen — optional",
+        "desc": "Verwenden Sie Sektoren, wenn Sie mehrere Teams/Abteilungen haben und separate Pläne erstellen",
+        "item1pre": "Gehen Sie zu",
+        "item1path": "Einstellungen → Mitarbeitersektoren",
+        "item2pre": "Klicken Sie auf",
+        "item2btn": "Sektor hinzufügen",
+        "item2suf": ", Name und optionale Beschreibung eingeben"
+      },
+      "step4": {
+        "title": "Globale Einstellungen konfigurieren",
+        "desc": "Menü → Einstellungen",
+        "item1label": "Mindestpause",
+        "item1text": "— Stunden zwischen zwei Schichten desselben Mitarbeiters",
+        "item2label": "Maximales Stundenkontingent",
+        "item2text": "— ab wann Überstunden beginnen",
+        "item3label": "Überstunden erlauben",
+        "item3text": "— ob der Algorithmus Überstunden zuweisen darf",
+        "item4label": "Überstundenlimit",
+        "item4text": "— max. Überstunden pro Mitarbeiter",
+        "item5label": "Pausenregelung",
+        "item5text": "— wie viele Arbeitsstunden eine Pause erfordern und wie lang sie ist",
+        "item6label": "Rotationsstrategie",
+        "item6text": "— Verteilung der freien Tage (fest oder kumulierend)",
+        "item7label": "Wochenendrotation",
+        "item7text": "— System 2 freie / 1 Arbeitswochenende"
+      },
+      "step5": {
+        "title": "Feiertage hinzufügen — optional",
+        "desc": "Der Algorithmus passt den Dienstplan automatisch an eingetragene Feiertage an",
+        "item1pre": "Gehen Sie zu",
+        "item1path": "Einstellungen → Feiertage → Feiertag hinzufügen",
+        "item2pre": "Name, Datum eingeben und optional",
+        "item2val": "\"Wiederholt sich jedes Jahr\" markieren"
+      }
     },
     "workers": {
-      "title": "Mitarbeiter verwalten",
-      "intro": "Fügen Sie neue Mitarbeiter hinzu, verwalten Sie ihre Kategorien und legen Sie ihre Arbeitsparameter fest."
+      "infoBox": {
+        "pre": "Der Administrator muss dem Mitarbeiter das",
+        "passwordLabel": "temporäre Passwort",
+        "example": "z.B.",
+        "and": "und den",
+        "usernameLabel": "Benutzernamen",
+        "suf": "(Vor- und Nachname wie vom Admin eingegeben) mitteilen."
+      },
+      "warningBox": {
+        "pre": "Nach der ersten Anmeldung verlangt das System eine obligatorische",
+        "bold": "Passwortänderung",
+        "suf": ". Erst danach wird der Mitarbeiter ein aktives Mitglied der Organisation."
+      },
+      "sectionLabel": "Schritte für Mitarbeiter",
+      "step1": {
+        "title": "Anmelden und Nutzungsbedingungen akzeptieren"
+      },
+      "step2": {
+        "title": "Ihren Dienstplan ansehen",
+        "desc": "Menü → Dienstplan (oder \"Mein Dienstplan\" auf dem Handy)"
+      },
+      "step3": {
+        "title": "Abwesenheit beantragen",
+        "item1pre": "Klicken Sie auf",
+        "item1btn": "Abwesenheiten → Abwesenheit beantragen",
+        "item2": "Art der Abwesenheit wählen (Krankenstand, Urlaub, Dienstreise…)",
+        "item3": "Start- und Enddatum und optionale Notiz eingeben",
+        "item4pre": "Klicken Sie auf",
+        "item4btn": "Anfrage senden"
+      },
+      "step4": {
+        "title": "Schichttausch beantragen",
+        "item1pre": "Im Dienstplan auf Ihre Schicht klicken →",
+        "item1btn": "Tausch beantragen",
+        "item2": "Mitarbeiter auswählen, mit dem Sie tauschen möchten",
+        "item3pre": "Klicken Sie auf",
+        "item3btn": "Anfrage senden",
+        "item4pre": "Der Mitarbeiter, dem Sie die Anfrage gesendet haben, muss",
+        "item4bold1": "bestätigen",
+        "item4mid": ", dann",
+        "item4bold2": "genehmigt der Admin",
+        "item4suf": "— nach der Genehmigung wird die Schicht automatisch im Dienstplan aktualisiert"
+      }
     },
     "schedule": {
-      "title": "Erstellen und Verwalten von Zeitplänen",
-      "intro": "Erfahren Sie, wie Sie Zeitpläne erstellen, Schichten verwalten und Abwesenheiten bearbeiten."
+      "sectionLabel": "Dienstplan generieren",
+      "step1": {
+        "title": "Menü → \"Dienstplan\" öffnen"
+      },
+      "step2": {
+        "title": "Woche auswählen, für die der Dienstplan erstellt werden soll"
+      },
+      "step3": {
+        "title": "Sektor auswählen — optional, wenn Sie Sektoren verwenden"
+      },
+      "step4": {
+        "title": "\"Dienstplan generieren\" klicken",
+        "desc": "Der Algorithmus kann einige Sekunden dauern"
+      },
+      "step5": {
+        "title": "Schichten bei Bedarf manuell anpassen",
+        "item1": "Auf die Schicht klicken, die Sie ändern möchten",
+        "item2": "Neuen Mitarbeiter auswählen",
+        "item3pre": "Unbedingt einen",
+        "item3bold": "Änderungsgrund eingeben"
+      }
     }
   }
 }
