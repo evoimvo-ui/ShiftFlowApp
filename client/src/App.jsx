@@ -71,13 +71,14 @@ useEffect(() => {
     return () => {
       window.removeEventListener('paddle-402-error', handle402Error);
     };
-  }, []);
+  }, [user]);
 
   // Osvježavanje podataka o korisniku pri svakom učitavanju aplikacije
   useEffect(() => {
     if (user && !user.isDemo) {
       authApi.getMe().then(res => {
         const updatedUser = res.data;
+        console.log('updatedUser:', updatedUser);
         // Ako se uloga promijenila, prisilno odjavi korisnika ili osvježi state
         if (user.role !== updatedUser.role) {
           toast.error(t('common.roleChanged'));
