@@ -546,6 +546,45 @@
     "processing": "Traitement en cours...",
     "error": "Erreur lors du traitement du paiement. Veuillez réessayer."
   },
+  "userManual": {
+    "title": "Manuel d'utilisation",
+    "tabs": {
+      "login": "Connexion / Inscription",
+      "admin": "Configuration administrateur",
+      "workers": "Employés",
+      "schedule": "Horaire"
+    },
+    "badgeAdmin": "🛡 Réservé aux administrateurs",
+    "badgeWorker": "👤 Pour les employés",
+    "login": {
+      "title": "Connexion et Inscription",
+      "intro": "Cette section explique comment se connecter, s'inscrire en tant qu'administrateur ou rejoindre une organisation en tant qu'employé.",
+      "step1": {
+        "title": "Mode Démo (sans inscription)",
+        "desc": "Explorez rapidement l'application avec des données de test préremplies.",
+        "content1": "Sur la page de connexion, cliquez sur \"Version Démo\" pour accéder à l'application avec des données de test préparées sans inscription.",
+        "info1": "Données de test utilisées ; aucune inscription requise."
+      },
+      "step2": {
+        "title": "Connexion/Inscription réelle",
+        "desc": "Pour une fonctionnalité complète, créez une organisation (administrateur) ou rejoignez-la en tant qu'employé.",
+        "content1": "Pour vous inscrire en tant qu'administrateur, cliquez sur \"Nouvelle entreprise\", saisissez le nom de l'entreprise, le nom d'utilisateur et le mot de passe. Pour rejoindre en tant qu'employé, cliquez sur \"Rejoindre (Employé)\", saisissez le nom exact de l'entreprise (tel qu'enregistré par l'administrateur), le nom d'utilisateur et le mot de passe. Vous recevrez un mot de passe temporaire de votre administrateur.",
+        "warning1": "Pour les employés : Après la première connexion avec le mot de passe temporaire fourni par votre administrateur, il vous sera demandé de le modifier pour des raisons de sécurité."
+      }
+    },
+    "admin": {
+      "title": "Configuration administrateur (après connexion)",
+      "intro": "En tant qu'administrateur, vous devrez configurer votre organisation et ajouter des employés. Acceptez d'abord les Conditions d'utilisation."
+    },
+    "workers": {
+      "title": "Gérer les employés",
+      "intro": "Ajoutez de nouveaux employés, gérez leurs catégories et définissez leurs paramètres de travail."
+    },
+    "schedule": {
+      "title": "Création et gestion des horaires",
+      "intro": "Apprenez à générer des horaires, à gérer les quarts de travail et à gérer les absences."
+    }
+  },
   "months": {
     "full": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
   }

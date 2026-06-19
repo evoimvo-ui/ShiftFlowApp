@@ -515,10 +515,49 @@
     "night": "Night"
   },
   "absenceTypes": {
-    "label": "Absence type",
-    "sick": "Sick Leave",
-    "vacation": "Annual Leave",
-    "business": "Business Trip",
-    "other": "Other"
+      "label": "Absence type",
+      "sick": "Sick Leave",
+      "vacation": "Annual Leave",
+      "business": "Business Trip",
+      "other": "Other"
+    },
+  "userManual": {
+    "title": "User Manual",
+    "tabs": {
+      "login": "Login / Registration",
+      "admin": "Admin Setup",
+      "workers": "Workers",
+      "schedule": "Schedule"
+    },
+    "badgeAdmin": "🛡 Admin Only",
+    "badgeWorker": "👤 For Workers",
+    "login": {
+      "title": "Login and Registration",
+      "intro": "This section explains how to log in, register as an admin, or join an organization as a worker.",
+      "step1": {
+        "title": "Demo Mode (no registration)",
+        "desc": "Quickly explore the application with pre-filled test data.",
+        "content1": "On the login page, click \"Demo Version\" to access the application with prepared test data without registration.",
+        "info1": "Test data is used; no registration required."
+      },
+      "step2": {
+        "title": "Real Login/Registration",
+        "desc": "For full functionality, create an organization (admin) or join as a worker.",
+        "content1": "To register as an admin, click \"New Company\", enter company name, username, and password. To join as a worker, click \"Join (Worker)\", enter the exact company name (as registered by admin), username, and password. You will receive a temporary password from your admin.",
+        "warning1": "For workers: After first login with the temporary password provided by your admin, you will be prompted to change it for security reasons."
+      }
+    },
+    "admin": {
+      "title": "Admin Setup (After Login)",
+      "intro": "As an admin, you'll need to set up your organization and add workers. First, accept the Terms of Service."
+    },
+    "workers": {
+      "title": "Managing Workers",
+      "intro": "Add new workers, manage their categories, and set their working parameters."
+    },
+    "schedule": {
+      "title": "Creating and Managing Schedules",
+      "intro": "Learn how to generate schedules, manage shifts, and handle absences."
+    }
   }
 }

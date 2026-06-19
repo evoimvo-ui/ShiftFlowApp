@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { 
   LayoutDashboard, Calendar, Users, Tags, 
   UserX, Settings, ChevronLeft, ChevronRight, X,
-  Sun, Moon
+  Sun, Moon, BookOpen
 } from 'lucide-react'
 import { isoDate } from '../utils/helpers'
 
@@ -14,6 +14,7 @@ const NAV = [
   { id: 'categories', label: 'sidebar.categories', icon: Tags },
   { id: 'absences', label: 'sidebar.absences', icon: UserX },
   { id: 'settings', label: 'sidebar.settings', icon: Settings },
+  { id: 'manual', label: 'userManual.title', icon: BookOpen }, // Novi item
 ]
 
 export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user, theme, setTheme, onLogout }) {
@@ -24,7 +25,7 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
   const isAdmin = user?.role === 'admin'
   const navItems = isAdmin 
     ? NAV 
-    : NAV.filter(item => ['dashboard', 'schedule', 'absences'].includes(item.id))
+    : NAV.filter(item => ['dashboard', 'schedule', 'absences', 'manual'].includes(item.id)) // Dodao sam 'manual' za radnike
 
   return (
     <aside 

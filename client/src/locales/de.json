@@ -546,6 +546,45 @@
     "processing": "Wird verarbeitet...",
     "error": "Fehler bei der Verarbeitung der Zahlung. Bitte versuchen Sie es erneut."
   },
+  "userManual": {
+    "title": "Benutzerhandbuch",
+    "tabs": {
+      "login": "Anmeldung / Registrierung",
+      "admin": "Admin-Einrichtung",
+      "workers": "Mitarbeiter",
+      "schedule": "Zeitplan"
+    },
+    "badgeAdmin": "🛡 Nur für Admins",
+    "badgeWorker": "👤 Für Mitarbeiter",
+    "login": {
+      "title": "Anmeldung und Registrierung",
+      "intro": "Dieser Abschnitt erklärt, wie Sie sich anmelden, sich als Administrator registrieren oder einer Organisation als Mitarbeiter beitreten.",
+      "step1": {
+        "title": "Demo-Modus (ohne Registrierung)",
+        "desc": "Erkunden Sie die Anwendung schnell mit vorausgefüllten Testdaten.",
+        "content1": "Klicken Sie auf der Anmeldeseite auf \"Demo-Version\", um ohne Registrierung mit vorbereiteten Testdaten auf die Anwendung zuzugreifen.",
+        "info1": "Es werden Testdaten verwendet; keine Registrierung erforderlich."
+      },
+      "step2": {
+        "title": "Echte Anmeldung/Registrierung",
+        "desc": "Für die volle Funktionalität erstellen Sie eine Organisation (Admin) oder treten als Mitarbeiter bei.",
+        "content1": "Um sich als Admin zu registrieren, klicken Sie auf \"Neue Firma\", geben Sie Firmennamen, Benutzernamen und Passwort ein. Um als Mitarbeiter beizutreten, klicken Sie auf \"Beitreten (Mitarbeiter)\", geben Sie den genauen Firmennamen (wie vom Admin registriert), Benutzernamen und Passwort ein. Sie erhalten ein temporäres Passwort von Ihrem Admin.",
+        "warning1": "Für Mitarbeiter: Nach der ersten Anmeldung mit dem von Ihrem Admin bereitgestellten temporären Passwort werden Sie aus Sicherheitsgründen aufgefordert, es zu ändern."
+      }
+    },
+    "admin": {
+      "title": "Admin-Einrichtung (nach Anmeldung)",
+      "intro": "Als Admin müssen Sie Ihre Organisation einrichten und Mitarbeiter hinzufügen. Akzeptieren Sie zuerst die Nutzungsbedingungen."
+    },
+    "workers": {
+      "title": "Mitarbeiter verwalten",
+      "intro": "Fügen Sie neue Mitarbeiter hinzu, verwalten Sie deren Kategorien und legen Sie deren Arbeitsparameter fest."
+    },
+    "schedule": {
+      "title": "Erstellen und Verwalten von Zeitplänen",
+      "intro": "Erfahren Sie, wie Sie Zeitpläne erstellen, Schichten verwalten und Abwesenheiten bearbeiten."
+    }
+  },
   "months": {
     "full": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
   }

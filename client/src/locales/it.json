@@ -546,6 +546,84 @@
     "processing": "In elaborazione...",
     "error": "Errore durante l'elaborazione del pagamento. Per favore, riprova."
   },
+  "userManual": {
+    "title": "Manuale utente",
+    "tabs": {
+      "login": "Accesso / Registrazione",
+      "admin": "Configurazione amministratore",
+      "workers": "Lavoratori",
+      "schedule": "Orario"
+    },
+    "badgeAdmin": "🛡 Solo per amministratori",
+    "badgeWorker": "👤 Per lavoratori",
+    "login": {
+      "title": "Accesso e Registrazione",
+      "intro": "Questa sezione spiega come accedere, registrarsi come amministratore o unirsi a un'organizzazione come lavoratore.",
+      "step1": {
+        "title": "Modalità Demo (senza registrazione)",
+        "desc": "Esplora rapidamente l'applicazione con dati di test precompilati.",
+        "content1": "Nella pagina di accesso, clicca su \"Versione Demo\" per accedere all'applicazione con dati di test preparati senza registrazione.",
+        "info1": "Vengono utilizzati dati di test; non è richiesta la registrazione."
+      },
+      "step2": {
+        "title": "Accesso/Registrazione reale",
+        "desc": "Per la piena funzionalità, crea un'organizzazione (amministratore) o unisciti come lavoratore.",
+        "content1": "Per registrarsi come amministratore, clicca su \"Nuova azienda\", inserisci il nome dell'azienda, il nome utente e la password. Per unirti come lavoratore, clicca su \"Unisciti (Lavoratore)\", inserisci il nome esatto dell'azienda (come registrato dall'amministratore), il nome utente e la password. Riceverai una password temporanea dal tuo amministratore.",
+        "warning1": "Per i lavoratori: Dopo il primo accesso con la password temporanea fornita dal tuo amministratore, ti verrà chiesto di cambiarla per motivi di sicurezza."
+      }
+    },
+    "admin": {
+      "title": "Configurazione amministratore (dopo l'accesso)",
+      "intro": "Come amministratore, dovrai configurare la tua organizzazione e aggiungere lavoratori. Per prima cosa, accetta i Termini di servizio."
+    },
+    "workers": {
+      "title": "Gestire i lavoratori",
+      "intro": "Aggiungi nuovi lavoratori, gestisci le loro categorie e imposta i loro parametri di lavoro."
+    },
+    "schedule": {
+      "title": "Creazione e gestione degli orari",
+      "intro": "Scopri come generare orari, gestire i turni e gestire le assenze."
+    }
+  },
+  "userManual": {
+    "title": "Manuale utente",
+    "tabs": {
+      "login": "Accesso / Registrazione",
+      "admin": "Configurazione amministratore",
+      "workers": "Lavoratori",
+      "schedule": "Orario"
+    },
+    "badgeAdmin": "🛡 Solo per amministratori",
+    "badgeWorker": "👤 Per lavoratori",
+    "login": {
+      "title": "Accesso e Registrazione",
+      "intro": "Questa sezione spiega come accedere, registrarsi come amministratore o unirsi a un'organizzazione come lavoratore.",
+      "step1": {
+        "title": "Modalità Demo (senza registrazione)",
+        "desc": "Esplora rapidamente l'applicazione con dati di test precompilati.",
+        "content1": "Nella pagina di accesso, clicca su \"Versione Demo\" per accedere all'applicazione con dati di test preparati senza registrazione.",
+        "info1": "Vengono utilizzati dati di test; non è richiesta la registrazione."
+      },
+      "step2": {
+        "title": "Accesso/Registrazione reale",
+        "desc": "Per la piena funzionalità, crea un'organizzazione (amministratore) o unisciti come lavoratore.",
+        "content1": "Per registrarsi come amministratore, clicca su \"Nuova azienda\", inserisci il nome dell'azienda, il nome utente e la password. Per unirti come lavoratore, clicca su \"Unisciti (Lavoratore)\", inserisci il nome esatto dell'azienda (come registrato dall'amministratore), il nome utente e la password. Riceverai una password temporanea dal tuo amministratore.",
+        "warning1": "Per i lavoratori: Dopo il primo accesso con la password temporanea fornita dal tuo amministratore, ti verrà chiesto di cambiarla per motivi di sicurezza."
+      }
+    },
+    "admin": {
+      "title": "Configurazione amministratore (dopo l'accesso)",
+      "intro": "Come amministratore, dovrai configurare la tua organizzazione e aggiungere lavoratori. Per prima cosa, accetta i Termini di servizio."
+    },
+    "workers": {
+      "title": "Gestire i lavoratori",
+      "intro": "Aggiungi nuovi lavoratori, gestisci le loro categorie e imposta i loro parametri di lavoro."
+    },
+    "schedule": {
+      "title": "Creazione e gestione degli orari",
+      "intro": "Scopri come generare orari, gestire i turni e gestire le assenze."
+    }
+  },
   "months": {
     "full": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
   }

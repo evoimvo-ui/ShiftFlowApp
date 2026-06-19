@@ -13,12 +13,14 @@ import AbsencesPage from './pages/Absences'
 import SettingsPage from './pages/Settings'
 import LoginPage from './pages/Login'
 import ChangePasswordPage from './pages/ChangePassword'
+import UserManualPage from './pages/UserManual' // Dodao sam ovu liniju
 import useApi from './hooks/useApi'
 import { useNotifications } from './hooks/useNotifications'
 import { useTranslation } from 'react-i18next'
 import { Toaster, toast } from 'react-hot-toast'
 import { authApi, settingApi } from './api'
 import { initializePaddle } from '@paddle/paddle-js'
+import { HelpCircle } from 'lucide-react'; // Dodajem HelpCircle ikonicu
 
 export default function App() {
   const { t } = useTranslation()
@@ -200,6 +202,7 @@ useEffect(() => {
     categories: <CategoriesPage categories={categories} setCategories={setCategories} shiftTypes={shiftTypes} workers={workers} user={user} />,
     absences: <AbsencesPage absences={absences} setAbsences={setAbsences} workers={workers} categories={categories} user={user} refresh={refresh} />,
     settings: <SettingsPage settings={settings} setSettings={setSettings} shiftTypes={shiftTypes} setShiftTypes={setShiftTypes} user={user} />,
+    manual: <UserManualPage />, // Dodana UserManualPage
   }
 
   return (
@@ -219,7 +222,14 @@ useEffect(() => {
       />
       <main className="flex-1 p-8 overflow-y-auto max-w-full pb-24 md:pb-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end gap-2 mb-4"> {/* Dodao sam gap-2 */}
+            <button
+              onClick={() => setActive('manual')}
+              className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-2 rounded-lg md:hidden" // Prikazuje se samo na mobilnom
+              title={t('userManual.title')}
+            >
+              <HelpCircle size={20} />
+            </button>
             <LanguageSelector />
           </div>
           {user?.isDemo && (

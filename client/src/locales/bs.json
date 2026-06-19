@@ -528,10 +528,50 @@
     "night": "Noćna"
   },
   "absenceTypes": {
-    "label": "Tip odsutnosti",
-    "sick": "Bolovanje",
-    "vacation": "Godišnji odmor",
-    "business": "Službeni put",
-    "other": "Ostalo"
+      "label": "Tip odsutnosti",
+      "sick": "Bolovanje",
+      "vacation": "Godišnji odmor",
+      "business": "Službeni put",
+      "other": "Ostalo"
+    }
+  },
+  "userManual": {
+    "title": "Korisnički priručnik",
+    "tabs": {
+      "login": "Prijava / Registracija",
+      "admin": "Admin podešavanje",
+      "workers": "Radnici",
+      "schedule": "Raspored"
+    },
+    "badgeAdmin": "🛡 Samo za admina",
+    "badgeWorker": "👤 Za radnike",
+    "login": {
+      "title": "Prijava i registracija",
+      "intro": "Ovaj odjeljak objašnjava kako se prijaviti, registrovati kao administrator ili pridružiti organizaciji kao radnik.",
+      "step1": {
+        "title": "Demo način (bez registracije)",
+        "desc": "Brzo istražite aplikaciju sa unaprijed popunjenim testnim podacima.",
+        "content1": "Na stranici za prijavu kliknite \"Demo verzija\" za pristup aplikaciji sa pripremljenim testnim podacima bez registracije.",
+        "info1": "Koriste se testni podaci; registracija nije potrebna."
+      },
+      "step2": {
+        "title": "Prava prijava/registracija",
+        "desc": "Za punu funkcionalnost, kreirajte organizaciju (admin) ili se pridružite kao radnik.",
+        "content1": "Za registraciju kao admin, kliknite \"Nova firma\", unesite naziv firme, korisničko ime i lozinku. Za pridruživanje kao radnik, kliknite \"Pridruži se (Radnik)\", unesite tačan naziv firme (kao što je registrovao admin), korisničko ime i lozinku. Privremenu lozinku ćete dobiti od vašeg admina.",
+        "warning1": "Za radnike: Nakon prve prijave sa privremenom lozinkom koju vam je dao admin, bićete zatraženi da je promijenite iz sigurnosnih razloga."
+      }
+    },
+    "admin": {
+      "title": "Admin podešavanje (nakon prijave)",
+      "intro": "Kao admin, moraćete postaviti svoju organizaciju i dodati radnike. Prvo, prihvatite Uslove korištenja."
+    },
+    "workers": {
+      "title": "Upravljanje radnicima",
+      "intro": "Dodajte nove radnike, upravljajte njihovim kategorijama i postavite parametre rada."
+    },
+    "schedule": {
+      "title": "Kreiranje i upravljanje rasporedima",
+      "intro": "Saznajte kako generisati rasporede, upravljati smjenama i obrađivati odsustva."
+    }
   }
 }

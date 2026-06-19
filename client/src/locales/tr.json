@@ -546,6 +546,45 @@
     "processing": "İşleniyor...",
     "error": "Ödeme işlenirken bir hata oluştu. Lütfen tekrar deneyin."
   },
+  "userManual": {
+    "title": "Kullanım Kılavuzu",
+    "tabs": {
+      "login": "Giriş / Kayıt",
+      "admin": "Yönetici Kurulumu",
+      "workers": "Çalışanlar",
+      "schedule": "Çizelge"
+    },
+    "badgeAdmin": "🛡 Yalnızca Yöneticiler",
+    "badgeWorker": "👤 Çalışanlar İçin",
+    "login": {
+      "title": "Giriş ve Kayıt",
+      "intro": "Bu bölüm, yönetici olarak nasıl giriş yapacağınızı, kaydolacağınızı veya bir çalışanın bir kuruluşa nasıl katılacağını açıklamaktadır.",
+      "step1": {
+        "title": "Demo Modu (kayıt yok)",
+        "desc": "Önceden doldurulmuş test verileriyle uygulamayı hızlıca keşfedin.",
+        "content1": "Giriş sayfasında, önceden hazırlanmış test verileriyle uygulamaya kaydolmadan erişmek için \"Demo Sürümü\"ne tıklayın.",
+        "info1": "Test verileri kullanılır; kayıt gerekmez."
+      },
+      "step2": {
+        "title": "Gerçek Giriş/Kayıt",
+        "desc": "Tam işlevsellik için bir kuruluş (yönetici) oluşturun veya çalışan olarak katılın.",
+        "content1": "Yönetici olarak kaydolmak için \"Yeni Şirket\"e tıklayın, şirket adını, kullanıcı adını ve şifreyi girin. Çalışan olarak katılmak için \"Katıl (Çalışan)"a tıklayın, tam şirket adını (yönetici tarafından kaydedildiği gibi), kullanıcı adını ve şifreyi girin. Yöneticinizden geçici bir şifre alacaksınız.",
+        "warning1": "Çalışanlar için: Yöneticiniz tarafından sağlanan geçici şifre ile ilk kez giriş yaptıktan sonra, güvenlik nedenleriyle şifrenizi değiştirmeniz istenecektir."
+      }
+    },
+    "admin": {
+      "title": "Yönetici Kurulumu (Giriş Sonrası)",
+      "intro": "Bir yönetici olarak, kuruluşunuzu kurmanız ve çalışan eklemeniz gerekecektir. İlk olarak, Hizmet Şartları'nı kabul edin."
+    },
+    "workers": {
+      "title": "Çalışanları Yönetme",
+      "intro": "Yeni çalışanlar ekleyin, kategorilerini yönetin ve çalışma parametrelerini belirleyin."
+    },
+    "schedule": {
+      "title": "Çizelgeleri Oluşturma ve Yönetme",
+      "intro": "Çizelgeleri nasıl oluşturacağınızı, vardiyaları nasıl yöneteceğinizi ve izinleri nasıl ele alacağınızı öğrenin."
+    }
+  },
   "months": {
     "full": ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
   }
