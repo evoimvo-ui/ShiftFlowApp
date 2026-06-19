@@ -126,7 +126,8 @@ export const workerApi = {
   create: wrapApi(
     (data) => api.post('/workers', data),
     (data) => {
-      const newWorker = { id: uid(), ...data };
+      const id = uid();
+      const newWorker = { _id: id, id, ...data };
       demoState.workers = [...demoState.workers, newWorker];
       return newWorker;
     }
@@ -155,7 +156,8 @@ export const groupApi = {
   create: wrapApi(
     (data) => api.post('/groups', data),
     (data) => {
-      const newGroup = { id: uid(), ...data };
+      const id = uid();
+      const newGroup = { _id: id, id, ...data };
       demoState.groups = [...demoState.groups, newGroup];
       return newGroup;
     }
@@ -184,7 +186,8 @@ export const categoryApi = {
   create: wrapApi(
     (data) => api.post('/categories', data),
     (data) => {
-      const newCategory = { id: uid(), ...data };
+      const id = uid();
+      const newCategory = { _id: id, id, ...data };
       demoState.categories = [...demoState.categories, newCategory];
       return newCategory;
     }
@@ -213,7 +216,8 @@ export const absenceApi = {
   create: wrapApi(
     (data) => api.post('/absences', data),
     (data) => {
-      const newAbsence = { id: uid(), ...data, status: 'pending' };
+      const id = uid();
+      const newAbsence = { _id: id, id, ...data, status: 'pending' };
       demoState.absences = [...demoState.absences, newAbsence];
       return newAbsence;
     }
@@ -242,8 +246,10 @@ export const scheduleApi = {
   generate: wrapApi(
     (data) => api.post('/schedules/generate', data),
     (data) => {
+      const id = uid();
       const newSchedule = {
-        id: uid(),
+        _id: id,
+        id,
         weekStart: data.weekStart,
         groupId: data.groupId || null,
         assignments: [],
@@ -343,7 +349,8 @@ export const holidayApi = {
   create: wrapApi(
     (data) => api.post('/holidays', data),
     (data) => {
-      const newHoliday = { id: uid(), ...data };
+      const id = uid();
+      const newHoliday = { _id: id, id, ...data };
       demoState.holidays = [...demoState.holidays, newHoliday];
       return newHoliday;
     }
@@ -365,7 +372,8 @@ export const swapApi = {
   create: wrapApi(
     (data) => api.post('/swaps', data),
     (data) => {
-      const newSwap = { id: uid(), ...data, status: 'pending', requestedAt: isoDate(new Date()) };
+      const id = uid();
+      const newSwap = { _id: id, id, ...data, status: 'pending', requestedAt: isoDate(new Date()) };
       demoState.swaps = [...demoState.swaps, newSwap];
       return newSwap;
     }
@@ -442,7 +450,8 @@ export const settingApi = {
   createShift: wrapApi(
     (data) => api.post('/settings/shifts', data),
     (data) => {
-      const newShift = { id: uid(), ...data };
+      const id = uid();
+      const newShift = { _id: id, id, ...data };
       demoState.shifts = [...demoState.shifts, newShift];
       return newShift;
     }
