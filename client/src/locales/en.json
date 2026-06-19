@@ -427,6 +427,19 @@
     "saveShiftError": "Error saving shift: {{error}}",
     "deleteShiftConfirm": "Delete shift?",
     "deleteShiftError": "Error deleting shift: {{error}}",
+    "updateSettingsError": "Error updating settings: {{error}}",
+    "newHoliday": "New Holiday",
+    "holidayName": "Holiday Name",
+    "holidayNamePlaceholder": "e.g. New Year, Labor Day...",
+    "date": "Date",
+    "recurring": "Recurring",
+    "recurringYearly": "Recurring every year",
+    "saveHoliday": "Save Holiday",
+    "saveHolidayError": "Error saving holiday: {{error}}",
+    "deleteHolidayConfirm": "Delete holiday?",
+    "deleteHolidayError": "Error deleting holiday: {{error}}",
+    "separator": "|",
+    "plus": "+",
     "dash": "–"
   },
   "notifications": {
@@ -501,6 +514,28 @@
       "userIdRequired": "userId is required",
       "notificationNotFound": "Notification not found"
     }
+  },
+  "consentModal": {
+    "title": "Accept Terms of Service",
+    "subtitle": "Please read and accept the following terms to continue.",
+    "required": "Required",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "dataProcessing": "Data Processing",
+    "refundPolicy": "Refund Policy",
+    "accept": "Accept and continue"
+  },
+  "upgradeModal": {
+    "title": "Upgrade Plan",
+    "description": "Choose a plan that fits your needs.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Upgrade now",
+    "subscribed": "Subscribed",
+    "cancel": "Cancel",
+    "processing": "Processing...",
+    "error": "An error occurred while processing payment. Please try again."
   },
   "days": {
     "short": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],

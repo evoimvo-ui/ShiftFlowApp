@@ -5,6 +5,7 @@
     "demoVersion": "Version Démo",
     "demoDescription": "Utilisez les données de test pour prévisualiser les fonctionnalités.",
     "connectionError": "Erreur de connexion",
+    "partialLoadError": "Certaines données n'ont pas pu être chargées. Veuillez réessayer d'actualiser la page.",
     "serverError": "Le serveur a renvoyé une erreur: {{error}}",
     "retry": "Réessayer",
     "save": "Enregistrer",
@@ -24,7 +25,8 @@
     "yes": "Oui",
     "no": "Non",
     "or": "Ou",
-    "swap": "Échanger"
+    "swap": "Échanger",
+    "roleChanged": "Votre rôle a été modifié. Vous serez déconnecté pour des raisons de sécurité."
   },
   "login": {
     "title": "ShiftForge",
@@ -82,7 +84,9 @@
     "hideMenu": "Masquer le menu",
     "logout": "Déconnexion",
     "admin": "Administrateur",
-    "worker": "Travailleur"
+    "worker": "Travailleur",
+    "lightMode": "Mode Clair",
+    "darkMode": "Mode Sombre"
   },
   "dashboard": {
     "greeting": "Bonjour, {{username}}! 👋",
@@ -584,8 +588,5 @@
       "title": "Création et gestion des horaires",
       "intro": "Apprenez à générer des horaires, à gérer les quarts de travail et à gérer les absences."
     }
-  },
-  "months": {
-    "full": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
   }
 }

@@ -5,6 +5,7 @@
     "demoVersion": "Versión Demo",
     "demoDescription": "Use datos de prueba para previsualizar la funcionalidad.",
     "connectionError": "Error de conexión",
+    "partialLoadError": "Algunos datos no se cargaron. Intente actualizar la página.",
     "serverError": "El servidor devolvió un error: {{error}}",
     "retry": "Reintentar",
     "save": "Guardar",
@@ -24,7 +25,8 @@
     "yes": "Sí",
     "no": "No",
     "or": "O",
-    "swap": "Intercambio"
+    "swap": "Intercambio",
+    "roleChanged": "Tu rol ha cambiado. Serás cerrado por seguridad."
   },
   "login": {
     "title": "ShiftForge",
@@ -82,7 +84,9 @@
     "hideMenu": "Ocultar menú",
     "logout": "Cerrar sesión",
     "admin": "Administrador",
-    "worker": "Trabajador"
+    "worker": "Trabajador",
+    "lightMode": "Modo Claro",
+    "darkMode": "Modo Oscuro"
   },
   "dashboard": {
     "greeting": "Hola, {{username}}! 👋",
@@ -223,7 +227,7 @@
     "phonePlaceholder": "+34...",
     "email": "Correo electrónico",
     "emailPlaceholder": "correo@...",
-    "maxHoursPerWeek": "Max. horas semanales",
+    "maxHoursPerWeek": "Máx. horas semanales",
     "maxHoursHint": "Estándar 40h",
     "weekendCycleStart": "Inicio del ciclo de rotación",
     "weekendCycleHint": "Seleccione cualquier lunes desde el que desea que comience el ciclo de rotación del trabajador.",
@@ -584,6 +588,5 @@
       "title": "Creación y gestión de horarios",
       "intro": "Aprenda a generar horarios, gestionar turnos y manejar ausencias."
     }
-  },
-  \"userManual\": {\n    \"title\": \"Manual de usuario\",\n    \"tabs\": {\n      \"login\": \"Iniciar sesión / Registrarse\",\n      \"admin\": \"Configuración de administrador\",\n      \"workers\": \"Trabajadores\",\n      \"schedule\": \"Horario\"\n    },\n    \"badgeAdmin\": \"🛡 Solo para administradores\",\n    \"badgeWorker\": \"👤 Para trabajadores\",\n    \"login\": {\n      \"title\": \"Iniciar sesión y registrarse\",\n      \"intro\": \"Esta sección explica cómo iniciar sesión, registrarse como administrador o unirse a una organización como trabajador.\",\n      \"step1\": {\n        \"title\": \"Modo de demostración (sin registro)\",\n        \"desc\": \"Explore rápidamente la aplicación con datos de prueba precargados.\",\n        \"content1\": \"En la página de inicio de sesión, haga clic en \\\"Versión de demostración\\\" para acceder a la aplicación con datos de prueba preparados sin necesidad de registrarse.\",\n        \"info1\": \"Se utilizan datos de prueba; no se requiere registro.\"\n      },\n      \"step2\": {\n        \"title\": \"Inicio de sesión/Registro real\",\n        \"desc\": \"Para la funcionalidad completa, cree una organización (administrador) o únase como trabajador.\",\n        \"content1\": \"Para registrarse como administrador, haga clic en \\\"Nueva empresa\\\", ingrese el nombre de la empresa, el nombre de usuario y la contraseña. Para unirse como trabajador, haga clic en \\\"Unirse (Trabajador)\\\", ingrese el nombre exacto de la empresa (tal como lo registró el administrador), el nombre de usuario y la contraseña. Recibirá una contraseña temporal de su administrador.\",\n        \"warning1\": \"Para trabajadores: Después del primer inicio de sesión con la contraseña temporal proporcionada por su administrador, se le pedirá que la cambie por razones de seguridad.\"\n      }\n    },\n    \"admin\": {\n      \"title\": \"Configuración de administrador (después de iniciar sesión)\",\n      \"intro\": \"Como administrador, deberá configurar su organización y agregar trabajadores. Primero, acepte los Términos de servicio.\"\n    },\n    \"workers\": {\n      \"title\": \"Gestionar trabajadores\",\n      \"intro\": \"Agregue nuevos trabajadores, gestione sus categorías y configure sus parámetros de trabajo.\"\n    },\
-    \"schedule\": {\n      \"title\": \"Creación y gestión de horarios\",\n      \"intro\": \"Aprenda a generar horarios, gestionar turnos y manejar ausencias.\"\n    }\n  },\n  \"months\": {\n    \"full\": [\"Enero\", \"Febrero\", \"Marzo\", \"Abril\", \"Mayo\", \"Junio\", \"Julio\", \"Agosto\", \"Septiembre\", \"Octubre\", \"Noviembre\", \"Diciembre\"]\n  }\n}
+  }
+}
