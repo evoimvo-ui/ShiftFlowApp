@@ -71,7 +71,7 @@
     "refundPolicy": "Politika povrata novca",
     "contact": "Kontakt",
     "pricingTrial": "7 dana besplatno — bez kreditne kartice",
-    "pricingPlans": "Basic €19.99/mj · Premium €39.99/mj · Business €79.99/mj"
+    "pricingPlans": "Basic €19.99/mj · Premium €49.99/mj · Business €99.99/mj"
   },
   "sidebar": {
     "dashboard": "Kontrolna tabla",
@@ -585,7 +585,7 @@
     "other": "Ostalo"
   },
   "userManual": {
-    "title": "Uputstvo za korišćenje",
+    "title": "Uputstvo za korištenje",
     "subtitle": "ShiftForge — upravljanje smjenama i rasporedima",
     "badgeAdmin": "Samo za admina",
     "badgeWorker": "Za radnike",

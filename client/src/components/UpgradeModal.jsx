@@ -1,11 +1,11 @@
-﻿import React from 'react'
+import React from 'react'
 import { Modal } from './UI'
 
 export default function UpgradeModal({ isOpen, errorCode, organizationId, onClose }) {
   const plans = [
     { id: 'basic', name: 'Basic', price: 'EUR 19.99', priceId: import.meta.env.VITE_PADDLE_BASIC_PRICE_ID },
-    { id: 'premium', name: 'Premium', price: 'EUR 39.99', priceId: import.meta.env.VITE_PADDLE_PREMIUM_PRICE_ID },
-    { id: 'business', name: 'Business', price: 'EUR 79.99', priceId: import.meta.env.VITE_PADDLE_BUSINESS_PRICE_ID }
+    { id: 'premium', name: 'Premium', price: 'EUR 49.99', priceId: import.meta.env.VITE_PADDLE_PREMIUM_PRICE_ID },
+    { id: 'business', name: 'Business', price: 'EUR 99.99', priceId: import.meta.env.VITE_PADDLE_BUSINESS_PRICE_ID }
   ]
 
   const getTitle = () => {
