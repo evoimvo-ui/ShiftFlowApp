@@ -36,7 +36,6 @@
     "newCompany": "Nova Firma",
     "joinWorker": "Pridruži se (Radnik)",
     "companyName": "Naziv firme / organizacije",
-    "companyNameWorker": "Naziv firme kojoj se pridružujete",
     "companyNamePlaceholder": "Moja Firma d.o.o.",
     "companyNameHint": "Mora biti identičan nazivu koji je administrator registrovao",
     "username": "Korisničko ime",
@@ -64,7 +63,7 @@
     "resendSuccess": "Novi kod je poslat na vaš email.",
     "resendError": "Greška pri slanju koda.",
     "serverUnavailable": "Server nije dostupan. Koristite Demo Verziju ispod.",
-    "copyright": "© 2026 ei-apps. All rights reserved.",
+    "copyright": "© 2026 ei-apps. Sva prava zadržana.",
     "privacyPolicy": "Politika privatnosti",
     "tos": "Uslovi korištenja",
     "dpa": "DPA",
@@ -210,7 +209,7 @@
     "rotationStart": "Početak ciklusa rotacije",
     "rotationStartHint": "Odaberite bilo koji ponedjeljak od kojeg želite da radniku počne ciklus rotacije.",
     "securityZoneDescription": "Uklonite korisnički nalog ako je pogrešno kreiran.",
-    "deleteUserConfirm": "Obrisati korisnički nalog za \"{{username}}\"? Radnik će ostati u sistemu, ali se više neće moći prijaviti.",
+    "deleteUserConfirm": "Obrisati korisnički nalog za "{{username}}"? Radnik će ostati u sistemu, ali se više neće moći prijaviti.",
     "deleteUserSuccess": "Korisnički nalog uspešno obrisan.",
     "deleteUserError": "Greška pri brisanju naloga: {{error}}",
     "addWorker": "Dodaj radnika",
@@ -243,7 +242,7 @@
     "saveError": "Greška pri spašavanju radnika: {{error}}",
     "deleteError": "Greška pri brisanju radnika: {{error}}",
     "deleteConfirm": "Obrisati radnika?",
-    "deleteAccountConfirm": "Obrisati korisnički nalog za \"{{username}}\"? Radnik će ostati u sistemu, ali se više neće moći prijaviti.",
+    "deleteAccountConfirm": "Obrisati korisnički nalog za "{{username}}"? Radnik će ostati u sistemu, ali se više neće moći prijaviti.",
     "accountDeleted": "Korisnički nalog uspešno obrisan.",
     "deleteAccountError": "Greška pri brisanju naloga: {{error}}",
     "noCategory": "Bez kategorije",
@@ -307,7 +306,7 @@
     "myTitle": "Moje Odsutnosti",
     "description": "{{count}} radnika je trenutno na odsustvu",
     "myDescription": "Pregled vaših odsustava i podnošenje zahtjeva",
-    "subtitleAdmin": "{{count}} radnika trenutno na odsustvu",
+    "subtitleAdmin": "{{count}} radnika je trenutno na odsustvu",
     "subtitleWorker": "Pregled vaših odsustava i podnošenje zahtjeva",
     "newAbsence": "Nova odsutnost",
     "requestAbsence": "Zatraži odsutnost",
@@ -519,22 +518,6 @@
     "short": ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"],
     "full": ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"]
   },
-  "months": {
-    "full": ["Januar", "Februar", "Mart", "April", "Maj", "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar"]
-  },
-  "shifts": {
-    "morning": "Jutarnja",
-    "afternoon": "Popodnevna",
-    "night": "Noćna"
-  },
-  "absenceTypes": {
-      "label": "Tip odsutnosti",
-      "sick": "Bolovanje",
-      "vacation": "Godišnji odmor",
-      "business": "Službeni put",
-      "other": "Ostalo"
-    }
-  },
   "userManual": {
     "title": "Korisnički priručnik",
     "tabs": {
@@ -551,13 +534,13 @@
       "step1": {
         "title": "Demo način (bez registracije)",
         "desc": "Brzo istražite aplikaciju sa unaprijed popunjenim testnim podacima.",
-        "content1": "Na stranici za prijavu kliknite \"Demo verzija\" za pristup aplikaciji sa pripremljenim testnim podacima bez registracije.",
+        "content1": "Na stranici za prijavu kliknite "Demo verzija" za pristup aplikaciji sa pripremljenim testnim podacima bez registracije.",
         "info1": "Koriste se testni podaci; registracija nije potrebna."
       },
       "step2": {
         "title": "Prava prijava/registracija",
         "desc": "Za punu funkcionalnost, kreirajte organizaciju (admin) ili se pridružite kao radnik.",
-        "content1": "Za registraciju kao admin, kliknite \"Nova firma\", unesite naziv firme, korisničko ime i lozinku. Za pridruživanje kao radnik, kliknite \"Pridruži se (Radnik)\", unesite tačan naziv firme (kao što je registrovao admin), korisničko ime i lozinku. Privremenu lozinku ćete dobiti od vašeg admina.",
+        "content1": "Za registraciju kao admin, kliknite "Nova firma", unesite naziv firme, korisničko ime i lozinku. Za pridruživanje kao radnik, kliknite "Pridruži se (Radnik)", unesite tačan naziv firme (kao što je registrovao admin), korisničko ime i lozinku. Privremenu lozinku ćete dobiti od vašeg admina.",
         "warning1": "Za radnike: Nakon prve prijave sa privremenom lozinkom koju vam je dao admin, bićete zatraženi da je promijenite iz sigurnosnih razloga."
       }
     },
@@ -573,5 +556,42 @@
       "title": "Kreiranje i upravljanje rasporedima",
       "intro": "Saznajte kako generisati rasporede, upravljati smjenama i obrađivati odsustva."
     }
+  },
+  "months": {
+    "full": ["Januar", "Februar", "Mart", "April", "Maj", "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar"]
+  },
+  "shifts": {
+    "morning": "Jutarnja",
+    "afternoon": "Popodnevna",
+    "night": "Noćna"
+  },
+  "absenceTypes": {
+    "label": "Tip odsutnosti",
+    "sick": "Bolovanje",
+    "vacation": "Godišnji odmor",
+    "business": "Službeni put",
+    "other": "Ostalo"
+  },
+  "consentModal": {
+    "title": "Prihvatite Uslove Korištenja",
+    "subtitle": "Molimo pročitajte i prihvatite sljedeće uslove da biste nastavili.",
+    "required": "Obavezno",
+    "termsOfService": "Uslovi Korištenja",
+    "privacyPolicy": "Politika Privatnosti",
+    "dataProcessing": "Obrada podataka",
+    "refundPolicy": "Politika povrata novca",
+    "accept": "Prihvati i nastavi"
+  },
+  "upgradeModal": {
+    "title": "Nadogradnja Plana",
+    "description": "Odaberite plan koji odgovara vašim potrebama.",
+    "basic": "Basic",
+    "premium": "Premium",
+    "business": "Business",
+    "upgradeNow": "Nadogradi sada",
+    "subscribed": "Pretplaćeno",
+    "cancel": "Otkaži",
+    "processing": "Obrađuje se...",
+    "error": "Došlo je do greške prilikom obrade plaćanja. Pokušajte ponovo."
   }
 }
