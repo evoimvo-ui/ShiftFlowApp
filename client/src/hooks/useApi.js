@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { workerApi, categoryApi, absenceApi, scheduleApi, settingApi, healthApi, groupApi, holidayApi } from '../api';
+import { uid } from '../utils/helpers';
+import { MOCK_GROUPS } from '../utils/mockData';
 
 export default function useApi(user) {
   const { t } = useTranslation();
@@ -14,6 +16,34 @@ export default function useApi(user) {
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Wrapper za groupApi da koristi mock u demo modu
+  const wrappedGroupApi = {
+    getAll: (...args) => {
+      if (user?.isDemo) {
+        return Promise.resolve({ data: MOCK_GROUPS });
+      }
+      return groupApi.getAll(...args);
+    },
+    create: (...args) => {
+      if (user?.isDemo) {
+        return Promise.resolve({ data: { _id: uid(), id: uid(), ...args[0] } });
+      }
+      return groupApi.create(...args);
+    },
+    update: (...args) => {
+      if (user?.isDemo) {
+        return Promise.resolve({ data: { _id: args[0], id: args[0], ...args[1] } });
+      }
+      return groupApi.update(...args);
+    },
+    delete: (...args) => {
+      if (user?.isDemo) {
+        return Promise.resolve({ data: { success: true } });
+      }
+      return groupApi.delete(...args);
+    },
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -36,7 +66,7 @@ export default function useApi(user) {
         scheduleApi.getAll({ retry: 1 }),
         settingApi.get({ retry: 1 }),
         settingApi.getShifts({ retry: 1 }),
-        groupApi.getAll({ retry: 1 }),
+        wrappedGroupApi.getAll({ retry: 1 }),
         holidayApi.getAll({ retry: 1 }),
       ]);
 
@@ -94,6 +124,7 @@ export default function useApi(user) {
     loading,
     error,
     fetchData,
-    refresh: fetchData
+    refresh: fetchData,
+    groupApi: wrappedGroupApi
   };
 }
