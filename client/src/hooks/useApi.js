@@ -20,6 +20,7 @@ export default function useApi(user) {
   // Wrapper za groupApi da koristi mock u demo modu
   const wrappedGroupApi = {
     getAll: (...args) => {
+      console.log('groupApi mock:', MOCK_GROUPS);
       if (user?.isDemo) {
         return Promise.resolve({ data: MOCK_GROUPS });
       }
@@ -82,6 +83,7 @@ export default function useApi(user) {
       if (results[5].status === 'fulfilled') { setShiftTypes(results[5].value.data.map(mapId)); anySuccess = true; }
       if (results[6].status === 'fulfilled') { 
         console.log('Groups data:', results[6].value.data);
+        console.log('Groups data after mapId:', results[6].value.data.map(mapId));
         setGroups(results[6].value.data.map(mapId)); 
         anySuccess = true; 
       }
