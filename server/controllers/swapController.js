@@ -31,14 +31,14 @@ exports.createSwapRequest = async (req, res) => {
         type: 'swap_request',
         relatedId: swap._id,
         title: 'Zahtev za zamjenu smjene',
-        message: `${requestingWorker.name} traži da zameni smjenu sa vama.`,
+        message: requestingWorker.name + ' traži da zameni smjenu sa vama.',
         status: 'unread'
       });
       await notification.save();
       
       // Pošalji push notifikaciju
       try {
-        await sendPushToUser(swap.targetWorkerId, 'Zahtev za zamjenu smjene', `${requestingWorker.name} traži da zameni smjenu sa vama.`);
+        await sendPushToUser(swap.targetWorkerId, 'Zahtev za zamjenu smjene', requestingWorker.name + ' traži da zameni smjenu sa vama.');
       } catch (pushErr) {
         console.error('Push notification error:', pushErr);
       }
@@ -76,7 +76,7 @@ exports.processSwapRequest = async (req, res) => {
             type: 'swap_approval',
             relatedId: swap._id,
             title: 'Zahtev za zamjenu smjene za odobravanje',
-            message: `${targetWorker.name} je prihvatio/la zahtev za zamjenu smjene od ${requestingWorker.name}. Potrebna je administratorska odobrenja.',
+            message: targetWorker.name + ' je prihvatio/la zahtev za zamjenu smjene od ' + requestingWorker.name + '. Potrebna je administratorska odobrenja.',
             status: 'unread'
           });
           await notification.save();
@@ -85,7 +85,7 @@ exports.processSwapRequest = async (req, res) => {
         // Pošalji push notifikacije svim adminima
         try {
           for (const adminUser of adminUsers) {
-            await sendPushToUser(adminUser._id, 'Zahtev za zamjenu smjene za odobravanje', `${targetWorker.name} je prihvatio/la zahtev za zamjenu smjene od ${requestingWorker.name}.`);
+            await sendPushToUser(adminUser._id, 'Zahtev za zamjenu smjene za odobravanje', targetWorker.name + ' je prihvatio/la zahtev za zamjenu smjene od ' + requestingWorker.name + '.');
           }
         } catch (pushErr) {
           console.error('Push notification error:', pushErr);

@@ -137,7 +137,7 @@ exports.createAbsence = async (req, res) => {
         // Pošalji push notifikacije svim adminima
         try {
           for (const adminUser of adminUsers) {
-            await sendPushToUser(adminUser._id, 'Zahtev za odsutnost', `${worker.name} traži dozvolu za odsutnost od ${absence.startDate} do ${absence.endDate}.`);
+            await sendPushToUser(adminUser._id, 'Zahtev za odsutnost', worker.name + ' traži dozvolu za odsutnost od ' + absence.startDate + ' do ' + absence.endDate + '.');
           }
         } catch (pushErr) {
           console.error('Push notification error:', pushErr);
@@ -178,8 +178,8 @@ exports.approveAbsence = async (req, res) => {
       const statusText = status === 'approved' ? 'odobren' : 'odbijen';
       await sendPushToUser(
         updatedAbsence.workerId,
-        `Zahtev za odsutnost ${statusText}`,
-        `Vaš zahtev za odsutnost od ${updatedAbsence.startDate} do ${updatedAbsence.endDate} je ${statusText}.`
+        'Zahtev za odsutnost ' + statusText,
+        'Vaš zahtev za odsutnost od ' + updatedAbsence.startDate + ' do ' + updatedAbsence.endDate + ' je ' + statusText + '.'
       );
       
       // Kreiraj i in-app notifikaciju za radnika
@@ -187,8 +187,8 @@ exports.approveAbsence = async (req, res) => {
         recipientId: updatedAbsence.workerId,
         type: 'absence_response',
         relatedId: updatedAbsence._id,
-        title: `Zahtev za odsutnost ${statusText}`,
-        message: `Vaš zahtev za odsutnost od ${updatedAbsence.startDate} do ${updatedAbsence.endDate} je ${statusText}.`,
+        title: 'Zahtev za odsutnost ' + statusText,
+        message: 'Vaš zahtev za odsutnost od ' + updatedAbsence.startDate + ' do ' + updatedAbsence.endDate + ' je ' + statusText + '.',
         status: 'unread'
       });
       await notification.save();

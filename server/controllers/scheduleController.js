@@ -115,11 +115,11 @@ exports.generateNewSchedule = async (req, res) => {
           type: 'schedule_update',
           relatedId: schedule._id,
           title: 'Novi raspored je kreiran',
-          message: `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`,
+          message: 'Novi raspored za sedmicu počevši od ' + weekStart + ' je kreiran.',
           status: 'unread'
         });
         await notification.save();
-        await sendPushToUser(worker._id, 'Novi raspored je kreiran', `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`);
+        await sendPushToUser(worker._id, 'Novi raspored je kreiran', 'Novi raspored za sedmicu počevši od ' + weekStart + ' je kreiran.');
       }
       
       // Isto za admine
@@ -129,11 +129,11 @@ exports.generateNewSchedule = async (req, res) => {
           type: 'schedule_update',
           relatedId: schedule._id,
           title: 'Novi raspored je kreiran',
-          message: `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`,
+          message: 'Novi raspored za sedmicu počevši od ' + weekStart + ' je kreiran.',
           status: 'unread'
         });
         await notification.save();
-        await sendPushToUser(adminUser._id, 'Novi raspored je kreiran', `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`);
+        await sendPushToUser(adminUser._id, 'Novi raspored je kreiran', 'Novi raspored za sedmicu počevši od ' + weekStart + ' je kreiran.');
       }
     } catch (notifyErr) {
       console.error('Notification error:', notifyErr);
