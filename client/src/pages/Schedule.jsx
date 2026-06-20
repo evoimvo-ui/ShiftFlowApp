@@ -32,6 +32,8 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
   const isAdmin = user?.role === 'admin'
   const weekKey = isoDate(currentWeekStart)
   
+  console.log('SchedulePage: isAdmin:', isAdmin, 'groups:', groups)
+  
   // Pronađi raspored za trenutni tjedan I izabranu grupu
   const currentSchedule = schedules.find(s => 
     s.weekStart === weekKey && (s.groupId || null) === selectedGroupId
