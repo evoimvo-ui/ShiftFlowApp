@@ -5,6 +5,7 @@ const ShiftType = require('../models/ShiftType');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const { shiftDurationHours } = require('../utils/scheduler');
+const { sendPushToUser } = require('../utils/pushService');
 
 // Pomoćna funkcija za datume (bezbedna za vremenske zone)
 const isoDate = (date) => {
@@ -132,6 +133,15 @@ exports.createAbsence = async (req, res) => {
           });
           await notification.save();
         }
+        
+        // Pošalji push notifikacije svim adminima
+        try {
+          for (const adminUser of adminUsers) {
+            await sendPushToUser(adminUser._id, 'Zahtev za odsutnost', `${worker.name} traži dozvolu za odsutnost od ${absence.startDate} do ${absence.endDate}.`);
+          }
+        } catch (pushErr) {
+          console.error('Push notification error:', pushErr);
+        }
       }
     }
     
@@ -160,6 +170,30 @@ exports.approveAbsence = async (req, res) => {
     // Ako je odsutnost odobrena, ažuriraj rasporede (ukloni radnika iz smjena u tom periodu)
     if (status === 'approved' && oldStatus !== 'approved') {
       await removeWorkerFromSchedules(updatedAbsence.workerId, updatedAbsence.startDate, updatedAbsence.endDate, req.user.organizationId);
+    }
+    
+    // Pošalji push notifikaciju radniku
+    try {
+      const worker = await Worker.findById(updatedAbsence.workerId);
+      const statusText = status === 'approved' ? 'odobren' : 'odbijen';
+      await sendPushToUser(
+        updatedAbsence.workerId,
+        `Zahtev za odsutnost ${statusText}`,
+        `Vaš zahtev za odsutnost od ${updatedAbsence.startDate} do ${updatedAbsence.endDate} je ${statusText}.`
+      );
+      
+      // Kreiraj i in-app notifikaciju za radnika
+      const notification = new Notification({
+        recipientId: updatedAbsence.workerId,
+        type: 'absence_response',
+        relatedId: updatedAbsence._id,
+        title: `Zahtev za odsutnost ${statusText}`,
+        message: `Vaš zahtev za odsutnost od ${updatedAbsence.startDate} do ${updatedAbsence.endDate} je ${statusText}.`,
+        status: 'unread'
+      });
+      await notification.save();
+    } catch (pushErr) {
+      console.error('Push notification error:', pushErr);
     }
     
     res.json(updatedAbsence);

@@ -4,7 +4,7 @@ const notificationSchema = new mongoose.Schema({
   recipientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Worker', required: true },
   type: { 
     type: String, 
-    enum: ['swap_request', 'swap_response', 'swap_approval', 'absence_request', 'absence_response'], 
+    enum: ['swap_request', 'swap_response', 'swap_approval', 'absence_request', 'absence_response', 'schedule_update'], 
     required: true 
   },
   relatedId: { type: mongoose.Schema.Types.ObjectId, required: true }, // SwapRequest ili Absence ID

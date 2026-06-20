@@ -480,4 +480,9 @@ export const notificationApi = {
   processNotification: (id, action) => api.post(`/notifications/${id}/process`, { action }),
 };
 
+export const pushApi = {
+  subscribe: (subscription) => api.post('/push/subscribe', subscription),
+  unsubscribe: (data) => api.post('/push/unsubscribe', data),
+};
+
 export default api;

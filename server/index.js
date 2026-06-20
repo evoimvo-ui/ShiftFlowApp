@@ -53,6 +53,7 @@ const holidayRoutes = require('./routes/holidayRoutes');
 const swapRoutes = require('./routes/swapRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const pushRoutes = require('./routes/push');
 const auth = require('./middleware/auth');
 const checkSubscription = require('./middleware/checkSubscription');
 
@@ -67,6 +68,7 @@ app.use('/api/holidays', auth, checkSubscription, holidayRoutes);
 app.use('/api/swaps', auth, checkSubscription, swapRoutes);
 app.use('/api/audit', auth, checkSubscription, auditRoutes);
 app.use('/api/notifications', auth, checkSubscription, notificationRoutes);
+app.use('/api/push', auth, checkSubscription, pushRoutes);
 
 // Posluživanje statičkih datoteka u produkciji
 if (process.env.NODE_ENV === 'production') {

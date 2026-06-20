@@ -2,6 +2,7 @@ const SwapRequest = require('../models/SwapRequest');
 const Schedule = require('../models/Schedule');
 const Notification = require('../models/Notification');
 const Worker = require('../models/Worker');
+const { sendPushToUser } = require('../utils/pushService');
 
 exports.getSwapRequests = async (req, res) => {
   try {
@@ -34,6 +35,13 @@ exports.createSwapRequest = async (req, res) => {
         status: 'unread'
       });
       await notification.save();
+      
+      // Pošalji push notifikaciju
+      try {
+        await sendPushToUser(swap.targetWorkerId, 'Zahtev za zamjenu smjene', `${requestingWorker.name} traži da zameni smjenu sa vama.`);
+      } catch (pushErr) {
+        console.error('Push notification error:', pushErr);
+      }
     }
     
     res.status(201).json(swap);
@@ -68,10 +76,19 @@ exports.processSwapRequest = async (req, res) => {
             type: 'swap_approval',
             relatedId: swap._id,
             title: 'Zahtev za zamjenu smjene za odobravanje',
-            message: `${targetWorker.name} je prihvatio/la zahtev za zamjenu smjene od ${requestingWorker.name}. Potrebna je administratorska odobrenja.`,
+            message: `${targetWorker.name} je prihvatio/la zahtev za zamjenu smjene od ${requestingWorker.name}. Potrebna je administratorska odobrenja.',
             status: 'unread'
           });
           await notification.save();
+        }
+        
+        // Pošalji push notifikacije svim adminima
+        try {
+          for (const adminUser of adminUsers) {
+            await sendPushToUser(adminUser._id, 'Zahtev za zamjenu smjene za odobravanje', `${targetWorker.name} je prihvatio/la zahtev za zamjenu smjene od ${requestingWorker.name}.`);
+          }
+        } catch (pushErr) {
+          console.error('Push notification error:', pushErr);
         }
       }
     }
@@ -89,6 +106,74 @@ exports.processSwapRequest = async (req, res) => {
           a2.workerId = tempWorker;
           await schedule.save();
         }
+      }
+      
+      // Pošalji notifikacije radnicima da je zamjena odobrena
+      try {
+        const reqWorker = await Worker.findById(swap.requestingWorkerId);
+        const tgtWorker = await Worker.findById(swap.targetWorkerId);
+        
+        if (reqWorker) {
+          const notificationReq = new Notification({
+            recipientId: swap.requestingWorkerId,
+            type: 'swap_response',
+            relatedId: swap._id,
+            title: 'Zamjena smjene odobrena',
+            message: 'Vaša zamjena smjene je odobrena.',
+            status: 'unread'
+          });
+          await notificationReq.save();
+          await sendPushToUser(swap.requestingWorkerId, 'Zamjena smjene odobrena', 'Vaša zamjena smjene je odobrena.');
+        }
+        
+        if (tgtWorker) {
+          const notificationTgt = new Notification({
+            recipientId: swap.targetWorkerId,
+            type: 'swap_response',
+            relatedId: swap._id,
+            title: 'Zamjena smjene odobrena',
+            message: 'Vaša zamjena smjene je odobrena.',
+            status: 'unread'
+          });
+          await notificationTgt.save();
+          await sendPushToUser(swap.targetWorkerId, 'Zamjena smjene odobrena', 'Vaša zamjena smjene je odobrena.');
+        }
+      } catch (pushErr) {
+        console.error('Push notification error:', pushErr);
+      }
+    } else if (status === 'rejected') {
+      // Pošalji notifikacije radnicima da je zamjena odbijena
+      try {
+        const reqWorker = await Worker.findById(swap.requestingWorkerId);
+        const tgtWorker = await Worker.findById(swap.targetWorkerId);
+        
+        if (reqWorker) {
+          const notificationReq = new Notification({
+            recipientId: swap.requestingWorkerId,
+            type: 'swap_response',
+            relatedId: swap._id,
+            title: 'Zamjena smjene odbijena',
+            message: 'Vaša zamjena smjene je odbijena.',
+            status: 'unread'
+          });
+          await notificationReq.save();
+          await sendPushToUser(swap.requestingWorkerId, 'Zamjena smjene odbijena', 'Vaša zamjena smjene je odbijena.');
+        }
+        
+        if (tgtWorker) {
+          const notificationTgt = new Notification({
+            recipientId: swap.targetWorkerId,
+            type: 'swap_response',
+            relatedId: swap._id,
+            title: 'Zamjena smjene odbijena',
+            message: 'Zamjena smjene je odbijena.',
+            status: 'unread'
+          });
+          await notificationTgt.save();
+          await sendPushToUser(swap.targetWorkerId, 'Zamjena smjene odbijena', 'Zamjena smjene je odbijena.');
+        }
+      } catch (pushErr) {
+        console.error('Push notification error:', pushErr);
       }
     }
 

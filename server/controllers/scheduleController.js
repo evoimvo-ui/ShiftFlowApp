@@ -8,6 +8,9 @@ const AuditLog = require('../models/AuditLog');
 const Organization = require('../models/Organization');
 const PLAN_FEATURES = require('../config/planFeatures');
 const { generateSchedule, isWorkerAbsent, isoDate, addDays } = require('../utils/scheduler');
+const Notification = require('../models/Notification');
+const { sendPushToUser } = require('../utils/pushService');
+const User = require('../models/User');
 
 exports.getSchedules = async (req, res) => {
   try {
@@ -98,6 +101,42 @@ exports.generateNewSchedule = async (req, res) => {
       await session.commitTransaction();
     } else {
       await schedule.save();
+    }
+
+    // Kreiraj notifikacije za sve radnike i push notifikacije
+    try {
+      const allWorkers = await Worker.find({ organizationId });
+      const adminUsers = await User.find({ role: 'admin', organizationId });
+      
+      // In-app i push za sve radnike
+      for (const worker of allWorkers) {
+        const notification = new Notification({
+          recipientId: worker._id,
+          type: 'schedule_update',
+          relatedId: schedule._id,
+          title: 'Novi raspored je kreiran',
+          message: `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`,
+          status: 'unread'
+        });
+        await notification.save();
+        await sendPushToUser(worker._id, 'Novi raspored je kreiran', `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`);
+      }
+      
+      // Isto za admine
+      for (const adminUser of adminUsers) {
+        const notification = new Notification({
+          recipientId: adminUser._id,
+          type: 'schedule_update',
+          relatedId: schedule._id,
+          title: 'Novi raspored je kreiran',
+          message: `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`,
+          status: 'unread'
+        });
+        await notification.save();
+        await sendPushToUser(adminUser._id, 'Novi raspored je kreiran', `Novi raspored za sedmicu počevši od ${weekStart} je kreiran.`);
+      }
+    } catch (notifyErr) {
+      console.error('Notification error:', notifyErr);
     }
 
     res.status(201).json(schedule);
@@ -249,6 +288,39 @@ exports.manualUpdate = async (req, res) => {
     });
     await log.save();
 
+    // Pošalji notifikacije za promjene u rasporedu
+    try {
+      if (oldWorkerId && oldWorkerId !== newWorkerId) {
+        // Obavjesti starog radnika da je uklonjen
+        const notificationOld = new Notification({
+          recipientId: oldWorkerId,
+          type: 'schedule_update',
+          relatedId: scheduleId,
+          title: 'Promjena u rasporedu',
+          message: 'Uklonjeni ste iz smjene.',
+          status: 'unread'
+        });
+        await notificationOld.save();
+        await sendPushToUser(oldWorkerId, 'Promjena u rasporedu', 'Uklonjeni ste iz smjene.');
+      }
+      
+      if (newWorkerId && oldWorkerId !== newWorkerId) {
+        // Obavjesti novog radnika da je dodijeljen
+        const notificationNew = new Notification({
+          recipientId: newWorkerId,
+          type: 'schedule_update',
+          relatedId: scheduleId,
+          title: 'Nova smjena dodijeljena',
+          message: 'Dodijeljena vam je nova smjena.',
+          status: 'unread'
+        });
+        await notificationNew.save();
+        await sendPushToUser(newWorkerId, 'Nova smjena dodijeljena', 'Dodijeljena vam je nova smjena.');
+      }
+    } catch (notifyErr) {
+      console.error('Notification error:', notifyErr);
+    }
+
     res.json(schedule);
   } catch (err) {
     console.error('ManualUpdate Error:', err);
@@ -310,6 +382,24 @@ exports.deleteAssignment = async (req, res) => {
       reason: 'Ručno brisanje smjene'
     });
     await log.save();
+
+    // Pošalji notifikaciju radniku da je uklonjen
+    try {
+      if (workerId) {
+        const notification = new Notification({
+          recipientId: workerId,
+          type: 'schedule_update',
+          relatedId: scheduleId,
+          title: 'Uklonjena smjena',
+          message: 'Uklonjena vam je smjena iz rasporeda.',
+          status: 'unread'
+        });
+        await notification.save();
+        await sendPushToUser(workerId, 'Uklonjena smjena', 'Uklonjena vam je smjena iz rasporeda.');
+      }
+    } catch (notifyErr) {
+      console.error('Notification error:', notifyErr);
+    }
 
     res.json(schedule);
   } catch (err) {

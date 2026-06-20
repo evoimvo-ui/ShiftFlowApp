@@ -1,12 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { X, CheckCircle, XCircle, Calendar, ArrowRightLeft, User } from 'lucide-react'
+import { X, CheckCircle, XCircle, Calendar, ArrowRightLeft, User, Bell } from 'lucide-react'
 import { Modal, Btn } from './UI'
 import { notificationApi } from '../api'
+import { usePushNotifications } from '../hooks/usePushNotifications'
 
 export default function NotificationModal({ open, onClose, notification, workers }) {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
+  const { permissionStatus, requestPermission, unsubscribe } = usePushNotifications()
+  const [bannerDismissed, setBannerDismissed] = useState(false)
+
+  // Provjeri je li banner već prikazan
+  useEffect(() => {
+    if (open && !bannerDismissed) {
+      // Prikazujemo banner samo kada je prvi put otvoren i permission je default
+      setBannerDismissed(false)
+    }
+  }, [open, bannerDismissed])
+
+  const handleEnablePush = async () => {
+    try {
+      await requestPermission()
+      setBannerDismissed(true)
+    } catch (err) {
+      console.error('Error enabling push:', err)
+    }
+  }
 
   if (!open || !notification) return null
 
@@ -144,6 +164,27 @@ export default function NotificationModal({ open, onClose, notification, workers
 
   return (
     <Modal open={open} onClose={onClose} title={t('notifications.title')} width={500}>
+      {permissionStatus === 'default' && !bannerDismissed && (
+        <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center gap-3">
+          <Bell size={18} className="text-blue-400 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm text-[--text-secondary]">Omogućite push notifikacije da budete obavješteni čak i kada niste u aplikaciji.</p>
+          </div>
+          <Btn variant="primary" size="sm" onClick={handleEnablePush}>
+            Omogući
+          </Btn>
+        </div>
+      )}
+
+      {permissionStatus === 'denied' && (
+        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3">
+          <Bell size={18} className="text-red-400 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm text-[--text-secondary]">Push notifikacije su blokirane. Omogućite ih u postavkama browsera.</p>
+          </div>
+        </div>
+      )}
+      
       {renderContent()}
     </Modal>
   )
