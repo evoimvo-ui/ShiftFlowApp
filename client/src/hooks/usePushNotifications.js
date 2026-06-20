@@ -8,8 +8,24 @@ export function usePushNotifications() {
 
   // Provjeri inicijalni status
   useEffect(() => {
-    if ('Notification' in window) {
-      setPermissionStatus(Notification.permission);
+    if (!('Notification' in window)) return;
+
+    setPermissionStatus(Notification.permission);
+
+    if (Notification.permission === 'granted') {
+      // Automatski registriraj subscription
+      registerServiceWorker().then(registration => {
+        registration.pushManager.getSubscription().then(existingSubscription => {
+          if (existingSubscription) {
+            // Već postoji, samo pošalji na backend u slučaju da nije sačuvan
+            pushApi.subscribe(existingSubscription).catch(console.error);
+            setIsSubscribed(true);
+          } else {
+            // Nema subscription, kreiraj novi
+            requestPermission().catch(console.error);
+          }
+        });
+      }).catch(console.error);
     }
   }, []);
 
