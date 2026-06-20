@@ -34,6 +34,15 @@ export default function App() {
     }
   })
 
+  // Set document title dynamically
+  useEffect(() => {
+    if (user?.organizationName) {
+      document.title = `${user.organizationName} — ShiftForge`
+    } else {
+      document.title = 'ShiftForge — Shift & Schedule Management'
+    }
+  }, [user])
+
   // Upgrade Modal state
   const [upgradeModal, setUpgradeModal] = useState({
     isOpen: false,

@@ -45,11 +45,11 @@ let demoState = {
   workers: [...MOCK_WORKERS],
   categories: [...MOCK_CATEGORIES],
   absences: [...MOCK_ABSENCES],
-  schedules: [...MOCK_SCHEDULES],
+  schedules: [...MOCK_SCHEDULES()],
   settings: { ...MOCK_SETTINGS },
   shifts: [...MOCK_SHIFTS],
   groups: [...MOCK_GROUPS],
-  swaps: [...MOCK_SWAPS],
+  swaps: [...MOCK_SWAPS()],
   audit: [...MOCK_AUDIT],
   holidays: [...MOCK_HOLIDAYS]
 };

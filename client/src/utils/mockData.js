@@ -42,108 +42,112 @@ export const MOCK_ABSENCES = [
   { _id: 'a4', id: 'a4', workerId: 'w9', type: 'maternity', startDate: isoDate(addDays(today, 10)), endDate: isoDate(addDays(today, 180)), note: 'Porodiljsko odsustvo', status: 'approved' },
 ];
 
-export const MOCK_SCHEDULES = [
-  {
-    _id: 's1',
-    id: 's1',
-    weekStart: weekStart,
-    groupId: null,
-    assignments: [
-      // Dan 0 (ponedjeljak)
-      { id: uid(), workerId: 'w1', categoryId: 'c1', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w5', categoryId: 'c1', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w2', categoryId: 'c2', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w8', categoryId: 'c2', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w6', categoryId: 'c4', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w10', categoryId: 'c4', shiftId: 'morning', dayOffset: 0 },
-      { id: uid(), workerId: 'w9', categoryId: 'c5', shiftId: 'morning', dayOffset: 0 },
-      
-      { id: uid(), workerId: 'w2', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 0 },
-      { id: uid(), workerId: 'w5', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 0 },
-      { id: uid(), workerId: 'w3', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 0 },
-      { id: uid(), workerId: 'w8', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 0 },
-      { id: uid(), workerId: 'w7', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 0 },
-      { id: uid(), workerId: 'w12', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 0 },
-      { id: uid(), workerId: 'w14', categoryId: 'c5', shiftId: 'afternoon', dayOffset: 0 },
-      
-      { id: uid(), workerId: 'w1', categoryId: 'c1', shiftId: 'night', dayOffset: 0 },
-      { id: uid(), workerId: 'w3', categoryId: 'c2', shiftId: 'night', dayOffset: 0 },
-      { id: uid(), workerId: 'w6', categoryId: 'c4', shiftId: 'night', dayOffset: 0 },
-      { id: uid(), workerId: 'w9', categoryId: 'c5', shiftId: 'night', dayOffset: 0 },
-      
-      // Dan 1 (utorak)
-      { id: uid(), workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 1 },
-      { id: uid(), workerId: 'w5', categoryId: 'c1', shiftId: 'morning', dayOffset: 1 },
-      { id: uid(), workerId: 'w2', categoryId: 'c2', shiftId: 'morning', dayOffset: 1 },
-      { id: uid(), workerId: 'w7', categoryId: 'c4', shiftId: 'morning', dayOffset: 1 },
-      { id: uid(), workerId: 'w4', categoryId: 'c3', shiftId: 'morning', dayOffset: 1 },
-      
-      { id: uid(), workerId: 'w1', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 1 },
-      { id: uid(), workerId: 'w10', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 1 },
-      { id: uid(), workerId: 'w8', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 1 },
-      { id: uid(), workerId: 'w12', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 1 },
-      { id: uid(), workerId: 'w11', categoryId: 'c3', shiftId: 'afternoon', dayOffset: 1 },
-      
-      { id: uid(), workerId: 'w13', categoryId: 'c1', shiftId: 'night', dayOffset: 1 },
-      { id: uid(), workerId: 'w3', categoryId: 'c2', shiftId: 'night', dayOffset: 1 },
-      { id: uid(), workerId: 'w15', categoryId: 'c4', shiftId: 'night', dayOffset: 1 },
-      { id: uid(), workerId: 'w14', categoryId: 'c5', shiftId: 'night', dayOffset: 1 },
-      
-      // Dan 2 (srijeda)
-      { id: uid(), workerId: 'w1', categoryId: 'c1', shiftId: 'morning', dayOffset: 2 },
-      { id: uid(), workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 2 },
-      { id: uid(), workerId: 'w8', categoryId: 'c2', shiftId: 'morning', dayOffset: 2 },
-      { id: uid(), workerId: 'w6', categoryId: 'c4', shiftId: 'morning', dayOffset: 2 },
-      { id: uid(), workerId: 'w9', categoryId: 'c5', shiftId: 'morning', dayOffset: 2 },
-      
-      { id: uid(), workerId: 'w5', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 2 },
-      { id: uid(), workerId: 'w2', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 2 },
-      { id: uid(), workerId: 'w12', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 2 },
-      { id: uid(), workerId: 'w7', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 2 },
-      { id: uid(), workerId: 'w4', categoryId: 'c3', shiftId: 'afternoon', dayOffset: 2 },
-      
-      { id: uid(), workerId: 'w3', categoryId: 'c2', shiftId: 'night', dayOffset: 2 },
-      { id: uid(), workerId: 'w10', categoryId: 'c4', shiftId: 'night', dayOffset: 2 },
-      { id: uid(), workerId: 'w15', categoryId: 'c4', shiftId: 'night', dayOffset: 2 },
-      
-      // Dan 3 (četvrtak)
-      { id: uid(), workerId: 'w5', categoryId: 'c1', shiftId: 'morning', dayOffset: 3 },
-      { id: uid(), workerId: 'w2', categoryId: 'c1', shiftId: 'morning', dayOffset: 3 },
-      { id: uid(), workerId: 'w3', categoryId: 'c2', shiftId: 'morning', dayOffset: 3 },
-      { id: uid(), workerId: 'w10', categoryId: 'c4', shiftId: 'morning', dayOffset: 3 },
-      { id: uid(), workerId: 'w11', categoryId: 'c3', shiftId: 'morning', dayOffset: 3 },
-      
-      { id: uid(), workerId: 'w1', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 3 },
-      { id: uid(), workerId: 'w13', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 3 },
-      { id: uid(), workerId: 'w8', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 3 },
-      { id: uid(), workerId: 'w15', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 3 },
-      { id: uid(), workerId: 'w14', categoryId: 'c5', shiftId: 'afternoon', dayOffset: 3 },
-      
-      { id: uid(), workerId: 'w6', categoryId: 'c4', shiftId: 'night', dayOffset: 3 },
-      { id: uid(), workerId: 'w7', categoryId: 'c4', shiftId: 'night', dayOffset: 3 },
-      { id: uid(), workerId: 'w9', categoryId: 'c5', shiftId: 'night', dayOffset: 3 },
-      
-      // Dan 4 (petak)
-      { id: uid(), workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 4 },
-      { id: uid(), workerId: 'w1', categoryId: 'c1', shiftId: 'morning', dayOffset: 4 },
-      { id: uid(), workerId: 'w8', categoryId: 'c2', shiftId: 'morning', dayOffset: 4 },
-      { id: uid(), workerId: 'w7', categoryId: 'c4', shiftId: 'morning', dayOffset: 4 },
-      { id: uid(), workerId: 'w4', categoryId: 'c3', shiftId: 'morning', dayOffset: 4 },
-      
-      { id: uid(), workerId: 'w5', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 4 },
-      { id: uid(), workerId: 'w2', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 4 },
-      { id: uid(), workerId: 'w3', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 4 },
-      { id: uid(), workerId: 'w10', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 4 },
-      { id: uid(), workerId: 'w11', categoryId: 'c3', shiftId: 'afternoon', dayOffset: 4 },
-      
-      { id: uid(), workerId: 'w12', categoryId: 'c4', shiftId: 'night', dayOffset: 4 },
-      { id: uid(), workerId: 'w15', categoryId: 'c4', shiftId: 'night', dayOffset: 4 },
-      { id: uid(), workerId: 'w14', categoryId: 'c5', shiftId: 'night', dayOffset: 4 },
-    ],
-    workerHours: { w1: 32, w2: 32, w3: 24, w4: 16, w5: 32, w6: 16, w7: 24, w8: 32, w9: 24, w10: 24, w11: 16, w12: 24, w13: 32, w14: 24, w15: 24 }
-  }
-];
+export const MOCK_SCHEDULES = function() {
+  const today = new Date();
+  const weekStart = isoDate(getWeekStart(today));
+  return [
+    {
+      _id: 's1',
+      id: 's1',
+      weekStart: weekStart,
+      groupId: null,
+      assignments: [
+        // Dan 0 (ponedjeljak)
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w1', categoryId: 'c1', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w5', categoryId: 'c1', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w2', categoryId: 'c2', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w8', categoryId: 'c2', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w6', categoryId: 'c4', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w10', categoryId: 'c4', shiftId: 'morning', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w9', categoryId: 'c5', shiftId: 'morning', dayOffset: 0 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w2', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w5', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w3', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w8', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w7', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w12', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w14', categoryId: 'c5', shiftId: 'afternoon', dayOffset: 0 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w1', categoryId: 'c1', shiftId: 'night', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w3', categoryId: 'c2', shiftId: 'night', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w6', categoryId: 'c4', shiftId: 'night', dayOffset: 0 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w9', categoryId: 'c5', shiftId: 'night', dayOffset: 0 }; })(),
+        
+        // Dan 1 (utorak)
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w5', categoryId: 'c1', shiftId: 'morning', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w2', categoryId: 'c2', shiftId: 'morning', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w7', categoryId: 'c4', shiftId: 'morning', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w4', categoryId: 'c3', shiftId: 'morning', dayOffset: 1 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w1', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w10', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w8', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w12', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w11', categoryId: 'c3', shiftId: 'afternoon', dayOffset: 1 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w13', categoryId: 'c1', shiftId: 'night', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w3', categoryId: 'c2', shiftId: 'night', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w15', categoryId: 'c4', shiftId: 'night', dayOffset: 1 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w14', categoryId: 'c5', shiftId: 'night', dayOffset: 1 }; })(),
+        
+        // Dan 2 (srijeda)
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w1', categoryId: 'c1', shiftId: 'morning', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w8', categoryId: 'c2', shiftId: 'morning', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w6', categoryId: 'c4', shiftId: 'morning', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w9', categoryId: 'c5', shiftId: 'morning', dayOffset: 2 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w5', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w2', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w12', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w7', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w4', categoryId: 'c3', shiftId: 'afternoon', dayOffset: 2 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w3', categoryId: 'c2', shiftId: 'night', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w10', categoryId: 'c4', shiftId: 'night', dayOffset: 2 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w15', categoryId: 'c4', shiftId: 'night', dayOffset: 2 }; })(),
+        
+        // Dan 3 (četvrtak)
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w5', categoryId: 'c1', shiftId: 'morning', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w2', categoryId: 'c1', shiftId: 'morning', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w3', categoryId: 'c2', shiftId: 'morning', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w10', categoryId: 'c4', shiftId: 'morning', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w11', categoryId: 'c3', shiftId: 'morning', dayOffset: 3 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w1', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w13', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w8', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w15', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w14', categoryId: 'c5', shiftId: 'afternoon', dayOffset: 3 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w6', categoryId: 'c4', shiftId: 'night', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w7', categoryId: 'c4', shiftId: 'night', dayOffset: 3 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w9', categoryId: 'c5', shiftId: 'night', dayOffset: 3 }; })(),
+        
+        // Dan 4 (petak)
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w13', categoryId: 'c1', shiftId: 'morning', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w1', categoryId: 'c1', shiftId: 'morning', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w8', categoryId: 'c2', shiftId: 'morning', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w7', categoryId: 'c4', shiftId: 'morning', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w4', categoryId: 'c3', shiftId: 'morning', dayOffset: 4 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w5', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w2', categoryId: 'c1', shiftId: 'afternoon', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w3', categoryId: 'c2', shiftId: 'afternoon', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w10', categoryId: 'c4', shiftId: 'afternoon', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w11', categoryId: 'c3', shiftId: 'afternoon', dayOffset: 4 }; })(),
+        
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w12', categoryId: 'c4', shiftId: 'night', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w15', categoryId: 'c4', shiftId: 'night', dayOffset: 4 }; })(),
+        (() => { const id = uid(); return { _id: id, id, workerId: 'w14', categoryId: 'c5', shiftId: 'night', dayOffset: 4 }; })(),
+      ],
+      workerHours: { w1: 32, w2: 32, w3: 24, w4: 16, w5: 32, w6: 16, w7: 24, w8: 32, w9: 24, w10: 24, w11: 16, w12: 24, w13: 32, w14: 24, w15: 24 }
+    }
+  ];
+};
 
 export const MOCK_SETTINGS = {
   _id: 'set1',
@@ -165,11 +169,14 @@ export const MOCK_SHIFTS = [
   { _id: 'night', id: 'night', name: 'Noćna', start: '22:00', end: '06:00', color: '#8b5cf6', icon: 'moon' },
 ];
 
-export const MOCK_SWAPS = [
-  { _id: uid(), id: uid(), requestingWorkerId: 'w1', targetWorkerId: 'w5', scheduleId: 's1', originalAssignmentId: MOCK_SCHEDULES[0].assignments[0].id, targetAssignmentId: MOCK_SCHEDULES[0].assignments[1].id, status: 'pending', requestedAt: isoDate(addDays(today, -1)) },
-  { _id: uid(), id: uid(), requestingWorkerId: 'w6', targetWorkerId: 'w10', scheduleId: 's1', originalAssignmentId: MOCK_SCHEDULES[0].assignments[5].id, targetAssignmentId: MOCK_SCHEDULES[0].assignments[6].id, status: 'accepted_by_worker', requestedAt: isoDate(addDays(today, -2)) },
-  { _id: uid(), id: uid(), requestingWorkerId: 'w9', targetWorkerId: 'w14', scheduleId: 's1', originalAssignmentId: MOCK_SCHEDULES[0].assignments[7].id, targetAssignmentId: MOCK_SCHEDULES[0].assignments[14].id, status: 'approved', requestedAt: isoDate(addDays(today, -3)) },
-];
+export const MOCK_SWAPS = function() {
+  const schedules = MOCK_SCHEDULES();
+  return [
+    { _id: uid(), id: uid(), requestingWorkerId: 'w1', targetWorkerId: 'w5', scheduleId: 's1', originalAssignmentId: schedules[0].assignments[0].id, targetAssignmentId: schedules[0].assignments[1].id, status: 'pending', requestedAt: isoDate(addDays(today, -1)) },
+    { _id: uid(), id: uid(), requestingWorkerId: 'w6', targetWorkerId: 'w10', scheduleId: 's1', originalAssignmentId: schedules[0].assignments[5].id, targetAssignmentId: schedules[0].assignments[6].id, status: 'accepted_by_worker', requestedAt: isoDate(addDays(today, -2)) },
+    { _id: uid(), id: uid(), requestingWorkerId: 'w9', targetWorkerId: 'w14', scheduleId: 's1', originalAssignmentId: schedules[0].assignments[7].id, targetAssignmentId: schedules[0].assignments[14].id, status: 'approved', requestedAt: isoDate(addDays(today, -3)) },
+  ];
+};
 
 export const MOCK_AUDIT = [
   { _id: uid(), id: uid(), adminId: { username: 'Admin' }, timestamp: isoDate(addDays(today, -2)), details: { oldWorkerId: 'w2', newWorkerId: 'w1', shiftId: 'morning', dayOffset: 0 }, reason: 'Bolovanje radnika' },
