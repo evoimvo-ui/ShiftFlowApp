@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { 
   LayoutDashboard, Calendar, Users, Tags, 
   UserX, Settings, ChevronLeft, ChevronRight, X,
-  Sun, Moon, BookOpen
+  Sun, Moon, BookOpen, Bell
 } from 'lucide-react'
 import { isoDate } from '../utils/helpers'
 
-const NAV = [
+const NAV_ITEMS = [
   { id: 'dashboard', label: 'sidebar.dashboard', icon: LayoutDashboard },
   { id: 'schedule', label: 'sidebar.schedule', icon: Calendar },
   { id: 'workers', label: 'sidebar.workers', icon: Users },
@@ -17,15 +17,25 @@ const NAV = [
   { id: 'manual', label: 'userManual.title', icon: BookOpen }, // Novi item
 ]
 
-export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user, theme, setTheme, onLogout }) {
+export default function Sidebar({ active, setActive, collapsed, setCollapsed, workers, absences, user, theme, setTheme, onLogout, unreadCount, setCurrentNotification, setModalOpen, notifications }) {
   const { t } = useTranslation()
   const today = isoDate(new Date())
   const activeAbsences = absences.filter(a => a.startDate <= today && a.endDate >= today).length
   
   const isAdmin = user?.role === 'admin'
   const navItems = isAdmin 
-    ? NAV 
-    : NAV.filter(item => ['dashboard', 'schedule', 'absences', 'manual'].includes(item.id)) // Dodao sam 'manual' za radnike
+    ? NAV_ITEMS 
+    : NAV_ITEMS.filter(item => ['dashboard', 'schedule', 'absences', 'manual'].includes(item.id)) // Dodao sam 'manual' za radnike
+  
+  const handleBellClick = () => {
+    if (notifications.length > 0) {
+      setCurrentNotification(notifications.find(n => n.status === 'unread') || notifications[0])
+      setModalOpen(true)
+    } else {
+      setCurrentNotification(null)
+      setModalOpen(true)
+    }
+  }
 
   return (
     <aside 
@@ -53,6 +63,22 @@ export default function Sidebar({ active, setActive, collapsed, setCollapsed, wo
             </div>
           </div>
         )}
+      </div>
+
+      {/* Bell Notifications Icon */}
+      <div className={`px-2 mt-4 ${collapsed ? 'flex justify-center' : ''}`}>
+        <button
+          onClick={handleBellClick}
+          className={`relative flex items-center gap-3 p-2.5 rounded-lg transition-all duration-200 text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-primary)] ${collapsed ? 'justify-center' : 'justify-start px-3'}`}
+        >
+          <Bell size={18} className="group-hover:text-[var(--text-primary)] transition-colors" />
+          {!collapsed && <span className="flex-1 text-left text-[14px]">{t('sidebar.notifications') || 'Notifikacije'}</span>}
+          {unreadCount > 0 && (
+            <span className={`absolute ${collapsed ? 'top-0.5 right-0.5' : 'right-2.5'} bg-rose-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center shadow-sm`}>
+              {unreadCount}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Nav */}

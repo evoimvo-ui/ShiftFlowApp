@@ -16,6 +16,7 @@ import ChangePasswordPage from './pages/ChangePassword'
 import UserManualPage from './pages/UserManual' // Dodao sam ovu liniju
 import useApi from './hooks/useApi'
 import { useNotifications } from './hooks/useNotifications'
+import { usePushNotifications } from './hooks/usePushNotifications'
 import { useTranslation } from 'react-i18next'
 import { Toaster, toast } from 'react-hot-toast'
 import { authApi, settingApi } from './api'
@@ -154,10 +155,17 @@ useEffect(() => {
   const notificationUserId = user?.role === 'admin' ? user._id : currentWorkerId
 
   const {
+    notifications,
+    unreadCount,
     currentNotification,
+    setCurrentNotification,
     modalOpen,
-    closeModal
+    setModalOpen,
+    closeModal,
+    markAsRead
   } = useNotifications(notificationUserId)
+  
+  const { permissionStatus, requestPermission } = usePushNotifications()
 
   if (!user) {
     return <LoginPage onLogin={setUser} />
@@ -229,6 +237,10 @@ useEffect(() => {
         theme={theme}
         setTheme={setTheme}
         onLogout={handleLogout}
+        unreadCount={unreadCount}
+        setCurrentNotification={setCurrentNotification}
+        setModalOpen={setModalOpen}
+        notifications={notifications}
       />
       <main className="flex-1 p-8 overflow-y-auto max-w-full pb-24 md:pb-8">
         <div className="max-w-7xl mx-auto">
@@ -278,12 +290,18 @@ useEffect(() => {
         user={user} 
         isAdmin={user?.role === 'admin'} 
         onLogout={handleLogout}
+        unreadCount={unreadCount}
+        setCurrentNotification={setCurrentNotification}
+        setModalOpen={setModalOpen}
+        notifications={notifications}
       />
       <NotificationModal 
         open={modalOpen} 
         onClose={closeModal} 
         notification={currentNotification}
         workers={workers}
+        permissionStatus={permissionStatus}
+        requestPermission={requestPermission}
       />
       <UpgradeModal
         isOpen={upgradeModal.isOpen}

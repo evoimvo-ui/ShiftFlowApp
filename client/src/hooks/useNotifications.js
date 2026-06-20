@@ -79,7 +79,9 @@ export function useNotifications(userId) {
     notifications,
     unreadCount,
     currentNotification,
+    setCurrentNotification,
     modalOpen,
+    setModalOpen,
     closeModal,
     markAsRead
   }

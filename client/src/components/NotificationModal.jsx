@@ -3,12 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { X, CheckCircle, XCircle, Calendar, ArrowRightLeft, User, Bell } from 'lucide-react'
 import { Modal, Btn } from './UI'
 import { notificationApi } from '../api'
-import { usePushNotifications } from '../hooks/usePushNotifications'
 
-export default function NotificationModal({ open, onClose, notification, workers }) {
+export default function NotificationModal({ open, onClose, notification, workers, permissionStatus, requestPermission }) {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
-  const { permissionStatus, requestPermission, unsubscribe } = usePushNotifications()
   const [bannerDismissed, setBannerDismissed] = useState(false)
 
   // Provjeri je li banner već prikazan
@@ -28,7 +26,7 @@ export default function NotificationModal({ open, onClose, notification, workers
     }
   }
 
-  if (!open || !notification) return null
+  if (!open) return null
 
   const handleAction = async (action) => {
     setLoading(true)
@@ -185,7 +183,16 @@ export default function NotificationModal({ open, onClose, notification, workers
         </div>
       )}
       
-      {renderContent()}
+      {/* If no notification, show empty state */}
+      {!notification ? (
+        <div className="py-12 text-center">
+          <Bell size={48} className="text-[var(--text-muted)] mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{t('notifications.title')}</h3>
+          <p className="text-sm text-[var(--text-secondary)]">{t('notifications.noNotifications') || 'Nema novih notifikacija.'}</p>
+        </div>
+      ) : (
+        renderContent()
+      )}
     </Modal>
   )
 }
