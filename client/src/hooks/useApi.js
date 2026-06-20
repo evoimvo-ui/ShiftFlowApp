@@ -43,13 +43,18 @@ export default function useApi(user) {
       const mapId = (item) => ({ ...item, id: item._id });
 
       let anySuccess = false;
+      console.log('All results:', results);
       if (results[0].status === 'fulfilled') { setWorkers(results[0].value.data.map(mapId)); anySuccess = true; }
       if (results[1].status === 'fulfilled') { setCategories(results[1].value.data.map(mapId)); anySuccess = true; }
       if (results[2].status === 'fulfilled') { setAbsences(results[2].value.data.map(mapId)); anySuccess = true; }
       if (results[3].status === 'fulfilled') { setSchedules(results[3].value.data.map(mapId)); anySuccess = true; }
       if (results[4].status === 'fulfilled') { setSettings(mapId(results[4].value.data)); anySuccess = true; }
       if (results[5].status === 'fulfilled') { setShiftTypes(results[5].value.data.map(mapId)); anySuccess = true; }
-      if (results[6].status === 'fulfilled') { setGroups(results[6].value.data.map(mapId)); anySuccess = true; }
+      if (results[6].status === 'fulfilled') { 
+        console.log('Groups data:', results[6].value.data);
+        setGroups(results[6].value.data.map(mapId)); 
+        anySuccess = true; 
+      }
       if (results[7].status === 'fulfilled') { setHolidays(results[7].value.data.map(mapId)); anySuccess = true; }
 
       const errors = results.filter(r => r.status === 'rejected');
