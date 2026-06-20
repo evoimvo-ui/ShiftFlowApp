@@ -532,16 +532,15 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
         {isAdmin && groups.length > 0 && (
           <div className="flex items-center gap-2 bg-[--bg-card]/50 p-2 rounded-xl border border-[--border]">
             <Users size={16} className="text-[--text-muted]" />
-            <select 
-              value={selectedGroupId || ''}
-              onChange={(e) => setSelectedGroupId(e.target.value ? e.target.value : null)}
-              className="bg-transparent border-none text-sm text-[--text-primary] focus:ring-0 outline-none"
-            >
-              <option value="">Svi radnici / Bez grupe</option>
-              {groups.map(g => (
-                <option key={g.id} value={g.id}>{g.name}</option>
-              ))}
-            </select>
+            <Input 
+              type="select" 
+              value={selectedGroupId || ''} 
+              onChange={(val) => setSelectedGroupId(val ? val : null)} 
+              options={[ 
+                { value: '', label: 'Svi radnici / Bez grupe' }, 
+                ...groups.map(g => ({ value: g.id, label: g.name })) 
+              ]} 
+            />
           </div>
         )}
       </div>
