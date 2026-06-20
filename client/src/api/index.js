@@ -58,7 +58,9 @@ let demoState = {
 const wrapApi = (apiFn, mockFn) => {
   return (...args) => {
     if (isDemoMode()) {
-      return Promise.resolve({ data: mockFn(...args) });
+      const mockResult = mockFn(...args);
+      console.log('wrapApi mock result:', mockResult);
+      return Promise.resolve({ data: mockResult });
     }
     return apiFn(...args);
   };
