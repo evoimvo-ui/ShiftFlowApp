@@ -481,8 +481,14 @@ export const notificationApi = {
 };
 
 export const pushApi = {
-  subscribe: (subscription) => api.post('/push/subscribe', subscription),
-  unsubscribe: (data) => api.post('/push/unsubscribe', data),
+  subscribe: wrapApi(
+    (subscription) => api.post('/push/subscribe', subscription),
+    () => ({ success: true, message: 'Subscription saved (demo)' })
+  ),
+  unsubscribe: wrapApi(
+    (data) => api.post('/push/unsubscribe', data),
+    () => ({ success: true, message: 'Subscription deleted (demo)' })
+  ),
 };
 
 export default api;

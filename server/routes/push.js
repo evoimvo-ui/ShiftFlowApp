@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { saveSubscription, deleteSubscription } = require('../controllers/pushController');
-const auth = require('../middleware/auth');
 
-router.post('/subscribe', auth, saveSubscription);
-router.post('/unsubscribe', auth, deleteSubscription);
+router.post('/subscribe', saveSubscription);
+router.post('/unsubscribe', deleteSubscription);
 
 module.exports = router;
