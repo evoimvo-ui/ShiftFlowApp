@@ -18,7 +18,7 @@ import {
 
 import { Toaster, toast } from 'react-hot-toast'
 
-export default function SchedulePage({ schedules, setSchedules, workers, categories, absences, shiftTypes, settings, refresh, user }) {
+export default function SchedulePage({ schedules, setSchedules, workers, categories, absences, shiftTypes, settings, refresh, user, groups }) {
   const { t, i18n } = useTranslation()
   const [currentWeekStart, setCurrentWeekStart] = useState(() => getWeekStart(new Date()))
   const [generating, setGenerating] = useState(false)
@@ -27,7 +27,6 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
   const [swapModal, setSwapModal] = useState(null)
   const [manualForm, setManualForm] = useState({ newWorkerId: '', reason: '' })
   const [swapForm, setSwapForm] = useState({ targetWorkerId: '' })
-  const [groups, setGroups] = useState([])
   const [selectedGroupId, setSelectedGroupId] = useState(null) // null = "svi / bez grupe"
 
   const isAdmin = user?.role === 'admin'
@@ -46,15 +45,6 @@ export default function SchedulePage({ schedules, setSchedules, workers, categor
   const prevWeek = () => setCurrentWeekStart(d => addDays(d, -7))
   const nextWeek = () => setCurrentWeekStart(d => addDays(d, 7))
   const goToday = () => setCurrentWeekStart(getWeekStart(new Date()))
-
-  // Učitaj grupe na početku
-  useEffect(() => {
-    if (isAdmin) {
-      groupApi.getAll().then(res => {
-        setGroups(res.data.map(g => ({ ...g, id: g._id })))
-      }).catch(err => console.error('Grupa error:', err))
-    }
-  }, [isAdmin])
 
   const generate = async () => {
     if (!isAdmin) return;

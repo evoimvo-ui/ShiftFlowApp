@@ -132,6 +132,7 @@ useEffect(() => {
     schedules, setSchedules,
     settings, setSettings,
     shiftTypes, setShiftTypes,
+    groups,
     loading, error,
     refresh 
   } = useApi(user)
@@ -197,7 +198,7 @@ useEffect(() => {
 
   const pages = {
     dashboard: <DashboardPage workers={workers} categories={categories} absences={absences} schedules={schedules} shiftTypes={shiftTypes} settings={settings} refresh={refresh} user={user} />,
-    schedule: <SchedulePage schedules={schedules} setSchedules={setSchedules} workers={workers} categories={categories} absences={absences} shiftTypes={shiftTypes} settings={settings} refresh={refresh} user={user} />,
+    schedule: <SchedulePage schedules={schedules} setSchedules={setSchedules} workers={workers} categories={categories} absences={absences} shiftTypes={shiftTypes} settings={settings} refresh={refresh} user={user} groups={groups} />,
     workers: <WorkersPage workers={workers} setWorkers={setWorkers} categories={categories} user={user} />,
     categories: <CategoriesPage categories={categories} setCategories={setCategories} shiftTypes={shiftTypes} workers={workers} user={user} />,
     absences: <AbsencesPage absences={absences} setAbsences={setAbsences} workers={workers} categories={categories} user={user} refresh={refresh} />,
