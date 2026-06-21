@@ -137,10 +137,12 @@ exports.createAbsence = async (req, res) => {
         // Pošalji push notifikacije svim adminima
         try {
           for (const adminUser of adminUsers) {
-            await sendPushToUser(adminUser._id, 'Zahtev za odsutnost', worker.name + ' traži dozvolu za odsutnost od ' + absence.startDate + ' do ' + absence.endDate + '.');
+            console.log('Sending push to admin:', adminUser._id, adminUser.username);
+            const result = await sendPushToUser(adminUser._id, 'Zahtev za odsutnost', worker.name + ' traži dozvolu za odsutnost od ' + absence.startDate + ' do ' + absence.endDate + '.');
+            console.log('Push result:', result);
           }
         } catch (pushErr) {
-          console.error('Push notification error:', pushErr);
+          console.error('Push error details:', pushErr);
         }
       }
     }
