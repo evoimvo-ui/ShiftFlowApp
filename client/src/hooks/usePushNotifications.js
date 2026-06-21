@@ -1,3 +1,4 @@
+// Push notifications hook - v2 
 import { useState, useEffect } from 'react';
 import { pushApi } from '../api';
 
