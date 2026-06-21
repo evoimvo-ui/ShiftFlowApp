@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { pushApi } from '../api';
 
-export function usePushNotifications() {
+export function usePushNotifications(user) {
   const [permissionStatus, setPermissionStatus] = useState('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -12,6 +12,7 @@ export function usePushNotifications() {
     console.log('usePushNotifications useEffect running'); 
     console.log('Notification supported:', 'Notification' in window); 
     console.log('Permission status:', 'Notification' in window ? Notification.permission : 'not supported'); 
+    if (!user) return;
     if (!('Notification' in window)) return;
 
     setPermissionStatus(Notification.permission);
@@ -31,7 +32,7 @@ export function usePushNotifications() {
         });
       }).catch(console.error);
     }
-  }, []);
+  }, [user]);
 
   // Funkcija za registraciju Service Workera i dobijanje subscriptiona
   const registerServiceWorker = async () => {

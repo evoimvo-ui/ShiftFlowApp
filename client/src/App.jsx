@@ -165,7 +165,7 @@ useEffect(() => {
     markAsRead
   } = useNotifications(notificationUserId)
   
-  const { permissionStatus, requestPermission } = usePushNotifications()
+  const { permissionStatus, requestPermission } = usePushNotifications(user)
 
   if (!user) {
     return <LoginPage onLogin={setUser} />
