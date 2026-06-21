@@ -8,7 +8,10 @@ export function usePushNotifications() {
   const [loading, setLoading] = useState(false);
 
   // Provjeri inicijalni status
-  useEffect(() => {
+  useEffect(() => { 
+    console.log('usePushNotifications useEffect running'); 
+    console.log('Notification supported:', 'Notification' in window); 
+    console.log('Permission status:', 'Notification' in window ? Notification.permission : 'not supported'); 
     if (!('Notification' in window)) return;
 
     setPermissionStatus(Notification.permission);
