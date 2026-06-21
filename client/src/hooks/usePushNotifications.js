@@ -49,52 +49,48 @@ export function usePushNotifications(user) {
   };
 
   // Funkcija za traženje dozvole i pretplatu
-  const requestPermission = async () => {
-    if (!('Notification' in window)) {
-      throw new Error('Notifications not supported');
-    }
-
-    setLoading(true);
-    try {
-      // Traži dozvolu
-      const permission = await Notification.requestPermission();
-      setPermissionStatus(permission);
-
-      if (permission !== 'granted') {
-        throw new Error('Permission denied');
-      }
-
-      // Registriraj Service Worker
-      const registration = await registerServiceWorker();
-
-      // Dohvati VAPID javni ključ od servera (ili koristi hardkodirani)
-      const vapidPublicKey = 'BF_g0ZxV0bdKAmcWXT_vemu58ZMXNadv_GfZtbAINZQf6xDxkdwI_LKD3F372PyMJWl--6o4W6ovJgExORxEqlQ';
+  const requestPermission = async () => { 
+    setLoading(true); 
+    try { 
+      let permission = Notification.permission; 
       
-      // Pomoćna funkcija za konverziju base64 u Uint8Array
-      const urlBase64ToUint8Array = (base64String) => {
-        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-        const rawData = window.atob(base64);
-        return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
-      };
-
-      // Dobij subscription
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
-      });
-
-      // Pošalji subscription na server
-      await pushApi.subscribe(subscription);
-      setIsSubscribed(true);
-
-      return { success: true };
-    } catch (err) {
-      console.error('Error requesting push permission:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+      // Samo traži dozvolu ako još nije granted 
+      if (permission === 'default') { 
+        permission = await Notification.requestPermission(); 
+      } 
+      
+      setPermissionStatus(permission); 
+      
+      if (permission !== 'granted') { 
+        throw new Error('Permission denied'); 
+      } 
+      
+      // Registriraj SW i kreiraj subscription 
+      const registration = await registerServiceWorker(); 
+      const vapidPublicKey = 'BF_g0ZxV0bdKAmcWXT_vemu58ZMXNadv_GfZtbAINZQf6xDxkdwI_LKD3F372PyMJWl--6o4W6ovJgExORxEqlQ'; 
+      
+      const urlBase64ToUint8Array = (base64String) => { 
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4); 
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/'); 
+        const rawData = window.atob(base64); 
+        return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0))); 
+      }; 
+      
+      const subscription = await registration.pushManager.subscribe({ 
+        userVisibleOnly: true, 
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) 
+      }); 
+      
+      await pushApi.subscribe(subscription); 
+      setIsSubscribed(true); 
+      setHasSubscription(true); 
+      return { success: true }; 
+    } catch (err) { 
+      console.error('Error requesting push permission:', err); 
+      throw err; 
+    } finally { 
+      setLoading(false); 
+    } 
   };
 
   // Funkcija za odjavu
