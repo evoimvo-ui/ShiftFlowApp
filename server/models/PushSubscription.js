@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const pushSubscriptionSchema = new mongoose.Schema({
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Worker', 
+    ref: 'User', 
     required: true 
   },
   subscription: { 

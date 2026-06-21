@@ -482,7 +482,7 @@ export const notificationApi = {
 
 export const pushApi = {
   subscribe: wrapApi(
-    (subscription) => api.post('/push/subscribe', subscription),
+    (subscription) => api.post('/push/subscribe', { subscription }),
     () => ({ success: true, message: 'Subscription saved (demo)' })
   ),
   unsubscribe: wrapApi(

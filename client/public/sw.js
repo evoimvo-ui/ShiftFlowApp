@@ -17,9 +17,9 @@ self.addEventListener('notificationclick', (event) => {
   // Otvori ili fokusiraj aplikaciju
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Ako postoji već otvoren tab, fokusiraj ga
+      // Ako postoji već otvoren tab, fokusiraj prvi dostupni
       for (const client of clientList) {
-        if (client.url === '/' && 'focus' in client) {
+        if ('focus' in client) {
           return client.focus();
         }
       }
