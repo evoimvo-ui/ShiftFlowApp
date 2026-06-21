@@ -165,7 +165,7 @@ useEffect(() => {
     markAsRead
   } = useNotifications(notificationUserId)
   
-  const { permissionStatus, requestPermission } = usePushNotifications(user)
+  const { permissionStatus, requestPermission, hasSubscription } = usePushNotifications(user)
 
   if (!user) {
     return <LoginPage onLogin={setUser} />
@@ -302,6 +302,7 @@ useEffect(() => {
         workers={workers}
         permissionStatus={permissionStatus}
         requestPermission={requestPermission}
+        hasSubscription={hasSubscription}
       />
       <UpgradeModal
         isOpen={upgradeModal.isOpen}

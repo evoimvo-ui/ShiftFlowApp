@@ -4,7 +4,7 @@ import { X, CheckCircle, XCircle, Calendar, ArrowRightLeft, User, Bell } from 'l
 import { Modal, Btn } from './UI'
 import { notificationApi } from '../api'
 
-export default function NotificationModal({ open, onClose, notification, workers, permissionStatus, requestPermission }) {
+export default function NotificationModal({ open, onClose, notification, workers, permissionStatus, requestPermission, hasSubscription }) {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [bannerDismissed, setBannerDismissed] = useState(false)
@@ -180,6 +180,18 @@ export default function NotificationModal({ open, onClose, notification, workers
           <div className="flex-1">
             <p className="text-sm text-[--text-secondary]">Push notifikacije su blokirane. Omogućite ih u postavkama browsera.</p>
           </div>
+        </div>
+      )}
+
+      {permissionStatus === 'granted' && !hasSubscription && (
+        <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-3">
+          <Bell size={18} className="text-amber-400 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm text-[--text-secondary]">Notifikacije su dozvoljene, ali uređaj nije povezan za push obavijesti.</p>
+          </div>
+          <Btn variant="primary" size="sm" onClick={handleEnablePush}>
+            Aktiviraj
+          </Btn>
         </div>
       )}
       

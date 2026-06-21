@@ -5,6 +5,7 @@ import { pushApi } from '../api';
 export function usePushNotifications(user) {
   const [permissionStatus, setPermissionStatus] = useState('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [hasSubscription, setHasSubscription] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Provjeri inicijalni status
@@ -18,13 +19,15 @@ export function usePushNotifications(user) {
       // Automatski registriraj subscription
       registerServiceWorker().then(registration => {
         registration.pushManager.getSubscription().then(existingSubscription => {
+          const hasSub = !!existingSubscription;
+          setHasSubscription(hasSub);
           if (existingSubscription) {
             // Već postoji, samo pošalji na backend u slučaju da nije sačuvan
             pushApi.subscribe(existingSubscription).catch(console.error);
             setIsSubscribed(true);
           } else {
-            // Nema subscription, kreiraj novi
-            requestPermission().catch(console.error);
+            // Nema subscriptiona, NE pozivaj requestPermission()
+            setIsSubscribed(false);
           }
         });
       }).catch(console.error);
@@ -120,6 +123,7 @@ export function usePushNotifications(user) {
   return {
     permissionStatus,
     isSubscribed,
+    hasSubscription,
     loading,
     requestPermission,
     unsubscribe
