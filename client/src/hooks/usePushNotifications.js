@@ -9,9 +9,6 @@ export function usePushNotifications(user) {
 
   // Provjeri inicijalni status
   useEffect(() => { 
-    console.log('usePushNotifications useEffect running'); 
-    console.log('Notification supported:', 'Notification' in window); 
-    console.log('Permission status:', 'Notification' in window ? Notification.permission : 'not supported'); 
     if (!user) return;
     if (!('Notification' in window)) return;
 
