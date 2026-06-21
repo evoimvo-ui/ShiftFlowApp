@@ -4,7 +4,7 @@ const PushSubscription = require('../models/PushSubscription');
 exports.saveSubscription = async (req, res) => {
   try {
     const { subscription } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     // Provjeri da li već postoji isti subscription za ovog korisnika
     const existing = await PushSubscription.findOne({
@@ -37,7 +37,7 @@ exports.saveSubscription = async (req, res) => {
 exports.deleteSubscription = async (req, res) => {
   try {
     const { endpoint } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     await PushSubscription.deleteOne({
       userId,

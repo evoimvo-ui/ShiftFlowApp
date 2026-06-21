@@ -1,5 +1,7 @@
 const webpush = require('web-push');
 const PushSubscription = require('../models/PushSubscription');
+const Worker = require('../models/Worker');
+const User = require('../models/User');
 
 // Inicijalizacija web-push
 const vapidKeys = {
@@ -37,8 +39,25 @@ async function sendPushNotification(subscription, title, body, data = {}) {
 }
 
 // Funkcija za slanje push notifikacije svim uređajima korisnika
-async function sendPushToUser(userId, title, body, data = {}) {
+async function sendPushToUser(workerOrUserId, title, body, data = {}) {
   try {
+    let userId = null;
+
+    // Prvo pokušaj pronaći Worker po ID-u
+    const worker = await Worker.findById(workerOrUserId);
+    if (worker && worker.username) {
+      // Ako je pronađen Worker, traži User po username
+      const user = await User.findOne({ username: worker.username });
+      if (user) {
+        userId = user._id;
+      }
+    }
+
+    // Ako nije pronađen Worker ili User, pokušaj direktno kao User ID
+    if (!userId) {
+      userId = workerOrUserId;
+    }
+
     const subscriptions = await PushSubscription.find({ userId });
     const results = await Promise.allSettled(
       subscriptions.map(async (sub) => {
