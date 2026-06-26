@@ -1,6 +1,9 @@
 import { uid, isoDate, addDays, parseTime, shiftDurationHours, isWorkerAbsent } from './helpers';
 
 export function generateSchedule(weekStart, workers, categories, absences, shiftTypes, settings, historicalSchedules) {
+  // Filter out null/undefined workers
+  workers = [...workers].filter(w => w != null)
+  
   const assignments = []
   const workerHours = {}
   const workerLastShift = {} // workerId -> { dayOffset, end }
@@ -32,11 +35,11 @@ export function generateSchedule(weekStart, workers, categories, absences, shift
 
         // Get available workers for this category/day/shift
         const available = workers.filter(w => {
-          if (w.categoryId !== category.id) return false
+          if (!w || !w.id || w.categoryId !== category.id) return false
           if (isWorkerAbsent(w.id, dayDate, absences)) return false
           // Check weekly hours
           const hoursUsed = workerHours[w.id] || 0
-          if (hoursUsed + shiftDur > maxHours + (settings.allowOvertime ? settings.maxOvertimeHours || 8 : 0)) return false
+          if (hoursUsed + shiftDur > maxHours + (settings.allowOvertime ? (settings.maxOvertimeHours || 8) : 0)) return false
           // Check rest time
           const last = workerLastShift[w.id]
           if (last) {

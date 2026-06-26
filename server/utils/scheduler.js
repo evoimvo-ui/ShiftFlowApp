@@ -67,8 +67,8 @@ function getShiftId(shift) {
 }
 
 function generateSchedule(weekStart, workers, categories, absences, shiftTypes, settings, historicalSchedules = [], holidays = []) {
-  // Fix 1 — Shuffle workers array
-  workers = [...workers].sort(() => Math.random() - 0.5);
+  // Fix 1 — Filter out null/undefined workers and shuffle
+  workers = [...workers].filter(w => w != null).sort(() => Math.random() - 0.5);
 
   // Fix 3 — Build shift history map from historicalSchedules
   const shiftHistory = {};
@@ -233,10 +233,10 @@ function generateSchedule(weekStart, workers, categories, absences, shiftTypes, 
             const maxDays = settings.schedulingStrategy === 'accumulation' ? 6 : 5;
             if (daysWorked >= maxDays) return false;
 
-            // 6. PROVJERA: Max sati sedmično
-            const currentHours = workerHours.get(wId);
-            const shiftHours = shiftDurationHours(shift);
-            if (currentHours + shiftHours > (w.maxHoursPerWeek || 40) + (settings.allowOvertime ? settings.maxOvertimeHours || 0 : 0)) return false;
+            // 6. PROVJERA: Max sate sedmično
+          const currentHours = workerHours.get(wId) || 0;
+          const shiftHours = shiftDurationHours(shift);
+          if (currentHours + shiftHours > ((w && w.maxHoursPerWeek) || 40) + (settings.allowOvertime ? (settings.maxOvertimeHours || 0) : 0)) return false;
 
             return true;
           });
